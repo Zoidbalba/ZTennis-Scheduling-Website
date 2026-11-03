@@ -8,71 +8,72 @@ export default {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
-        // Specific exact palette from tennis swatch:
-        // #ffe5f4: Pink Lace | #5e8d66: Russian Green | #f1a6bc: Metallic Pink | #022414: Dark Green
+        // Specific exact 5-color palette:
+        // #337357: Dark spring green | #6D9F71: Asparagus | #FFDBE5: Mimi Pink | #EA9AB2: Amaranth pink | #E27396: Rose Pompadour
         palette: {
-          pinkLace: '#ffe5f4',
-          russianGreen: '#5e8d66',
-          metallicPink: '#f1a6bc',
-          darkGreen: '#022414',
+          darkSpringGreen: '#337357',
+          asparagus: '#6D9F71',
+          mimiPink: '#FFDBE5',
+          amaranthPink: '#EA9AB2',
+          rosePompadour: '#E27396',
         },
-        // Tennis Court Russian Green scale (#5e8d66)
-        court: {
-          50: '#f3f8f5',
-          100: '#e3efe6',
-          200: '#cadfcf',
-          300: '#a7c6af',
-          400: '#7fa988',
-          500: '#5e8d66', // Russian Green
-          600: '#4a7552',
-          700: '#3c5d42',
-          800: '#324b37',
-          900: '#1c3324',
-          950: '#022414', // Dark Green
-        },
-        // Primary scale mapped to Russian Green for full site consistency
+        // Primary scale mapped to Rose Pompadour (#E27396) & Amaranth Pink (#EA9AB2) - PINK DOMINANT!
         primary: {
-          50: '#f3f8f5',
-          100: '#e3efe6',
-          200: '#cadfcf',
-          300: '#a7c6af',
-          400: '#7fa988',
-          500: '#5e8d66', // Russian Green (#5e8d66)
-          600: '#4a7552',
-          700: '#3c5d42',
-          800: '#324b37',
-          900: '#1c3324',
-          950: '#022414', // Dark Green (#022414)
+          50: '#fff5f8',
+          100: '#FFDBE5', // Mimi Pink
+          200: '#fcc5d7',
+          300: '#f79fbe',
+          400: '#EA9AB2', // Amaranth pink
+          500: '#E27396', // Rose Pompadour (Dominant Pink)
+          600: '#cf5479',
+          700: '#b03d60',
+          800: '#92334f',
+          900: '#7a2d43',
+          950: '#481323',
         },
-        // Tennis Ball Pink scale (Metallic Pink #f1a6bc & Pink Lace #ffe5f4)
+        // Court scale for tennis accents (#6D9F71 Asparagus & #337357 Dark Spring Green)
+        court: {
+          50: '#f2f7f4',
+          100: '#e1ede6',
+          200: '#c5dcd0',
+          300: '#9ec4b1',
+          400: '#6D9F71', // Asparagus
+          500: '#548762',
+          600: '#406f4e',
+          700: '#337357', // Dark Spring Green
+          800: '#2b5c46',
+          900: '#244c3a',
+          950: '#11291f',
+        },
+        // Tennis Pink alias scale for backward compatibility
         tennisPink: {
-          50: '#fff8fc',
-          100: '#ffe5f4', // Pink Lace
-          200: '#fecdde',
-          300: '#fab3c9',
-          400: '#f1a6bc', // Metallic Pink
-          500: '#e57a9b',
-          600: '#cc577b',
-          700: '#aa3d5f',
-          800: '#8c3550',
-          900: '#753046',
-          950: '#441423',
+          50: '#fff5f8',
+          100: '#FFDBE5', // Mimi Pink
+          200: '#fcc5d7',
+          300: '#f79fbe',
+          400: '#EA9AB2', // Amaranth pink
+          500: '#E27396', // Rose Pompadour
+          600: '#cf5479',
+          700: '#b03d60',
+          800: '#92334f',
+          900: '#7a2d43',
+          950: '#481323',
         },
-        // Tailored Slate with deep dark green tones (#022414) for dark mode
+        // Tailored Slate with deep rose-berry undertones for rich dark mode
         slate: {
-          50: '#fbfdfc',
-          100: '#f1f6f2',
-          200: '#dfebdf',
-          300: '#c5d8ca',
-          400: '#88a38f',
-          500: '#5f7c67',
-          600: '#47624f',
-          700: '#364d3d',
-          750: '#23442f',
-          800: '#0e3822', // elevated card/modal in dark mode
-          850: '#0a301c',
-          900: '#052917', // elevated surfaces in dark mode
-          950: '#022414', // exact Dark Green (#022414) for page background in dark mode
+          50: '#fdf8fa',
+          100: '#fbf0f4',
+          200: '#f5e1eb',
+          300: '#e6c8d7',
+          400: '#a38496',
+          500: '#735768',
+          600: '#543b4b',
+          700: '#3b2533',
+          750: '#2b1824',
+          800: '#20101a', // elevated card/modal in dark mode
+          850: '#190a14',
+          900: '#14060f', // elevated surfaces in dark mode
+          950: '#0d0309', // deep dark page background in dark mode
         },
       },
       animation: {
@@ -105,13 +106,13 @@ export default {
         },
       },
       boxShadow: {
-        'soft-xs': '0 1px 2px 0 rgba(2, 36, 20, 0.04)',
-        'soft-sm': '0 2px 6px 0 rgba(2, 36, 20, 0.06)',
-        'soft-md': '0 6px 16px -2px rgba(2, 36, 20, 0.08), 0 2px 6px -1px rgba(2, 36, 20, 0.04)',
-        'soft-lg': '0 12px 28px -4px rgba(2, 36, 20, 0.1), 0 4px 10px -2px rgba(2, 36, 20, 0.04)',
-        'soft-xl': '0 20px 38px -6px rgba(2, 36, 20, 0.14), 0 8px 16px -4px rgba(2, 36, 20, 0.06)',
-        'pink-glow': '0 0 24px -2px rgba(241, 166, 188, 0.45)',
-        'court-glow': '0 0 24px -2px rgba(94, 141, 102, 0.4)',
+        'soft-xs': '0 1px 2px 0 rgba(226, 115, 150, 0.05)',
+        'soft-sm': '0 2px 6px 0 rgba(226, 115, 150, 0.08)',
+        'soft-md': '0 6px 16px -2px rgba(226, 115, 150, 0.12), 0 2px 6px -1px rgba(226, 115, 150, 0.06)',
+        'soft-lg': '0 12px 28px -4px rgba(226, 115, 150, 0.16), 0 4px 10px -2px rgba(226, 115, 150, 0.06)',
+        'soft-xl': '0 20px 38px -6px rgba(226, 115, 150, 0.22), 0 8px 16px -4px rgba(226, 115, 150, 0.08)',
+        'pink-glow': '0 0 28px -2px rgba(226, 115, 150, 0.55)',
+        'court-glow': '0 0 24px -2px rgba(109, 159, 113, 0.4)',
       },
     },
   },

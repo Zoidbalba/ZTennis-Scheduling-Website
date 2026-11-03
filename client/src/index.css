@@ -20,12 +20,12 @@
   }
 
   ::selection {
-    background: #f1a6bc;
-    color: #022414;
+    background: #E27396;
+    color: #ffffff;
   }
 }
 
-/* Hide scrollbar utility for mobile swiping */
+/* Hide scrollbar utility for mobile horizontal scrolling */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -34,50 +34,50 @@
   scrollbar-width: none;
 }
 
-/* Custom Sleek Tennis Court Scrollbar */
+/* Custom Sleek Scrollbar tuned to Rose Pompadour & Mimi Pink */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f6f2;
+  background: #fbf0f4;
 }
 
 html.dark ::-webkit-scrollbar-track {
-  background: #022414;
+  background: #0d0309;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c5d8ca;
+  background: #fcc5d7;
   border-radius: 9999px;
-  border: 2px solid #f1f6f2;
+  border: 2px solid #fbf0f4;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-  background: #1c442c;
-  border: 2px solid #022414;
+  background: #3b2533;
+  border: 2px solid #0d0309;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #5e8d66;
+  background: #E27396;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #5e8d66;
+  background: #E27396;
 }
 
-/* Glassmorphism helpers tuned to Russian Green & Dark Green */
+/* Glassmorphism tuned to Rose Pompadour (#E27396) */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(94, 141, 102, 0.2);
+  border-bottom: 1px solid rgba(226, 115, 150, 0.2);
 }
 
 html.dark .glass-nav {
-  background: rgba(2, 36, 20, 0.92);
-  border-bottom: 1px solid rgba(94, 141, 102, 0.3);
+  background: rgba(13, 3, 9, 0.94);
+  border-bottom: 1px solid rgba(226, 115, 150, 0.25);
 }
 
 .glass-card {
@@ -87,17 +87,17 @@ html.dark .glass-nav {
 }
 
 html.dark .glass-card {
-  background: rgba(5, 41, 23, 0.88);
+  background: rgba(20, 6, 15, 0.9);
 }
 
-/* Subtle Interactive Button Hover Glow */
+/* Vibrant Pink Hover Glows */
 .btn-hover-glow {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-hover-glow:hover {
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 22px -4px rgba(94, 141, 102, 0.45);
+  box-shadow: 0 8px 24px -4px rgba(226, 115, 150, 0.5);
 }
 
 .btn-hover-pink {
@@ -106,7 +106,7 @@ html.dark .glass-card {
 
 .btn-hover-pink:hover {
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 22px -4px rgba(241, 166, 188, 0.5);
+  box-shadow: 0 8px 24px -4px rgba(226, 115, 150, 0.55);
 }
 
 /* Card Hover Lift */
@@ -116,5 +116,5 @@ html.dark .glass-card {
 
 .card-hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 28px -6px rgba(2, 36, 20, 0.1), 0 4px 10px -2px rgba(2, 36, 20, 0.04);
+  box-shadow: 0 14px 28px -6px rgba(226, 115, 150, 0.16), 0 4px 10px -2px rgba(226, 115, 150, 0.08);
 }

@@ -13,7 +13,7 @@ export default function ProfileSection({ profile }) {
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 sm:mb-8 gap-3 sm:gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 border border-primary-200/60 dark:border-primary-800 px-3 py-1 rounded-full">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#FFDBE5]/15 border border-[#EA9AB2]/50 px-3 py-1 rounded-full">
             Instructor Spotlight
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2 sm:mt-2.5">
@@ -26,7 +26,7 @@ export default function ProfileSection({ profile }) {
 
         <Link
           to="/coach"
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors self-start sm:self-auto group"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 dark:text-white hover:text-[#E27396] dark:hover:text-[#EA9AB2] transition-colors self-start sm:self-auto group"
         >
           <span>View Full Coach Profile</span>
           <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -39,8 +39,8 @@ export default function ProfileSection({ profile }) {
           {/* Photo & Identity Left Column */}
           <div className="md:w-5/12 flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-50 dark:bg-slate-800/40 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-800 relative">
             {/* Status Pill */}
-            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-[#ffe5f4] dark:bg-[#0e3822] border border-[#f1a6bc]/40 dark:border-[#5e8d66]/40 text-[10px] sm:text-[11px] font-bold text-[#022414] dark:text-[#ffe5f4] px-2.5 sm:px-3 py-1 rounded-full shadow-soft-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#5e8d66] animate-pulse"></span>
+            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-[#FFDBE5] dark:bg-[#20101a] border border-[#EA9AB2]/40 text-[10px] sm:text-[11px] font-bold text-[#b03d60] dark:text-[#FFDBE5] px-2.5 sm:px-3 py-1 rounded-full shadow-soft-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#6D9F71] animate-pulse"></span>
               <span>Available This Week</span>
             </div>
 
@@ -50,17 +50,17 @@ export default function ProfileSection({ profile }) {
                 <img
                   src={profile.photo_url}
                   alt={profile.name}
-                  className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-white dark:border-[#0e3822] shadow-soft-lg ring-2 ring-[#5e8d66]/40"
+                  className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-white dark:border-[#20101a] shadow-soft-lg ring-2 ring-[#EA9AB2]"
                 />
               ) : (
-                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[#022414] dark:bg-[#5e8d66] border-4 border-white dark:border-[#0e3822] flex items-center justify-center shadow-soft-lg text-4xl text-[#ffe5f4] dark:text-[#022414] font-black">
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[#E27396] border-4 border-white dark:border-[#20101a] flex items-center justify-center shadow-soft-lg text-4xl text-white font-black">
                   Z
                 </div>
               )}
             </div>
 
             <h3 className="font-extrabold text-lg sm:text-xl text-slate-900 dark:text-white mt-4 sm:mt-5 text-center">{profile.name}</h3>
-            <p className="text-xs text-[#022414] dark:text-[#ffe5f4] font-bold bg-[#ffe5f4] dark:bg-[#0e3822] border border-[#f1a6bc]/40 dark:border-[#5e8d66]/40 px-3 py-1 rounded-full mt-1.5">
+            <p className="text-xs text-[#b03d60] dark:text-[#FFDBE5] font-bold bg-[#FFDBE5] dark:bg-[#20101a] border border-[#EA9AB2]/40 px-3 py-1 rounded-full mt-1.5">
               Personal Tennis Coach
             </p>
 
@@ -116,7 +116,7 @@ export default function ProfileSection({ profile }) {
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
               <Link
                 to="/coach"
-                className="btn-hover-pink w-full sm:w-auto text-center bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] px-4 sm:px-5 py-2.5 rounded-xl text-xs font-black transition-all shadow-soft-xs min-h-[40px] flex items-center justify-center"
+                className="btn-hover-pink w-full sm:w-auto text-center bg-[#E27396] hover:bg-[#cf5479] text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-black transition-all shadow-soft-xs min-h-[40px] flex items-center justify-center"
               >
                 Full Bio & Rates
               </Link>

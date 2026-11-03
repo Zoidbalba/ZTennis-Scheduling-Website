@@ -32,17 +32,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#022414] flex items-center justify-center p-4 transition-colors">
+    <div className="min-h-screen bg-[#14060f] dark:bg-[#0d0309] flex items-center justify-center p-4 transition-colors">
       <div className="w-full max-w-md">
         {/* Logo with "Z" brand mark */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-2xl hover:opacity-90 transition-opacity">
-            <span className="w-10 h-10 rounded-xl bg-[#f1a6bc] text-[#022414] font-black text-xl flex items-center justify-center shadow-soft-sm">
+            <span className="w-10 h-10 rounded-xl bg-[#E27396] text-white font-black text-xl flex items-center justify-center shadow-soft-sm border border-[#FFDBE5]/30">
               Z
             </span>
             <span>Z Tennis Coach</span>
           </Link>
-          <p className="text-[#a7c6af] mt-2 text-sm font-medium">Coach Dashboard Portal</p>
+          <p className="text-[#FFDBE5]/80 mt-2 text-sm font-medium">Coach Dashboard Portal</p>
         </div>
 
         {/* Login Card */}
@@ -65,7 +65,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
                 placeholder="coach@tennisph.com"
               />
             </div>
@@ -79,7 +79,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
                 placeholder="••••••••"
               />
             </div>
@@ -87,14 +87,14 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-hover-pink w-full bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] py-3.5 rounded-xl font-black text-sm shadow-soft-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+              className="btn-hover-pink w-full bg-[#E27396] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-semibold transition-colors">
+            <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-[#E27396] dark:hover:text-[#EA9AB2] font-semibold transition-colors">
               ← Return to Public Site
             </Link>
           </div>

@@ -32,17 +32,17 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo with "Z" brand mark */}
+          {/* Logo with "Z" brand mark in dominant Rose Pompadour */}
           <Link
             to="/"
             className="flex items-center gap-3 font-extrabold tracking-tight text-slate-900 dark:text-white group"
           >
-            <span className="w-9 h-9 rounded-xl bg-[#022414] dark:bg-[#5e8d66] text-[#ffe5f4] dark:text-[#022414] font-black text-lg flex items-center justify-center shadow-soft-xs group-hover:bg-[#f1a6bc] dark:group-hover:bg-[#f1a6bc] group-hover:text-[#022414] border border-[#5e8d66]/30 transition-all">
+            <span className="w-9 h-9 rounded-xl bg-[#E27396] text-white font-black text-lg flex items-center justify-center shadow-soft-xs group-hover:bg-[#cf5479] border border-[#FFDBE5]/40 transition-all">
               Z
             </span>
             <div className="flex flex-col">
               <span className="leading-none text-slate-900 dark:text-white font-extrabold text-base tracking-tight">
-                Z Tennis <span className="text-[#f1a6bc] font-black text-xs tracking-normal">PH</span>
+                Z Tennis <span className="text-[#E27396] dark:text-[#EA9AB2] font-black text-xs tracking-normal">PH</span>
               </span>
               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold tracking-wider uppercase mt-0.5">
                 Personal Coaching
@@ -115,40 +115,41 @@ function PublicNav() {
         to="/coach"
         className={`relative text-sm font-semibold transition-all py-1 ${
           location.pathname === '/coach'
-            ? 'text-primary-600 dark:text-primary-400'
-            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            ? 'text-primary-600 dark:text-primary-400 font-bold'
+            : 'text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400'
         }`}
       >
         Coach Profile
         {location.pathname === '/coach' && (
-          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full animate-fade-in" />
+          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500 rounded-full animate-fade-in" />
         )}
       </Link>
 
       <button
         onClick={() => handleNav('schedule')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
       >
         Schedule
       </button>
 
       <button
         onClick={() => handleNav('rates')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
       >
         Rates
       </button>
 
       <button
         onClick={() => handleNav('profile')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
       >
         About
       </button>
 
+      {/* Dominant Rose Pompadour CTA */}
       <button
         onClick={() => handleNav('schedule')}
-        className="btn-hover-glow bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-soft-xs transition-all cursor-pointer"
+        className="btn-hover-pink bg-[#E27396] hover:bg-[#cf5479] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-soft-xs transition-all cursor-pointer"
       >
         Book a Session
       </button>
@@ -159,14 +160,14 @@ function PublicNav() {
       {isAuthenticated ? (
         <Link
           to="/dashboard/bookings"
-          className="text-xs bg-slate-100 hover:bg-primary-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-primary-700 dark:hover:text-primary-400 px-3.5 py-2 rounded-xl font-bold transition-all border border-slate-200 dark:border-slate-700"
+          className="text-xs bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/80 dark:hover:bg-primary-900/80 text-primary-700 dark:text-primary-300 hover:text-primary-800 px-3.5 py-2 rounded-xl font-bold transition-all border border-primary-200/60 dark:border-primary-800/60"
         >
           Dashboard
         </Link>
       ) : (
         <Link
           to="/login"
-          className="text-xs text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-medium transition-colors"
+          className="text-xs text-slate-400 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-semibold transition-colors"
         >
           Coach Login
         </Link>
@@ -199,7 +200,7 @@ function PublicNavMobile({ onClose }) {
         onClick={onClose}
         className={`block w-full text-left px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
           location.pathname === '/coach'
-            ? 'bg-primary-50 dark:bg-primary-950/60 text-primary-700 dark:text-primary-400'
+            ? 'bg-primary-50 dark:bg-primary-950/60 text-primary-700 dark:text-primary-400 font-bold'
             : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
         }`}
       >
@@ -225,7 +226,7 @@ function PublicNavMobile({ onClose }) {
       </button>
       <button
         onClick={() => handleNav('schedule')}
-        className="block w-full text-center px-4 py-3 rounded-xl bg-slate-900 dark:bg-primary-600 text-white font-bold text-sm shadow-soft-xs cursor-pointer"
+        className="block w-full text-center px-4 py-3 rounded-xl bg-[#E27396] hover:bg-[#cf5479] text-white font-bold text-sm shadow-soft-xs cursor-pointer transition-colors"
       >
         Book a Session Now
       </button>
@@ -245,7 +246,7 @@ function PublicNavMobile({ onClose }) {
           <Link
             to="/login"
             onClick={onClose}
-            className="text-xs text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-medium"
+            className="text-xs text-slate-400 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-medium"
           >
             Coach Login
           </Link>
@@ -261,6 +262,7 @@ function DashboardNav() {
 
   const links = [
     { to: '/dashboard/bookings', label: 'Bookings' },
+    { to: '/dashboard/trainees', label: 'Trainees' },
     { to: '/dashboard/availability', label: 'Availability' },
     { to: '/dashboard/rates', label: 'Rates' },
     { to: '/dashboard/profile', label: 'Profile' },
@@ -284,7 +286,7 @@ function DashboardNav() {
         >
           {label}
           {location.pathname === to && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E27396] rounded-full" />
           )}
         </Link>
       ))}
@@ -308,6 +310,7 @@ function DashboardNavMobile({ onClose }) {
 
   const links = [
     { to: '/dashboard/bookings', label: 'Bookings' },
+    { to: '/dashboard/trainees', label: 'Trainees' },
     { to: '/dashboard/availability', label: 'Availability' },
     { to: '/dashboard/rates', label: 'Rates' },
     { to: '/dashboard/profile', label: 'Profile' },

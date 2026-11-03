@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }) {
       {/* Mobile top bar */}
       <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
         <Link to="/" className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-          <span className="w-7 h-7 rounded-lg bg-slate-900 dark:bg-slate-800 border border-slate-700/40 text-white font-black text-sm flex items-center justify-center">
+          <span className="w-7 h-7 rounded-lg bg-[#E27396] text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
             Z
           </span>
           <span className="text-sm">Z Tennis Coach</span>
@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }) {
               to={to}
               className={`text-center px-3.5 py-2.5 text-xs font-bold whitespace-nowrap transition-colors rounded-lg my-1.5 ${
                 location.pathname === to
-                  ? 'text-white bg-slate-900 dark:bg-primary-600 shadow-soft-xs'
+                  ? 'text-white bg-[#E27396] shadow-soft-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }) {
         <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 min-h-screen">
           <div className="p-6 border-b border-slate-100 dark:border-slate-800">
             <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-slate-900 dark:text-white mb-4">
-              <span className="w-8 h-8 rounded-xl bg-[#022414] dark:bg-[#5e8d66] text-[#ffe5f4] dark:text-[#022414] font-black text-sm flex items-center justify-center shadow-soft-xs">
+              <span className="w-8 h-8 rounded-xl bg-[#E27396] text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
                 Z
               </span>
               <span>Z Tennis Coach</span>
@@ -80,7 +80,7 @@ export default function DashboardLayout({ children }) {
                 to={to}
                 className={`flex items-center px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                   location.pathname === to
-                    ? 'bg-slate-900 dark:bg-primary-600 text-white shadow-soft-xs'
+                    ? 'bg-[#E27396] text-white shadow-soft-xs'
                     : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >

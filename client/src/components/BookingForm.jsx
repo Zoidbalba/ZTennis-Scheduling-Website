@@ -100,10 +100,10 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#022414] text-white p-5 sm:p-7 rounded-t-2xl sm:rounded-t-3xl relative border-b border-[#5e8d66]/30">
+        <div className="bg-[#14060f] dark:bg-[#0d0309] text-white p-5 sm:p-7 rounded-t-2xl sm:rounded-t-3xl relative border-b border-[#EA9AB2]/30">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#f1a6bc]">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#FFDBE5]">
                 Lesson Reservation
               </span>
               <h3 className="text-lg sm:text-2xl font-extrabold mt-0.5 sm:mt-1">Book a Session</h3>
@@ -116,8 +116,8 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </button>
           </div>
 
-          <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#5e8d66]/30 text-xs sm:text-sm text-slate-300">
-            <p className="font-bold text-[#ffe5f4]">
+          <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#EA9AB2]/30 text-xs sm:text-sm text-slate-300">
+            <p className="font-bold text-[#FFDBE5]">
               {bookingDate}
             </p>
             <p className="mt-0.5 text-slate-300">
@@ -129,7 +129,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
         {/* Content */}
         {success ? (
           <div className="p-6 sm:p-10 text-center animate-fade-in">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#022414] dark:bg-[#5e8d66] text-[#ffe5f4] dark:text-[#022414] font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-soft-sm">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E27396] text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-soft-sm">
               Z
             </div>
             <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Booking Request Sent</h4>
@@ -139,7 +139,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </p>
             <button
               onClick={onClose}
-              className="btn-hover-pink w-full sm:w-auto bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] px-8 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer transition-colors"
+              className="btn-hover-pink w-full sm:w-auto bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer transition-colors"
             >
               Done
             </button>
@@ -162,7 +162,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.player_name}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#5e8d66]/30 focus:border-[#5e8d66] outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
                 placeholder="Full Name"
               />
             </div>
@@ -177,7 +177,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.contact_number}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#5e8d66]/30 focus:border-[#5e8d66] outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
                 placeholder="0917 123 4567"
               />
             </div>
@@ -191,7 +191,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#5e8d66]/30 focus:border-[#5e8d66] outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
                 placeholder="email@example.com"
               />
             </div>
@@ -204,7 +204,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="skill_level"
                 value={form.skill_level}
                 onChange={handleChange}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#5e8d66]/30 focus:border-[#5e8d66] outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
               >
                 {SKILL_LEVELS.map((level) => (
                   <option key={level} value={level} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
@@ -223,7 +223,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.message}
                 onChange={handleChange}
                 rows={2}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#5e8d66]/30 focus:border-[#5e8d66] outline-none transition-all resize-none font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all resize-none font-medium"
                 placeholder="Individual or group session, technique focus, etc."
               />
             </div>
@@ -232,7 +232,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-hover-pink w-full bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] py-3.5 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
+                className="btn-hover-pink w-full bg-[#E27396] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
               >
                 {submitting ? 'Submitting Request...' : 'Confirm Booking Request →'}
               </button>

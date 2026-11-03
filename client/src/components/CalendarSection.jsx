@@ -170,7 +170,7 @@ export default function CalendarSection({
     <section id="schedule" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-        <span className="text-xs font-bold uppercase tracking-widest text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 border border-primary-200/60 dark:border-primary-800 px-3.5 py-1 rounded-full shadow-soft-xs">
+        <span className="text-xs font-bold uppercase tracking-widest text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#FFDBE5]/15 border border-[#EA9AB2]/50 px-3.5 py-1 rounded-full shadow-soft-xs">
           Weekly Availability
         </span>
         <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mt-2.5 sm:mt-3.5 mb-2 sm:mb-3 tracking-tight">
@@ -181,12 +181,12 @@ export default function CalendarSection({
         </p>
 
         {/* Public Court & Duration Highlights Callout */}
-        <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
+        <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-white dark:bg-slate-900 border border-[#EA9AB2]/30 text-slate-800 dark:text-slate-200 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
           <span className="font-semibold text-slate-900 dark:text-white">Venue: Public Tennis Court</span>
           <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
           <span>1.5 – 2 Hours (court extendable)</span>
           <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
-          <span className="font-bold text-slate-900 dark:text-white">M · T · TH · F · SAT</span>
+          <span className="font-bold text-[#E27396] dark:text-[#EA9AB2]">M · T · TH · F · SAT</span>
         </div>
       </div>
 
@@ -205,29 +205,29 @@ export default function CalendarSection({
 
       {/* COACH CRUD TOOLBAR (Visible when Coach is logged in) */}
       {isAuthenticated && (
-        <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-slate-900 dark:bg-slate-900/90 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-800 dark:border-slate-700 animate-fade-in">
+        <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-[#14060f] dark:bg-slate-900/90 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-[#EA9AB2]/30 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-5">
             <div>
               <div className="flex items-center gap-2">
-                <span className="bg-white/10 text-[10px] sm:text-[11px] font-bold uppercase px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full tracking-wider text-slate-200">
+                <span className="bg-[#E27396] text-white text-[10px] sm:text-[11px] font-bold uppercase px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full tracking-wider">
                   Coach Admin Mode
                 </span>
                 <h3 className="font-bold text-sm sm:text-lg">Schedule Manager Active</h3>
               </div>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-[#FFDBE5]/80 mt-1 leading-relaxed">
                 Add, edit, block, or delete slots directly on this Monday–Sunday calendar.
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => handleOpenAdd(activeDay)}
-                className="btn-hover-glow flex-1 sm:flex-none justify-center bg-white text-slate-900 hover:bg-slate-100 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
+                className="btn-hover-pink flex-1 sm:flex-none justify-center bg-[#E27396] text-white hover:bg-[#cf5479] px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <span>+</span> Add Time Slot
               </button>
               <a
                 href="/dashboard/availability"
-                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-semibold text-white transition-colors"
+                className="bg-white/10 hover:bg-white/20 border border-white/20 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-semibold text-white transition-colors"
               >
                 Dashboard →
               </a>
@@ -255,8 +255,8 @@ export default function CalendarSection({
                 }}
                 className={`flex-shrink-0 px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#022414] dark:bg-[#5e8d66] text-white shadow-soft-md font-bold scale-[1.02] border border-[#5e8d66]/50'
-                    : 'bg-white dark:bg-slate-900 hover:bg-[#ffe5f4]/30 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-[#f1a6bc]/50 dark:hover:border-[#5e8d66]/40'
+                    ? 'bg-[#E27396] text-white shadow-soft-md font-bold scale-[1.02] border border-[#FFDBE5]/50'
+                    : 'bg-white dark:bg-slate-900 hover:bg-[#FFDBE5]/25 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-[#EA9AB2]/50'
                 }`}
               >
                 <div className="text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
@@ -264,7 +264,7 @@ export default function CalendarSection({
                   {daySlotCount > 0 && (
                     <span
                       className={`text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ${
-                        isSelected ? 'bg-[#f1a6bc] text-[#022414] font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                        isSelected ? 'bg-white text-[#E27396] font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       {daySlotCount}
@@ -377,7 +377,7 @@ export default function CalendarSection({
                   {/* Bottom Action Area */}
                   {isAuthenticated ? (
                     <div
-                      className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs"
+                      className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
@@ -393,7 +393,7 @@ export default function CalendarSection({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={(e) => handleOpenEdit(slot, e)}
-                          className="text-slate-900 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-lg font-bold transition-colors"
+                          className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg font-bold transition-colors"
                         >
                           Edit
                         </button>
@@ -408,7 +408,7 @@ export default function CalendarSection({
                   ) : (
                     <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                       <span className="text-[11px] sm:text-xs text-slate-400 font-medium">Tap to reserve</span>
-                      <span className="btn-hover-pink inline-flex items-center gap-1.5 bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs transition-all">
+                      <span className="btn-hover-pink inline-flex items-center gap-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs transition-all">
                         <span>Reserve</span>
                         <span>→</span>
                       </span>
@@ -558,12 +558,12 @@ export default function CalendarSection({
             className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-200 dark:border-slate-800"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 flex items-center justify-between">
+            <div className="bg-[#14060f] dark:bg-[#0d0309] text-white p-6 flex items-center justify-between border-b border-[#EA9AB2]/25">
               <div>
-                <h3 className="font-extrabold text-lg">
+                <h3 className="font-extrabold text-lg text-white">
                   {editingSlot ? 'Edit Schedule Slot' : 'Add Coaching Slot'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-[#FFDBE5]/80 mt-0.5">
                   Manage weekly coaching availability (Monday to Sunday)
                 </p>
               </div>
@@ -668,7 +668,7 @@ export default function CalendarSection({
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-hover-glow flex-1 py-3 bg-slate-900 dark:bg-primary-600 hover:bg-slate-800 dark:hover:bg-primary-500 text-white rounded-xl text-sm font-bold shadow-soft-xs disabled:opacity-50"
+                  className="btn-hover-pink flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-sm font-bold shadow-soft-xs disabled:opacity-50"
                 >
                   {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Create Slot'}
                 </button>
