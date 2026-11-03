@@ -92,6 +92,12 @@ export async function getDb() {
   try {
     db.run("ALTER TABLE bookings ADD COLUMN coach_notes TEXT DEFAULT ''");
   } catch (e) {}
+  try {
+    db.run("ALTER TABLE bookings ADD COLUMN sms_status TEXT DEFAULT ''");
+  } catch (e) {}
+  try {
+    db.run("ALTER TABLE bookings ADD COLUMN sms_sent_at TEXT DEFAULT ''");
+  } catch (e) {}
 
   db.run(`
     CREATE TABLE IF NOT EXISTS availability_slots (

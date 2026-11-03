@@ -36,7 +36,8 @@ export const api = {
   createBooking: (data) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
   getBookings: () => request('/bookings'),
   getTrainees: () => request('/bookings/trainees'),
-  updateBookingStatus: (id, status) => request(`/bookings/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) }),
+  updateBookingStatus: (id, status, extra = {}) => request(`/bookings/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, ...extra }) }),
+  sendBookingSms: (id, data = {}) => request(`/bookings/${id}/send-sms`, { method: 'POST', body: JSON.stringify(data) }),
   updateBooking: (id, data) => request(`/bookings/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteBooking: (id) => request(`/bookings/${id}`, { method: 'DELETE' }),
 };

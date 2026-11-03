@@ -9,6 +9,7 @@
 import { Router } from 'express';
 import { getDb, saveDb } from '../db/database.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { sendBookingStatusSms, sendSms } from '../services/sms.js';
 
 const router = Router();
 
@@ -171,13 +172,14 @@ router.get('/trainees', authMiddleware, async (req, res) => {
 /**
  * PUT /api/bookings/:id/status
  *
- * Updates a booking's status ('confirmed', 'declined', 'pending', 'completed').
+ * Updates a booking's status ('confirmed', 'declined', 'pending', 'completed')
+ * and automatically sends an SMS notification to the trainee.
  * Requires authentication.
  */
 router.put('/:id/status', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, send_notification = true } = req.body;
 
     const allowedStatuses = ['pending', 'confirmed', 'declined', 'completed'];
     if (!status || !allowedStatuses.includes(status)) {
@@ -188,25 +190,146 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
 
     const db = await getDb();
 
-    db.run('UPDATE bookings SET status = ? WHERE id = ?', [status, Number(id)]);
+    // Check existing booking
+    const stmtCheck = db.prepare('SELECT * FROM bookings WHERE id = ?');
+    stmtCheck.bind([Number(id)]);
+    if (!stmtCheck.step()) {
+      stmtCheck.free();
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    const booking = {};
+    stmtCheck.getColumnNames().forEach((col, i) => {
+      booking[col] = stmtCheck.get()[i];
+    });
+    stmtCheck.free();
+
+    // Fetch coach profile for SMS sender info
+    let coachProfile = null;
+    try {
+      const profileRes = db.exec('SELECT name, phone FROM coach_profile LIMIT 1');
+      if (profileRes && profileRes[0] && profileRes[0].values.length > 0) {
+        coachProfile = {
+          name: profileRes[0].values[0][0],
+          phone: profileRes[0].values[0][1],
+        };
+      }
+    } catch (e) {}
+
+    // Send automated SMS if accepted or rejected
+    let smsResult = null;
+    let smsStatusVal = booking.sms_status || '';
+    let smsSentAtVal = booking.sms_sent_at || '';
+
+    if (send_notification && (status === 'confirmed' || status === 'declined' || status === 'completed')) {
+      try {
+        smsResult = await sendBookingStatusSms(booking, status, coachProfile);
+        if (smsResult.sent) {
+          smsStatusVal = smsResult.simulated ? 'simulated' : 'sent';
+          smsSentAtVal = new Date().toISOString();
+        } else {
+          smsStatusVal = `failed: ${smsResult.error || 'unknown'}`;
+        }
+      } catch (smsErr) {
+        console.error('Error dispatching automated SMS:', smsErr);
+        smsResult = { sent: false, error: smsErr.message };
+        smsStatusVal = `failed: ${smsErr.message}`;
+      }
+    }
+
+    // Update status and SMS tracking in database
+    db.run(
+      'UPDATE bookings SET status = ?, sms_status = ?, sms_sent_at = ? WHERE id = ?',
+      [status, smsStatusVal, smsSentAtVal, Number(id)]
+    );
     saveDb(db);
 
-    const stmt = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    stmt.bind([Number(id)]);
-    let booking = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      booking = {};
-      columns.forEach((col, i) => {
-        booking[col] = row[i];
+    // Re-fetch updated booking
+    const stmtUpdated = db.prepare('SELECT * FROM bookings WHERE id = ?');
+    stmtUpdated.bind([Number(id)]);
+    const updatedBooking = {};
+    if (stmtUpdated.step()) {
+      stmtUpdated.getColumnNames().forEach((col, i) => {
+        updatedBooking[col] = stmtUpdated.get()[i];
       });
     }
-    stmt.free();
+    stmtUpdated.free();
 
-    res.json({ message: `Booking status updated to ${status}`, booking });
+    res.json({
+      message: `Booking status updated to ${status}`,
+      booking: updatedBooking,
+      sms: smsResult,
+    });
   } catch (err) {
     console.error('Update booking status error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/bookings/:id/send-sms
+ *
+ * Explicitly sends/resends an SMS notification to the trainee.
+ * Body: { message?: string }
+ * Requires authentication.
+ */
+router.post('/:id/send-sms', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+
+    const db = await getDb();
+    const stmtCheck = db.prepare('SELECT * FROM bookings WHERE id = ?');
+    stmtCheck.bind([Number(id)]);
+    if (!stmtCheck.step()) {
+      stmtCheck.free();
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    const booking = {};
+    stmtCheck.getColumnNames().forEach((col, i) => {
+      booking[col] = stmtCheck.get()[i];
+    });
+    stmtCheck.free();
+
+    if (!booking.player_contact) {
+      return res.status(400).json({ error: 'No phone number for this booking' });
+    }
+
+    let coachProfile = null;
+    try {
+      const profileRes = db.exec('SELECT name, phone FROM coach_profile LIMIT 1');
+      if (profileRes && profileRes[0] && profileRes[0].values.length > 0) {
+        coachProfile = {
+          name: profileRes[0].values[0][0],
+          phone: profileRes[0].values[0][1],
+        };
+      }
+    } catch (e) {}
+
+    let smsResult;
+    if (message && message.trim()) {
+      smsResult = await sendSms({
+        to: booking.player_contact,
+        message: message.trim(),
+      });
+    } else {
+      smsResult = await sendBookingStatusSms(booking, booking.status || 'confirmed', coachProfile);
+    }
+
+    const smsStatusVal = smsResult.sent ? (smsResult.simulated ? 'simulated' : 'sent') : `failed: ${smsResult.error || 'error'}`;
+    const smsSentAtVal = smsResult.sent ? new Date().toISOString() : booking.sms_sent_at;
+
+    db.run(
+      'UPDATE bookings SET sms_status = ?, sms_sent_at = ? WHERE id = ?',
+      [smsStatusVal, smsSentAtVal, Number(id)]
+    );
+    saveDb(db);
+
+    res.json({
+      message: smsResult.sent ? 'SMS sent successfully' : 'Failed to send SMS',
+      sms: smsResult,
+    });
+  } catch (err) {
+    console.error('Manual send SMS error:', err);
     res.status(500).json({ error: err.message });
   }
 });
