@@ -39,8 +39,8 @@ export default function ProfileSection({ profile }) {
           {/* Photo & Identity Left Column */}
           <div className="md:w-5/12 flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-50 dark:bg-slate-800/40 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-800 relative">
             {/* Status Pill */}
-            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 px-2.5 sm:px-3 py-1 rounded-full shadow-soft-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-[#ffe5f4] dark:bg-[#0e3822] border border-[#f1a6bc]/40 dark:border-[#5e8d66]/40 text-[10px] sm:text-[11px] font-bold text-[#022414] dark:text-[#ffe5f4] px-2.5 sm:px-3 py-1 rounded-full shadow-soft-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#5e8d66] animate-pulse"></span>
               <span>Available This Week</span>
             </div>
 
@@ -50,17 +50,17 @@ export default function ProfileSection({ profile }) {
                 <img
                   src={profile.photo_url}
                   alt={profile.name}
-                  className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-soft-lg ring-1 ring-slate-200 dark:ring-slate-700"
+                  className="w-32 h-32 sm:w-44 sm:h-44 rounded-full object-cover border-4 border-white dark:border-[#0e3822] shadow-soft-lg ring-2 ring-[#5e8d66]/40"
                 />
               ) : (
-                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-slate-900 dark:bg-slate-800 border-4 border-white dark:border-slate-800 flex items-center justify-center shadow-soft-lg text-4xl text-white font-black">
+                <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-[#022414] dark:bg-[#5e8d66] border-4 border-white dark:border-[#0e3822] flex items-center justify-center shadow-soft-lg text-4xl text-[#ffe5f4] dark:text-[#022414] font-black">
                   Z
                 </div>
               )}
             </div>
 
             <h3 className="font-extrabold text-lg sm:text-xl text-slate-900 dark:text-white mt-4 sm:mt-5 text-center">{profile.name}</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold bg-slate-200/70 dark:bg-slate-800 px-3 py-1 rounded-full mt-1.5">
+            <p className="text-xs text-[#022414] dark:text-[#ffe5f4] font-bold bg-[#ffe5f4] dark:bg-[#0e3822] border border-[#f1a6bc]/40 dark:border-[#5e8d66]/40 px-3 py-1 rounded-full mt-1.5">
               Personal Tennis Coach
             </p>
 
@@ -116,7 +116,7 @@ export default function ProfileSection({ profile }) {
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
               <Link
                 to="/coach"
-                className="btn-hover-glow w-full sm:w-auto text-center bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-4 sm:px-5 py-2.5 rounded-xl text-xs font-semibold transition-all shadow-soft-xs min-h-[40px] flex items-center justify-center"
+                className="btn-hover-pink w-full sm:w-auto text-center bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] px-4 sm:px-5 py-2.5 rounded-xl text-xs font-black transition-all shadow-soft-xs min-h-[40px] flex items-center justify-center"
               >
                 Full Bio & Rates
               </Link>

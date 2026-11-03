@@ -32,17 +32,17 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 dark:bg-slate-950 flex items-center justify-center p-4 transition-colors">
+    <div className="min-h-screen bg-[#022414] flex items-center justify-center p-4 transition-colors">
       <div className="w-full max-w-md">
         {/* Logo with "Z" brand mark */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-2xl hover:opacity-90 transition-opacity">
-            <span className="w-10 h-10 rounded-xl bg-white dark:bg-primary-600 text-slate-900 dark:text-white font-black text-xl flex items-center justify-center shadow-soft-sm">
+            <span className="w-10 h-10 rounded-xl bg-[#f1a6bc] text-[#022414] font-black text-xl flex items-center justify-center shadow-soft-sm">
               Z
             </span>
             <span>Z Tennis Coach</span>
           </Link>
-          <p className="text-slate-400 mt-2 text-sm font-medium">Coach Dashboard Portal</p>
+          <p className="text-[#a7c6af] mt-2 text-sm font-medium">Coach Dashboard Portal</p>
         </div>
 
         {/* Login Card */}
@@ -87,7 +87,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-hover-glow w-full bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white py-3.5 rounded-xl font-bold text-sm shadow-soft-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+              className="btn-hover-pink w-full bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] py-3.5 rounded-xl font-black text-sm shadow-soft-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

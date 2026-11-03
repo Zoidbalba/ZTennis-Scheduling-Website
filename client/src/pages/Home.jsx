@@ -78,27 +78,27 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-[#f1a6bc] selection:text-[#022414] transition-colors duration-200">
       <div>
         <Navbar />
 
         {/* HERO SECTION — Clean, Architectural Minimalist */}
-        <section className="relative bg-slate-900 text-white overflow-hidden py-14 sm:py-24 lg:py-32">
-          {/* Subtle Ambient Radial Glows */}
+        <section className="relative bg-[#022414] text-white overflow-hidden py-14 sm:py-24 lg:py-32 border-b border-[#5e8d66]/20">
+          {/* Subtle Ambient Radial Glows (Russian Green & Metallic Pink Tennis Ball Glow) */}
           <div className="absolute inset-0 pointer-events-none opacity-40">
-            <div className="absolute top-0 right-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-emerald-600/20 blur-[100px] sm:blur-[120px]"></div>
-            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-primary-700/15 blur-[100px] sm:blur-[120px]"></div>
+            <div className="absolute top-0 right-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-[#5e8d66]/30 blur-[100px] sm:blur-[120px]"></div>
+            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-[#f1a6bc]/20 blur-[100px] sm:blur-[120px]"></div>
           </div>
 
           {/* Minimal Geometric Court Accent */}
           <div className="absolute inset-0 pointer-events-none opacity-10 flex items-center justify-center">
-            <div className="w-[850px] h-[450px] border border-white/20 rounded-3xl"></div>
+            <div className="w-[850px] h-[450px] border border-[#5e8d66]/40 rounded-3xl"></div>
           </div>
 
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold mb-6 text-slate-200 max-w-full">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span>
+            <div className="inline-flex items-center gap-2 bg-[#ffe5f4]/10 backdrop-blur-md border border-[#f1a6bc]/30 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold mb-6 text-[#ffe5f4] max-w-full">
+              <span className="w-2 h-2 rounded-full bg-[#f1a6bc] flex-shrink-0 animate-pulse"></span>
               <span className="truncate sm:overflow-visible">Private & Group Tennis Coaching • Malaybalay City</span>
             </div>
 
@@ -108,7 +108,7 @@ export default function Home() {
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-sm sm:text-lg text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="text-sm sm:text-lg text-[#e3efe6] mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
               Structured 1-on-1 and group tennis sessions focused on stroke consistency, footwork, and live rally strategy.
             </p>
 
@@ -116,7 +116,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-md sm:max-w-none mx-auto">
               <button
                 onClick={scrollToSchedule}
-                className="btn-hover-glow w-full sm:w-auto bg-white text-slate-900 px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-bold text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
+                className="btn-hover-pink w-full sm:w-auto bg-[#ffe5f4] hover:bg-[#fecdde] text-[#022414] px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-black text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
               >
                 <span>Book a Morning Session</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -124,7 +124,7 @@ export default function Home() {
 
               <Link
                 to="/coach"
-                className="w-full sm:w-auto border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 backdrop-blur-sm text-white px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center min-h-[48px]"
+                className="w-full sm:w-auto border border-[#5e8d66]/50 hover:border-[#f1a6bc]/60 bg-[#5e8d66]/15 hover:bg-[#5e8d66]/25 backdrop-blur-sm text-white px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center min-h-[48px]"
               >
                 Meet Your Coach
               </Link>
@@ -132,16 +132,16 @@ export default function Home() {
 
             {/* Key Quick Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 mt-10 sm:mt-16 max-w-3xl mx-auto text-left">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
-                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Rates</span>
-                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">₱250 – ₱300</p>
-                <span className="text-[10px] sm:text-[11px] text-slate-400">Per person</span>
+              <div className="bg-white/5 backdrop-blur-sm border border-[#5e8d66]/25 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-[#c5d8ca] uppercase tracking-wider font-bold">Rates</span>
+                <p className="text-base sm:text-xl font-extrabold text-[#f1a6bc] mt-0.5 sm:mt-1">₱250 – ₱300</p>
+                <span className="text-[10px] sm:text-[11px] text-[#88a38f]">Per person</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
-                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Session Length</span>
+              <div className="bg-white/5 backdrop-blur-sm border border-[#5e8d66]/25 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-[#c5d8ca] uppercase tracking-wider font-bold">Session Length</span>
                 <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">1.5 – 2 Hours</p>
-                <span className="text-[10px] sm:text-[11px] text-slate-400">Court extendable</span>
+                <span className="text-[10px] sm:text-[11px] text-[#88a38f]">Court extendable</span>
               </div>
 
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">

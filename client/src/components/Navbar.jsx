@@ -37,12 +37,12 @@ export default function Navbar() {
             to="/"
             className="flex items-center gap-3 font-extrabold tracking-tight text-slate-900 dark:text-white group"
           >
-            <span className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-black text-lg flex items-center justify-center shadow-soft-xs group-hover:bg-primary-600 dark:group-hover:bg-primary-600 border border-slate-700/30 transition-colors">
+            <span className="w-9 h-9 rounded-xl bg-[#022414] dark:bg-[#5e8d66] text-[#ffe5f4] dark:text-[#022414] font-black text-lg flex items-center justify-center shadow-soft-xs group-hover:bg-[#f1a6bc] dark:group-hover:bg-[#f1a6bc] group-hover:text-[#022414] border border-[#5e8d66]/30 transition-all">
               Z
             </span>
             <div className="flex flex-col">
               <span className="leading-none text-slate-900 dark:text-white font-extrabold text-base tracking-tight">
-                Z Tennis <span className="text-primary-600 dark:text-primary-400 font-bold text-xs">PH</span>
+                Z Tennis <span className="text-[#f1a6bc] font-black text-xs tracking-normal">PH</span>
               </span>
               <span className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold tracking-wider uppercase mt-0.5">
                 Personal Coaching

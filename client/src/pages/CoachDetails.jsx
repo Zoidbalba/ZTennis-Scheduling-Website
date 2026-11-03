@@ -71,8 +71,8 @@ export default function CoachDetails() {
           {/* Profile Card Header */}
           <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 overflow-hidden">
             {/* Header banner */}
-            <div className="bg-slate-900 dark:bg-slate-950 h-32 sm:h-44 relative overflow-hidden border-b border-slate-800">
-              <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-full">
+            <div className="bg-[#022414] h-32 sm:h-44 relative overflow-hidden border-b border-[#5e8d66]/30">
+              <div className="absolute top-4 right-4 bg-[#ffe5f4]/15 border border-[#f1a6bc]/30 backdrop-blur-md text-[#ffe5f4] text-xs font-bold px-3.5 py-1.5 rounded-full">
                 Personal Tennis Coach
               </div>
             </div>
@@ -85,15 +85,15 @@ export default function CoachDetails() {
                     <img
                       src={profile.photo_url}
                       alt={profile.name}
-                      className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-soft-xl bg-white dark:bg-slate-800 ring-1 ring-slate-200 dark:ring-slate-700"
+                      className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-soft-xl bg-white dark:bg-slate-800 ring-2 ring-[#5e8d66]"
                     />
                   ) : (
-                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 bg-slate-900 dark:bg-slate-800 flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black">
+                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 bg-[#022414] dark:bg-[#5e8d66] flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-[#ffe5f4] dark:text-[#022414] font-black">
                       Z
                     </div>
                   )}
                   <span
-                    className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-bold"
+                    className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-[#5e8d66] border-2 border-white dark:border-slate-900 rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-bold"
                     title="Active Coach"
                   >
                     ✓
@@ -103,7 +103,7 @@ export default function CoachDetails() {
                 <div className="sm:pb-2">
                   <Link
                     to="/#schedule"
-                    className="btn-hover-glow w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-7 py-3 rounded-xl font-bold text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer min-h-[44px]"
+                    className="btn-hover-pink w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] px-7 py-3 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer min-h-[44px]"
                   >
                     Book a Session
                   </Link>
@@ -298,17 +298,17 @@ export default function CoachDetails() {
           </div>
 
           {/* Contact Section: Phone, Messenger, Facebook, Instagram */}
-          <div className="bg-slate-900 dark:bg-slate-900/90 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-soft-xl border border-slate-800">
+          <div className="bg-[#022414] text-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-soft-xl border border-[#5e8d66]/30">
             <div className="max-w-2xl">
               <h2 className="text-xl sm:text-3xl font-black mb-2">Ready to Hit the Court?</h2>
-              <p className="text-slate-300 text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed font-normal">
+              <p className="text-[#e3efe6] text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed font-normal">
                 Book an open morning slot directly through the schedule or reach out directly on Messenger, Facebook, or Instagram.
               </p>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
                   to="/#schedule"
-                  className="btn-hover-glow w-full sm:w-auto text-center bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-xl font-bold text-sm shadow-soft-sm cursor-pointer min-h-[44px] flex items-center justify-center"
+                  className="btn-hover-pink w-full sm:w-auto text-center bg-[#ffe5f4] hover:bg-[#fecdde] text-[#022414] px-6 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer min-h-[44px] flex items-center justify-center"
                 >
                   Book a Session
                 </Link>

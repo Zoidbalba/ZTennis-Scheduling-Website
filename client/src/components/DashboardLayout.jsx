@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }) {
         <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 min-h-screen">
           <div className="p-6 border-b border-slate-100 dark:border-slate-800">
             <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-slate-900 dark:text-white mb-4">
-              <span className="w-8 h-8 rounded-xl bg-slate-900 dark:bg-slate-800 border border-slate-700/50 text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
+              <span className="w-8 h-8 rounded-xl bg-[#022414] dark:bg-[#5e8d66] text-[#ffe5f4] dark:text-[#022414] font-black text-sm flex items-center justify-center shadow-soft-xs">
                 Z
               </span>
               <span>Z Tennis Coach</span>

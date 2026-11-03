@@ -18,6 +18,11 @@
   html.dark body {
     @apply bg-slate-950 text-slate-100;
   }
+
+  ::selection {
+    background: #f1a6bc;
+    color: #022414;
+  }
 }
 
 /* Hide scrollbar utility for mobile swiping */
@@ -29,60 +34,60 @@
   scrollbar-width: none;
 }
 
-/* Custom Sleek Scrollbar */
+/* Custom Sleek Tennis Court Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f1f6f2;
 }
 
 html.dark ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #022414;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c5d8ca;
   border-radius: 9999px;
-  border: 2px solid #f1f5f9;
+  border: 2px solid #f1f6f2;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border: 2px solid #0f172a;
+  background: #1c442c;
+  border: 2px solid #022414;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #5e8d66;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #5e8d66;
 }
 
-/* Glassmorphism helpers */
+/* Glassmorphism helpers tuned to Russian Green & Dark Green */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(94, 141, 102, 0.2);
 }
 
 html.dark .glass-nav {
-  background: rgba(15, 23, 42, 0.88);
-  border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+  background: rgba(2, 36, 20, 0.92);
+  border-bottom: 1px solid rgba(94, 141, 102, 0.3);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 html.dark .glass-card {
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(5, 41, 23, 0.88);
 }
 
 /* Subtle Interactive Button Hover Glow */
@@ -92,7 +97,16 @@ html.dark .glass-card {
 
 .btn-hover-glow:hover {
   transform: translateY(-1.5px);
-  box-shadow: 0 8px 20px -4px rgba(22, 163, 74, 0.35);
+  box-shadow: 0 8px 22px -4px rgba(94, 141, 102, 0.45);
+}
+
+.btn-hover-pink {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-hover-pink:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px -4px rgba(241, 166, 188, 0.5);
 }
 
 /* Card Hover Lift */
@@ -102,5 +116,5 @@ html.dark .glass-card {
 
 .card-hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 14px 28px -6px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 14px 28px -6px rgba(2, 36, 20, 0.1), 0 4px 10px -2px rgba(2, 36, 20, 0.04);
 }

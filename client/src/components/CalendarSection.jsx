@@ -255,8 +255,8 @@ export default function CalendarSection({
                 }}
                 className={`flex-shrink-0 px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'bg-slate-900 dark:bg-primary-600 text-white shadow-soft-md font-bold scale-[1.02]'
-                    : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-slate-300 dark:hover:border-slate-700'
+                    ? 'bg-[#022414] dark:bg-[#5e8d66] text-white shadow-soft-md font-bold scale-[1.02] border border-[#5e8d66]/50'
+                    : 'bg-white dark:bg-slate-900 hover:bg-[#ffe5f4]/30 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-[#f1a6bc]/50 dark:hover:border-[#5e8d66]/40'
                 }`}
               >
                 <div className="text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
@@ -264,7 +264,7 @@ export default function CalendarSection({
                   {daySlotCount > 0 && (
                     <span
                       className={`text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ${
-                        isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                        isSelected ? 'bg-[#f1a6bc] text-[#022414] font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       {daySlotCount}
@@ -406,9 +406,9 @@ export default function CalendarSection({
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                       <span className="text-[11px] sm:text-xs text-slate-400 font-medium">Tap to reserve</span>
-                      <span className="btn-hover-glow inline-flex items-center gap-1.5 bg-slate-900 text-white font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs">
+                      <span className="btn-hover-pink inline-flex items-center gap-1.5 bg-[#022414] hover:bg-[#5e8d66] dark:bg-[#5e8d66] dark:hover:bg-[#f1a6bc] text-white dark:hover:text-[#022414] font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs transition-all">
                         <span>Reserve</span>
                         <span>→</span>
                       </span>
