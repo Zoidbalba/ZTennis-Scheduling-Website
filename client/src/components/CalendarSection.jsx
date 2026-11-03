@@ -167,21 +167,21 @@ export default function CalendarSection({
   };
 
   return (
-    <section id="schedule" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
+    <section id="schedule" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
+      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
         <span className="text-xs font-bold uppercase tracking-widest text-primary-700 bg-primary-50 border border-primary-200/60 px-3.5 py-1 rounded-full shadow-soft-xs">
           Weekly Availability
         </span>
-        <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mt-3.5 mb-3 tracking-tight">
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mt-2.5 sm:mt-3.5 mb-2 sm:mb-3 tracking-tight">
           Coaching Schedule
         </h2>
-        <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+        <p className="text-slate-500 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
           Choose an open morning slot below to reserve your coaching session. Regular training hours: <strong>6:00 AM – 9:00 AM</strong>.
         </p>
 
         {/* Public Court & Duration Highlights Callout */}
-        <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-3 bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-soft-xs">
+        <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
           <span className="font-semibold text-slate-900">Venue: Public Tennis Court</span>
           <span className="text-slate-300 hidden sm:inline">•</span>
           <span>1.5 – 2 Hours (court extendable)</span>
@@ -192,7 +192,7 @@ export default function CalendarSection({
 
       {/* CRUD Success Notice */}
       {crudSuccess && (
-        <div className="mb-8 p-4 sm:p-5 bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between shadow-soft-xs animate-fade-in">
+        <div className="mb-6 sm:mb-8 p-3.5 sm:p-5 bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between shadow-soft-xs animate-fade-in">
           <span>{crudSuccess}</span>
           <button
             onClick={() => setCrudSuccess('')}
@@ -205,31 +205,31 @@ export default function CalendarSection({
 
       {/* COACH CRUD TOOLBAR (Visible when Coach is logged in) */}
       {isAuthenticated && (
-        <div className="mb-10 p-6 sm:p-7 bg-slate-900 text-white rounded-3xl shadow-soft-md border border-slate-800 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-slate-900 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-800 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-5">
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="bg-white/10 text-[11px] font-bold uppercase px-3 py-1 rounded-full tracking-wider text-slate-200">
+              <div className="flex items-center gap-2">
+                <span className="bg-white/10 text-[10px] sm:text-[11px] font-bold uppercase px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full tracking-wider text-slate-200">
                   Coach Admin Mode
                 </span>
-                <h3 className="font-bold text-base sm:text-lg">Schedule Manager Active</h3>
+                <h3 className="font-bold text-sm sm:text-lg">Schedule Manager Active</h3>
               </div>
-              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 Add, edit, block, or delete slots directly on this Monday–Sunday calendar.
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => handleOpenAdd(activeDay)}
-                className="btn-hover-glow bg-white text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
+                className="btn-hover-glow flex-1 sm:flex-none justify-center bg-white text-slate-900 hover:bg-slate-100 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <span>+</span> Add Time Slot
               </button>
               <a
                 href="/dashboard/availability"
-                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-4 py-3 rounded-xl text-xs font-semibold text-white transition-colors"
+                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-semibold text-white transition-colors"
               >
-                Dashboard View →
+                Dashboard →
               </a>
             </div>
           </div>
@@ -237,9 +237,9 @@ export default function CalendarSection({
       )}
 
       {/* View Switcher: Tabs vs Week Grid */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         {/* Monday to Sunday Day Tabs */}
-        <div className="flex overflow-x-auto gap-2.5 pb-2 w-full sm:w-auto scrollbar-hide">
+        <div className="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 w-auto no-scrollbar scroll-smooth">
           {MON_TO_SUN.map((day) => {
             const nextDate = getNextDateForDay(day);
             const dateStr = nextDate.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
@@ -253,17 +253,17 @@ export default function CalendarSection({
                   setActiveDay(day);
                   setViewMode('tabs');
                 }}
-                className={`flex-shrink-0 px-5 py-3.5 rounded-2xl text-center transition-all duration-200 cursor-pointer ${
+                className={`flex-shrink-0 px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center transition-all duration-200 cursor-pointer ${
                   isSelected
                     ? 'bg-slate-900 text-white shadow-soft-md font-bold scale-[1.02]'
                     : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold hover:border-slate-300'
                 }`}
               >
-                <div className="text-sm flex items-center justify-center gap-2">
+                <div className="text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
                   <span>{DAY_SHORT[day]}</span>
                   {daySlotCount > 0 && (
                     <span
-                      className={`text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold ${
+                      className={`text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ${
                         isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
                       }`}
                     >
@@ -271,17 +271,17 @@ export default function CalendarSection({
                     </span>
                   )}
                 </div>
-                <div className="text-xs opacity-75 mt-0.5 font-normal">{dateStr}</div>
+                <div className="text-[10px] sm:text-xs opacity-75 mt-0.5 font-normal">{dateStr}</div>
               </button>
             );
           })}
         </div>
 
         {/* View toggle */}
-        <div className="inline-flex rounded-2xl bg-slate-200/80 p-1.5 text-xs font-semibold self-end sm:self-center shadow-inner">
+        <div className="inline-flex rounded-2xl bg-slate-200/80 p-1 text-xs font-semibold self-center sm:self-center shadow-inner">
           <button
             onClick={() => setViewMode('tabs')}
-            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
               viewMode === 'tabs'
                 ? 'bg-white text-slate-900 shadow-soft-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900'
@@ -291,7 +291,7 @@ export default function CalendarSection({
           </button>
           <button
             onClick={() => setViewMode('week')}
-            className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
               viewMode === 'week'
                 ? 'bg-white text-slate-900 shadow-soft-xs font-bold'
                 : 'text-slate-600 hover:text-slate-900'
@@ -304,13 +304,13 @@ export default function CalendarSection({
 
       {/* VIEW MODE 1: DAY-BY-DAY TAB VIEW (Spacious & Clean Cards) */}
       {viewMode === 'tabs' && (
-        <div key={activeDay} className="bg-white rounded-3xl shadow-soft-md border border-slate-200/90 p-7 sm:p-10 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-100 gap-3 mb-8">
+        <div key={activeDay} className="bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 p-4 sm:p-8 md:p-10 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 sm:pb-6 border-b border-slate-100 gap-2 sm:gap-3 mb-6 sm:mb-8">
             <div>
-              <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                 {DAY_NAMES[activeDay]} Schedule
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1 font-medium">
                 Upcoming Date: {getNextDateForDay(activeDay).toLocaleDateString('en-PH', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
@@ -318,7 +318,7 @@ export default function CalendarSection({
             {isAuthenticated && (
               <button
                 onClick={() => handleOpenAdd(activeDay)}
-                className="text-xs text-slate-900 hover:text-primary-600 font-bold self-start sm:self-auto flex items-center gap-1.5 border border-slate-200 px-4 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-xs text-slate-900 hover:text-primary-600 font-bold self-start sm:self-auto flex items-center gap-1.5 border border-slate-200 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 + Add slot for {DAY_NAMES[activeDay]}
               </button>
@@ -326,12 +326,12 @@ export default function CalendarSection({
           </div>
 
           {slotsByDay[activeDay]?.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 sm:grid-cols-1 md:grid-cols-2">
               {slotsByDay[activeDay].map((slot) => (
                 <div
                   key={slot.id || `${slot.day_of_week}-${slot.start_time}`}
                   onClick={() => handleSlotClick(slot)}
-                  className={`card-hover-lift p-8 sm:p-9 rounded-3xl border-2 flex flex-col justify-between transition-all duration-300 min-h-[260px] ${
+                  className={`card-hover-lift p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border-2 flex flex-col justify-between transition-all duration-300 min-h-[220px] sm:min-h-[260px] ${
                     slot.is_blocked
                       ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed'
                       : 'bg-white border-slate-200/90 hover:border-slate-900 text-slate-900 cursor-pointer shadow-soft-sm hover:shadow-soft-xl'
@@ -339,37 +339,37 @@ export default function CalendarSection({
                 >
                   {/* Top Badges */}
                   <div>
-                    <div className="flex items-center justify-between gap-3 mb-5">
-                      <span className="text-xs font-bold uppercase tracking-wider px-3.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                    <div className="flex items-center justify-between gap-2 mb-3 sm:mb-5">
+                      <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3.5 py-1 rounded-full bg-slate-100 text-slate-700">
                         Morning Coaching Session
                       </span>
 
                       {slot.is_blocked ? (
-                        <span className="text-xs text-rose-700 font-bold bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+                        <span className="text-xs text-rose-700 font-bold bg-rose-50 px-2.5 sm:px-3 py-1 rounded-full border border-rose-200">
                           Unavailable
                         </span>
                       ) : (
-                        <span className="inline-flex items-center text-xs text-emerald-800 font-bold bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
-                          Open for Booking
+                        <span className="inline-flex items-center text-xs text-emerald-800 font-bold bg-emerald-50 px-2.5 sm:px-3.5 py-1 rounded-full border border-emerald-200">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 sm:mr-2"></span>
+                          Open
                         </span>
                       )}
                     </div>
 
                     {/* Big Time Display */}
-                    <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight my-4">
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight my-2 sm:my-4">
                       {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                     </div>
 
                     {/* Session Specs Grid */}
-                    <div className="grid grid-cols-2 gap-3 pt-3 pb-2 text-xs text-slate-600 border-t border-slate-100">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 sm:pt-3 pb-2 text-xs text-slate-600 border-t border-slate-100">
                       <div>
                         <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Venue</span>
                         <span className="font-semibold text-slate-800">Public Tennis Court</span>
                       </div>
                       <div>
                         <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Duration</span>
-                        <span className="font-semibold text-slate-800">1.5 – 2 Hours (extendable)</span>
+                        <span className="font-semibold text-slate-800">1.5 – 2 Hours</span>
                       </div>
                     </div>
                   </div>
@@ -406,10 +406,10 @@ export default function CalendarSection({
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-                      <span className="text-xs text-slate-400 font-medium">Click card to reserve</span>
-                      <span className="btn-hover-glow inline-flex items-center gap-2 bg-slate-900 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-soft-xs">
-                        <span>Reserve Slot</span>
+                    <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[11px] sm:text-xs text-slate-400 font-medium">Tap to reserve</span>
+                      <span className="btn-hover-glow inline-flex items-center gap-1.5 bg-slate-900 text-white font-bold text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs">
+                        <span>Reserve</span>
                         <span>→</span>
                       </span>
                     </div>
@@ -442,8 +442,8 @@ export default function CalendarSection({
 
       {/* VIEW MODE 2: FULL WEEK VIEW (Spacious Grid Layout) */}
       {viewMode === 'week' && (
-        <div className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4 sm:space-y-6 animate-fade-in">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {MON_TO_SUN.map((day) => {
               const daySlots = slotsByDay[day] || [];
               const isToday = new Date().getDay() === day;
@@ -451,7 +451,7 @@ export default function CalendarSection({
               return (
                 <div
                   key={day}
-                  className={`bg-white rounded-3xl shadow-soft-sm border p-6 flex flex-col justify-between transition-all duration-200 min-h-[280px] ${
+                  className={`bg-white rounded-2xl sm:rounded-3xl shadow-soft-sm border p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 min-h-[240px] sm:min-h-[280px] ${
                     isToday ? 'border-slate-900 ring-2 ring-slate-200' : 'border-slate-200/90'
                   }`}
                 >

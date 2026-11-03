@@ -69,31 +69,31 @@ export default function CoachDetails() {
           </div>
 
           {/* Profile Card Header */}
-          <div className="card-hover-lift bg-white rounded-3xl shadow-soft-md border border-slate-200/80 overflow-hidden">
+          <div className="card-hover-lift bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 overflow-hidden">
             {/* Header banner */}
-            <div className="bg-slate-900 h-44 relative overflow-hidden">
+            <div className="bg-slate-900 h-32 sm:h-44 relative overflow-hidden">
               <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-full">
                 Personal Tennis Coach
               </div>
             </div>
 
-            <div className="px-6 sm:px-10 pb-8 relative">
+            <div className="px-5 sm:px-10 pb-6 sm:pb-8 relative">
               {/* Profile Avatar */}
-              <div className="-mt-20 mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div className="-mt-14 sm:-mt-20 mb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div className="relative">
                   {profile.photo_url ? (
                     <img
                       src={profile.photo_url}
                       alt={profile.name}
-                      className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-white object-cover shadow-soft-xl bg-white ring-1 ring-slate-200"
+                      className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white object-cover shadow-soft-xl bg-white ring-1 ring-slate-200"
                     />
                   ) : (
-                    <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full border-4 border-white bg-slate-900 flex items-center justify-center shadow-soft-xl text-5xl text-white font-black">
+                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white bg-slate-900 flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black">
                       Z
                     </div>
                   )}
                   <span
-                    className="absolute bottom-2 right-2 w-6 h-6 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-emerald-500 border-2 border-white rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-bold"
                     title="Active Coach"
                   >
                     ✓
@@ -103,7 +103,7 @@ export default function CoachDetails() {
                 <div className="sm:pb-2">
                   <Link
                     to="/#schedule"
-                    className="btn-hover-glow inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-7 py-3 rounded-xl font-bold text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer"
+                    className="btn-hover-glow w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-7 py-3 rounded-xl font-bold text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer min-h-[44px]"
                   >
                     Book a Session
                   </Link>
@@ -112,12 +112,12 @@ export default function CoachDetails() {
 
               {/* Coach Name & Subtitle */}
               <div>
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{profile.name}</h1>
-                <p className="text-slate-600 font-semibold text-base mt-1">
+                <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">{profile.name}</h1>
+                <p className="text-slate-600 font-semibold text-sm sm:text-base mt-1">
                   Dedicated Tennis Instructor & Personal Coach
                 </p>
                 {profile.location && (
-                  <p className="text-slate-500 text-sm mt-1.5 font-medium">
+                  <p className="text-slate-500 text-xs sm:text-sm mt-1.5 font-medium">
                     Location: {profile.location}
                   </p>
                 )}
@@ -126,33 +126,33 @@ export default function CoachDetails() {
           </div>
 
           {/* Key Highlights Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-            <div className="card-hover-lift bg-white p-5 rounded-2xl shadow-soft-sm border border-slate-200/80">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+            <div className="card-hover-lift bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80">
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Location</p>
-              <p className="text-base font-extrabold text-slate-900 mt-1">{profile.location || 'Malaybalay City'}</p>
+              <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">{profile.location || 'Malaybalay City'}</p>
             </div>
 
-            <div className="card-hover-lift bg-white p-5 rounded-2xl shadow-soft-sm border border-slate-200/80">
+            <div className="card-hover-lift bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80">
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Venue</p>
-              <p className="text-base font-extrabold text-slate-900 mt-1">Public Court</p>
+              <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">Public Court</p>
             </div>
 
-            <div className="card-hover-lift bg-white p-5 rounded-2xl shadow-soft-sm border border-slate-200/80">
+            <div className="card-hover-lift bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80">
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Session Time</p>
-              <p className="text-base font-extrabold text-slate-900 mt-1">1.5 – 2 Hours</p>
+              <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">1.5 – 2 Hours</p>
               <p className="text-[10px] text-slate-400 font-medium">Court extendable</p>
             </div>
 
-            <div className="card-hover-lift bg-white p-5 rounded-2xl shadow-soft-sm border border-slate-200/80">
+            <div className="card-hover-lift bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80">
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Schedule</p>
-              <p className="text-base font-extrabold text-slate-900 mt-1">M-T-TH-F-SAT</p>
+              <p className="text-sm sm:text-base font-extrabold text-slate-900 mt-1">M-T-TH-F-SAT</p>
               <p className="text-[10px] text-slate-400 font-medium">6:00 – 9:00 AM</p>
             </div>
           </div>
 
           {/* Coach Bio */}
-          <div className="card-hover-lift bg-white rounded-3xl shadow-soft-md border border-slate-200/80 p-7 sm:p-9 space-y-4">
-            <h2 className="text-xl font-extrabold text-slate-900">
+          <div className="card-hover-lift bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 p-5 sm:p-9 space-y-4">
+            <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">
               About Your Coach & Teaching Philosophy
             </h2>
             <p className="text-slate-700 text-sm sm:text-base leading-relaxed whitespace-pre-line font-normal">
@@ -160,7 +160,7 @@ export default function CoachDetails() {
             </p>
 
             {profile.court_details && (
-              <div className="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800">
+              <div className="mt-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800">
                 <h4 className="font-bold text-slate-900 mb-0.5">Court Details & Playtime:</h4>
                 <p className="text-slate-600 leading-relaxed">
                   {profile.court_details}
@@ -171,15 +171,15 @@ export default function CoachDetails() {
 
           {/* Specialties & Focus Areas */}
           {specialtiesList.length > 0 && (
-            <div className="card-hover-lift bg-white rounded-3xl shadow-soft-md border border-slate-200/80 p-7 sm:p-9">
-              <h2 className="text-xl font-extrabold text-slate-900 mb-4">
+            <div className="card-hover-lift bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 p-5 sm:p-9">
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 mb-4">
                 Specialties & Training Drills
               </h2>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {specialtiesList.map((item, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors"
+                    className="inline-flex items-center bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors"
                   >
                     {item.trim()}
                   </span>
@@ -189,10 +189,10 @@ export default function CoachDetails() {
           )}
 
           {/* Session Rates */}
-          <div className="card-hover-lift bg-white rounded-3xl shadow-soft-md border border-slate-200/80 p-7 sm:p-9">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
+          <div className="card-hover-lift bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 p-5 sm:p-9">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 sm:mb-6 gap-2">
               <div>
-                <h2 className="text-xl font-extrabold text-slate-900">
+                <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">
                   Coaching Rates & Options
                 </h2>
                 <p className="text-slate-500 text-xs sm:text-sm mt-0.5 font-medium">Transparent per-person pricing</p>
@@ -203,7 +203,7 @@ export default function CoachDetails() {
               {rates.map((rate) => (
                 <div
                   key={rate.id}
-                  className="p-6 rounded-2xl border border-slate-200 bg-slate-50 flex flex-col justify-between"
+                  className="p-5 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50 flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between">
@@ -277,17 +277,17 @@ export default function CoachDetails() {
           </div>
 
           {/* Contact Section: Phone, Messenger, Facebook, Instagram */}
-          <div className="bg-slate-900 text-white rounded-3xl p-7 sm:p-10 shadow-soft-xl">
+          <div className="bg-slate-900 text-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-soft-xl">
             <div className="max-w-2xl">
-              <h2 className="text-2xl sm:text-3xl font-black mb-2.5">Ready to Hit the Court?</h2>
-              <p className="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed font-normal">
+              <h2 className="text-xl sm:text-3xl font-black mb-2">Ready to Hit the Court?</h2>
+              <p className="text-slate-300 text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed font-normal">
                 Book an open morning slot directly through the schedule or reach out directly on Messenger, Facebook, or Instagram.
               </p>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
                   to="/#schedule"
-                  className="btn-hover-glow bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-xl font-bold text-sm shadow-soft-sm cursor-pointer"
+                  className="btn-hover-glow w-full sm:w-auto text-center bg-white text-slate-900 hover:bg-slate-100 px-6 py-3 rounded-xl font-bold text-sm shadow-soft-sm cursor-pointer min-h-[44px] flex items-center justify-center"
                 >
                   Book a Session
                 </Link>
@@ -295,7 +295,7 @@ export default function CoachDetails() {
                 {profile.phone && (
                   <a
                     href={`tel:${profile.phone}`}
-                    className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all"
+                    className="w-full sm:w-auto text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all min-h-[44px] flex items-center justify-center"
                   >
                     Call / SMS: {profile.phone}
                   </a>
@@ -306,7 +306,7 @@ export default function CoachDetails() {
                     href={profile.messenger_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs"
+                    className="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs min-h-[44px] flex items-center justify-center"
                   >
                     Messenger
                   </a>
@@ -317,7 +317,7 @@ export default function CoachDetails() {
                     href={profile.facebook_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-blue-800 hover:bg-blue-900 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs"
+                    className="w-full sm:w-auto text-center bg-blue-800 hover:bg-blue-900 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs min-h-[44px] flex items-center justify-center"
                   >
                     Facebook
                   </a>
@@ -328,7 +328,7 @@ export default function CoachDetails() {
                     href={profile.instagram_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-pink-600 hover:bg-pink-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs"
+                    className="w-full sm:w-auto text-center bg-pink-600 hover:bg-pink-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-soft-xs min-h-[44px] flex items-center justify-center"
                   >
                     Instagram
                   </a>

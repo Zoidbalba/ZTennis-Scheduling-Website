@@ -83,11 +83,11 @@ export default function Home() {
         <Navbar />
 
         {/* HERO SECTION — Clean, Architectural Minimalist */}
-        <section className="relative bg-slate-900 text-white overflow-hidden py-24 sm:py-32">
+        <section className="relative bg-slate-900 text-white overflow-hidden py-14 sm:py-24 lg:py-32">
           {/* Subtle Ambient Radial Glows */}
           <div className="absolute inset-0 pointer-events-none opacity-40">
-            <div className="absolute top-0 right-1/4 w-[500px] h-[500px] rounded-full bg-emerald-600/20 blur-[120px]"></div>
-            <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] rounded-full bg-primary-700/15 blur-[120px]"></div>
+            <div className="absolute top-0 right-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-emerald-600/20 blur-[100px] sm:blur-[120px]"></div>
+            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-primary-700/15 blur-[100px] sm:blur-[120px]"></div>
           </div>
 
           {/* Minimal Geometric Court Accent */}
@@ -97,26 +97,26 @@ export default function Home() {
 
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-4 py-1.5 rounded-full text-xs font-semibold mb-7 text-slate-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span>Private & Group Tennis Coaching • Malaybalay City</span>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold mb-6 text-slate-200 max-w-full">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"></span>
+              <span className="truncate sm:overflow-visible">Private & Group Tennis Coaching • Malaybalay City</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
               Elevate Your Game on the Court
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-base sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="text-sm sm:text-lg text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
               Structured 1-on-1 and group tennis sessions focused on stroke consistency, footwork, and live rally strategy.
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3.5 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-md sm:max-w-none mx-auto">
               <button
                 onClick={scrollToSchedule}
-                className="btn-hover-glow w-full sm:w-auto bg-white text-slate-900 px-8 py-4 rounded-xl font-bold text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group"
+                className="btn-hover-glow w-full sm:w-auto bg-white text-slate-900 px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-bold text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
               >
                 <span>Book a Morning Session</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -124,36 +124,36 @@ export default function Home() {
 
               <Link
                 to="/coach"
-                className="w-full sm:w-auto border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center"
+                className="w-full sm:w-auto border border-white/20 hover:border-white/50 bg-white/5 hover:bg-white/10 backdrop-blur-sm text-white px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center min-h-[48px]"
               >
                 Meet Your Coach
               </Link>
             </div>
 
             {/* Key Quick Stats Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 mt-16 max-w-3xl mx-auto text-left">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl">
-                <span className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Rates</span>
-                <p className="text-xl font-extrabold text-white mt-1">₱250 – ₱300</p>
-                <span className="text-[11px] text-slate-400">Per person</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 mt-10 sm:mt-16 max-w-3xl mx-auto text-left">
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Rates</span>
+                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">₱250 – ₱300</p>
+                <span className="text-[10px] sm:text-[11px] text-slate-400">Per person</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl">
-                <span className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Session Length</span>
-                <p className="text-xl font-extrabold text-white mt-1">1.5 – 2 Hours</p>
-                <span className="text-[11px] text-slate-400">Court extendable</span>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Session Length</span>
+                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">1.5 – 2 Hours</p>
+                <span className="text-[10px] sm:text-[11px] text-slate-400">Court extendable</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl">
-                <span className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Morning Hours</span>
-                <p className="text-xl font-extrabold text-white mt-1">6:00 – 9:00 AM</p>
-                <span className="text-[11px] text-slate-400">M · T · TH · F · SAT</span>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Morning Hours</span>
+                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">6:00 – 9:00 AM</p>
+                <span className="text-[10px] sm:text-[11px] text-slate-400">M · T · TH · F · SAT</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-4 rounded-2xl">
-                <span className="text-[11px] text-slate-400 uppercase tracking-wider font-bold">Venue</span>
-                <p className="text-xl font-extrabold text-white mt-1">Public Court</p>
-                <span className="text-[11px] text-slate-400">Accessible court</span>
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Venue</span>
+                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">Public Court</p>
+                <span className="text-[10px] sm:text-[11px] text-slate-400">Malaybalay City</span>
               </div>
             </div>
           </div>
@@ -200,9 +200,9 @@ export default function Home() {
       )}
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 py-14 border-t border-slate-800 mt-16">
+      <footer className="bg-slate-900 text-slate-400 py-10 sm:py-14 border-t border-slate-800 mt-12 sm:mt-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 md:grid-cols-3">
             <div>
               <div className="flex items-center gap-2.5 mb-3">
                 <span className="w-7 h-7 rounded-lg bg-white text-slate-900 font-black text-sm flex items-center justify-center">

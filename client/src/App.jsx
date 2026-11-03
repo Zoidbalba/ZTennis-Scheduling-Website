@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/Home';
 import CoachDetails from './pages/CoachDetails';
 import Login from './pages/Login';
@@ -30,20 +31,22 @@ function ProtectedRoute({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/coach" element={<CoachDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Navigate to="/dashboard/bookings" replace />} />
-        <Route path="/dashboard/bookings" element={<ProtectedRoute><DashboardBookings /></ProtectedRoute>} />
-        <Route path="/dashboard/trainees" element={<ProtectedRoute><DashboardTrainees /></ProtectedRoute>} />
-        <Route path="/dashboard/availability" element={<ProtectedRoute><DashboardAvailability /></ProtectedRoute>} />
-        <Route path="/dashboard/rates" element={<ProtectedRoute><DashboardRates /></ProtectedRoute>} />
-        <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardProfile /></ProtectedRoute>} />
-        {/* Catch-all redirect to Home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/coach" element={<CoachDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Navigate to="/dashboard/bookings" replace />} />
+          <Route path="/dashboard/bookings" element={<ProtectedRoute><DashboardBookings /></ProtectedRoute>} />
+          <Route path="/dashboard/trainees" element={<ProtectedRoute><DashboardTrainees /></ProtectedRoute>} />
+          <Route path="/dashboard/availability" element={<ProtectedRoute><DashboardAvailability /></ProtectedRoute>} />
+          <Route path="/dashboard/rates" element={<ProtectedRoute><DashboardRates /></ProtectedRoute>} />
+          <Route path="/dashboard/profile" element={<ProtectedRoute><DashboardProfile /></ProtectedRoute>} />
+          {/* Catch-all redirect to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

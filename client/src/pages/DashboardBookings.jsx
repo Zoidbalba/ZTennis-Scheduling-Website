@@ -421,7 +421,7 @@ export default function DashboardBookings() {
                   </div>
 
                   {/* Right Column: Direct Actions */}
-                  <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100 min-w-[200px]">
+                  <div className="flex flex-wrap sm:flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-start gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100 w-full lg:w-auto">
                     <div className="flex items-center gap-2">
                       <a
                         href={`tel:${b.player_contact}`}
