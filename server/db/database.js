@@ -138,5 +138,18 @@ export async function getDb() {
   // Persist the freshly-created schema (no-op if loaded from file)
   saveDb(db);
 
+  // If coach_profile is empty (e.g. freshly deployed database), auto-seed defaults
+  try {
+    const check = db.exec('SELECT COUNT(*) as count FROM coach_profile');
+    const count = (check && check[0] && check[0].values[0][0]) || 0;
+    if (count === 0) {
+      console.log('⚡ Initial deployment detected (database empty). Auto-seeding default data...');
+      const { seedDatabase } = await import('./seed.js');
+      await seedDatabase(db);
+    }
+  } catch (err) {
+    console.warn('Auto-seed check skipped:', err.message);
+  }
+
   return db;
 }

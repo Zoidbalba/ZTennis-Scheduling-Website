@@ -14,9 +14,9 @@
 import bcrypt from 'bcryptjs';
 import { getDb, saveDb } from './database.js';
 
-async function seed() {
+export async function seedDatabase(existingDb) {
   console.log('🌱 Seeding database...');
-  const db = await getDb();
+  const db = existingDb || (await getDb());
 
   // 1. Reset tables
   db.run('DELETE FROM coach_profile');
@@ -180,7 +180,10 @@ async function seed() {
   console.log('🎉 Seed complete! Database updated at server/db/tennis_coach.db');
 }
 
-seed().catch((err) => {
-  console.error('❌ Seed failed:', err);
-  process.exit(1);
-});
+// Run automatically if executed directly via node CLI
+if (process.argv[1] && process.argv[1].endsWith('seed.js')) {
+  seedDatabase().catch((err) => {
+    console.error('❌ Seed failed:', err);
+    process.exit(1);
+  });
+}
