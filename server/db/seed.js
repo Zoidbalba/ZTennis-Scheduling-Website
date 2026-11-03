@@ -83,7 +83,7 @@ export async function seedDatabase(existingDb) {
       'Individual Session',
       120,
       300,
-      'One-on-one personalized coaching session at ₱300 per person. Lasts 1.5 to 2 hours (may extend based on court vacancy). Focuses on stroke technique, footwork, and personalized drills.',
+      'One-on-one private coaching tailored entirely to your goals. Features detailed stroke analysis, personalized footwork conditioning, and focused technique correction.',
       0,
       1,
     ]
@@ -96,7 +96,7 @@ export async function seedDatabase(existingDb) {
       'Group Session',
       120,
       250,
-      'Group coaching session at ₱250 per person. Lasts 1.5 to 2 hours (may extend based on court vacancy). High-energy rallies, friendly drills, and match play with training partners.',
+      'Energetic and collaborative group session (2+ players). Focuses on live-ball rallies, partner drills, doubles positioning, situational match tactics, and fun competitive games.',
       1,
       1,
     ]

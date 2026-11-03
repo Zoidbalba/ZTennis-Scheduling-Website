@@ -200,34 +200,55 @@ export default function CoachDetails() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {rates.map((rate) => (
-                <div
-                  key={rate.id}
-                  className="p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-750 bg-slate-50 dark:bg-slate-800/50 flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-extrabold text-slate-900 dark:text-white text-lg">{rate.session_type}</h3>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                        1.5 – 2 hrs
-                      </span>
+              {rates.map((rate) => {
+                const isGroup = rate.session_type.toLowerCase().includes('group') || Number(rate.price) === 250;
+
+                return (
+                  <div
+                    key={rate.id}
+                    className={`p-5 sm:p-6 rounded-2xl border flex flex-col justify-between ${
+                      isGroup
+                        ? 'border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/30 dark:bg-emerald-950/20'
+                        : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-extrabold text-slate-900 dark:text-white text-lg">{rate.session_type}</h3>
+                          {isGroup && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white">
+                              2+ Players
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          1.5 – 2 hrs
+                        </span>
+                      </div>
+
+                      <div className="my-3.5">
+                        <span className="text-4xl font-black text-slate-900 dark:text-white">₱{rate.price}</span>
+                        <span className="text-slate-500 dark:text-slate-400 text-sm ml-1.5 font-semibold">/ person</span>
+                      </div>
+
+                      {rate.description && (
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-3">{rate.description}</p>
+                      )}
+
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                        {isGroup
+                          ? '✨ Includes live-ball rallies, doubles drills & friendly point play'
+                          : '🎯 Includes 1-on-1 personalized stroke breakdown & footwork conditioning'}
+                      </div>
                     </div>
 
-                    <div className="my-3.5">
-                      <span className="text-4xl font-black text-slate-900 dark:text-white">₱{rate.price}</span>
-                      <span className="text-slate-500 dark:text-slate-400 text-sm ml-1.5 font-semibold">/ person</span>
+                    <div className="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                      Extended playtime possible depending on public court vacancy
                     </div>
-
-                    {rate.description && (
-                      <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">{rate.description}</p>
-                    )}
                   </div>
-
-                  <div className="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    Extended playtime possible depending on public court vacancy
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

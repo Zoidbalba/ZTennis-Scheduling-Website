@@ -37,24 +37,48 @@ export default function RatesSection({ rates = [] }) {
       {/* Rates Cards Grid */}
       <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
         {rates.map((rate) => {
-          const isGroup = rate.session_type.toLowerCase().includes('group');
+          const isGroup = rate.session_type.toLowerCase().includes('group') || Number(rate.price) === 250;
+
+          const highlights = isGroup
+            ? [
+                'Live-ball rallies, partner drills & point simulation',
+                'Doubles positioning, court awareness & tactical play',
+                'Fun, competitive mini-games with training partners',
+                'Motivating team atmosphere — train & improve together',
+              ]
+            : [
+                '1-on-1 dedicated coach focus & instant stroke feedback',
+                'Racquet grip, swing path & stroke mechanics correction',
+                'Custom footwork patterns, recovery steps & basket drills',
+                'Personalized session plan tailored to your tennis goals',
+              ];
 
           return (
             <div
               key={rate.id}
-              className="card-hover-lift relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md hover:shadow-soft-xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-8 flex flex-col justify-between transition-all duration-300"
+              className={`card-hover-lift relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md hover:shadow-soft-xl border p-5 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
+                isGroup
+                  ? 'border-emerald-200/80 dark:border-emerald-800/60'
+                  : 'border-slate-200/80 dark:border-slate-800'
+              }`}
             >
-              {isGroup && (
-                <div className="absolute top-0 right-0 bg-slate-900 dark:bg-primary-600 text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-bl-xl sm:rounded-bl-2xl">
-                  Group Sessions
-                </div>
-              )}
+              <div className="absolute top-0 right-0">
+                {isGroup ? (
+                  <span className="inline-block bg-emerald-600 text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-bl-xl sm:rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
+                    Group (2+ Players)
+                  </span>
+                ) : (
+                  <span className="inline-block bg-slate-900 dark:bg-slate-800 text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-bl-xl sm:rounded-bl-2xl uppercase tracking-wider">
+                    Private 1-on-1
+                  </span>
+                )}
+              </div>
 
               <div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">{rate.session_type}</h3>
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    {isGroup ? 'Learn & Rally with Friends' : 'Private Personalized Training'}
+                    {isGroup ? 'Learn, Rally & Compete with Friends' : 'Dedicated Private Tennis Coaching'}
                   </span>
                 </div>
 
@@ -76,19 +100,18 @@ export default function RatesSection({ rates = [] }) {
                 )}
 
                 {/* What's Included bullets */}
-                <div className="space-y-2 border-t border-slate-100 dark:border-slate-800 pt-4 sm:pt-5 mb-5 sm:mb-6 text-xs text-slate-600 dark:text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-primary-400"></span>
-                    <span>Racquet grip & stroke mechanics correction</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-primary-400"></span>
-                    <span>Footwork drills & live rally practice</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-primary-400"></span>
-                    <span>Flexible court extension if court is available</span>
-                  </div>
+                <div className="space-y-2.5 border-t border-slate-100 dark:border-slate-800 pt-4 sm:pt-5 mb-5 sm:mb-6 text-xs text-slate-600 dark:text-slate-400">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
+                    {isGroup ? "Group Training Highlights:" : "Personalized Focus:"}
+                  </p>
+                  {highlights.map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+                        isGroup ? 'bg-emerald-500' : 'bg-slate-900 dark:bg-primary-400'
+                      }`}></span>
+                      <span className="leading-snug">{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -96,7 +119,11 @@ export default function RatesSection({ rates = [] }) {
                 <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Public Court</span>
                 <button
                   onClick={scrollToSchedule}
-                  className="btn-hover-glow bg-slate-900 dark:bg-primary-600 hover:bg-slate-800 dark:hover:bg-primary-500 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-xs cursor-pointer flex items-center gap-1.5"
+                  className={`btn-hover-glow text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-xs cursor-pointer flex items-center gap-1.5 ${
+                    isGroup
+                      ? 'bg-emerald-600 hover:bg-emerald-500'
+                      : 'bg-slate-900 dark:bg-primary-600 hover:bg-slate-800 dark:hover:bg-primary-500'
+                  }`}
                 >
                   <span>Book Slot</span>
                   <span>→</span>
