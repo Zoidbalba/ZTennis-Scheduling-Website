@@ -92,15 +92,15 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl sm:rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] overflow-y-auto animate-scale-up border border-slate-200/80"
+        className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] overflow-y-auto animate-scale-up border border-slate-200/80 dark:border-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-slate-900 text-white p-5 sm:p-7 rounded-t-2xl sm:rounded-t-3xl relative">
+        <div className="bg-slate-900 dark:bg-slate-950 text-white p-5 sm:p-7 rounded-t-2xl sm:rounded-t-3xl relative border-b border-slate-800">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -110,13 +110,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors"
+              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer"
             >
               ✕
             </button>
           </div>
 
-          <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/10 text-xs sm:text-sm text-slate-300">
+          <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 bg-white/5 dark:bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-white/10 text-xs sm:text-sm text-slate-300">
             <p className="font-bold text-white">
               {bookingDate}
             </p>
@@ -129,17 +129,17 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
         {/* Content */}
         {success ? (
           <div className="p-6 sm:p-10 text-center animate-fade-in">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 dark:bg-primary-600 text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               Z
             </div>
-            <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">Booking Request Sent</h4>
-            <p className="text-slate-600 text-xs sm:text-sm max-w-sm mx-auto mb-6 sm:mb-8 leading-relaxed">
+            <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Booking Request Sent</h4>
+            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-sm mx-auto mb-6 sm:mb-8 leading-relaxed">
               Coach will contact you via <strong>SMS or phone</strong> at{' '}
-              <span className="font-bold text-slate-900">{form.contact_number}</span> to confirm your session and court arrangements.
+              <span className="font-bold text-slate-900 dark:text-white">{form.contact_number}</span> to confirm your session and court arrangements.
             </p>
             <button
               onClick={onClose}
-              className="btn-hover-glow w-full sm:w-auto bg-slate-900 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-soft-sm cursor-pointer"
+              className="btn-hover-glow w-full sm:w-auto bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-soft-sm cursor-pointer transition-colors"
             >
               Done
             </button>
@@ -147,13 +147,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
         ) : (
           <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-3.5 sm:space-y-4">
             {error && (
-              <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-2xl text-xs font-semibold">
+              <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-4 py-3 rounded-2xl text-xs font-semibold">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Player Name *
               </label>
               <input
@@ -162,13 +162,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.player_name}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
                 placeholder="Full Name"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Phone Number (for SMS confirmation) *
               </label>
               <input
@@ -177,13 +177,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.contact_number}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
                 placeholder="0917 123 4567"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Email Address (optional)
               </label>
               <input
@@ -191,23 +191,23 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
                 placeholder="email@example.com"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Your Tennis Skill Level
               </label>
               <select
                 name="skill_level"
                 value={form.skill_level}
                 onChange={handleChange}
-                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium bg-white"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
               >
                 {SKILL_LEVELS.map((level) => (
-                  <option key={level} value={level}>
+                  <option key={level} value={level} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
                     {level}
                   </option>
                 ))}
@@ -215,7 +215,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Notes or Goals (optional)
               </label>
               <textarea
@@ -223,7 +223,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.message}
                 onChange={handleChange}
                 rows={2}
-                className="w-full border border-slate-300 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all resize-none font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all resize-none font-medium"
                 placeholder="Individual or group session, technique focus, etc."
               />
             </div>
@@ -232,7 +232,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-hover-glow w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
+                className="btn-hover-glow w-full bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white py-3.5 rounded-xl font-bold text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
               >
                 {submitting ? 'Submitting Request...' : 'Confirm Booking Request →'}
               </button>

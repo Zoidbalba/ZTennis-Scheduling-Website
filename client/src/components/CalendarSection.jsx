@@ -170,29 +170,29 @@ export default function CalendarSection({
     <section id="schedule" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-        <span className="text-xs font-bold uppercase tracking-widest text-primary-700 bg-primary-50 border border-primary-200/60 px-3.5 py-1 rounded-full shadow-soft-xs">
+        <span className="text-xs font-bold uppercase tracking-widest text-primary-700 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/60 border border-primary-200/60 dark:border-primary-800 px-3.5 py-1 rounded-full shadow-soft-xs">
           Weekly Availability
         </span>
-        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mt-2.5 sm:mt-3.5 mb-2 sm:mb-3 tracking-tight">
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mt-2.5 sm:mt-3.5 mb-2 sm:mb-3 tracking-tight">
           Coaching Schedule
         </h2>
-        <p className="text-slate-500 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
+        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
           Choose an open morning slot below to reserve your coaching session. Regular training hours: <strong>6:00 AM – 9:00 AM</strong>.
         </p>
 
         {/* Public Court & Duration Highlights Callout */}
-        <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-100 border border-slate-200 text-slate-800 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
-          <span className="font-semibold text-slate-900">Venue: Public Tennis Court</span>
-          <span className="text-slate-300 hidden sm:inline">•</span>
+        <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
+          <span className="font-semibold text-slate-900 dark:text-white">Venue: Public Tennis Court</span>
+          <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
           <span>1.5 – 2 Hours (court extendable)</span>
-          <span className="text-slate-300 hidden sm:inline">•</span>
-          <span className="font-bold text-slate-900">M · T · TH · F · SAT</span>
+          <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+          <span className="font-bold text-slate-900 dark:text-white">M · T · TH · F · SAT</span>
         </div>
       </div>
 
       {/* CRUD Success Notice */}
       {crudSuccess && (
-        <div className="mb-6 sm:mb-8 p-3.5 sm:p-5 bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between shadow-soft-xs animate-fade-in">
+        <div className="mb-6 sm:mb-8 p-3.5 sm:p-5 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-between shadow-soft-xs animate-fade-in">
           <span>{crudSuccess}</span>
           <button
             onClick={() => setCrudSuccess('')}
@@ -205,7 +205,7 @@ export default function CalendarSection({
 
       {/* COACH CRUD TOOLBAR (Visible when Coach is logged in) */}
       {isAuthenticated && (
-        <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-slate-900 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-800 animate-fade-in">
+        <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-slate-900 dark:bg-slate-900/90 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-800 dark:border-slate-700 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-5">
             <div>
               <div className="flex items-center gap-2">
@@ -255,8 +255,8 @@ export default function CalendarSection({
                 }}
                 className={`flex-shrink-0 px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'bg-slate-900 text-white shadow-soft-md font-bold scale-[1.02]'
-                    : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-semibold hover:border-slate-300'
+                    ? 'bg-slate-900 dark:bg-primary-600 text-white shadow-soft-md font-bold scale-[1.02]'
+                    : 'bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-slate-300 dark:hover:border-slate-700'
                 }`}
               >
                 <div className="text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
@@ -264,7 +264,7 @@ export default function CalendarSection({
                   {daySlotCount > 0 && (
                     <span
                       className={`text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ${
-                        isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-800'
+                        isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       {daySlotCount}
@@ -278,13 +278,13 @@ export default function CalendarSection({
         </div>
 
         {/* View toggle */}
-        <div className="inline-flex rounded-2xl bg-slate-200/80 p-1 text-xs font-semibold self-center sm:self-center shadow-inner">
+        <div className="inline-flex rounded-2xl bg-slate-200/80 dark:bg-slate-800/80 p-1 text-xs font-semibold self-center sm:self-center shadow-inner">
           <button
             onClick={() => setViewMode('tabs')}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
               viewMode === 'tabs'
-                ? 'bg-white text-slate-900 shadow-soft-xs font-bold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-soft-xs font-bold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Day View
@@ -293,8 +293,8 @@ export default function CalendarSection({
             onClick={() => setViewMode('week')}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
               viewMode === 'week'
-                ? 'bg-white text-slate-900 shadow-soft-xs font-bold'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-soft-xs font-bold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Full Week (7 Days)
@@ -304,13 +304,13 @@ export default function CalendarSection({
 
       {/* VIEW MODE 1: DAY-BY-DAY TAB VIEW (Spacious & Clean Cards) */}
       {viewMode === 'tabs' && (
-        <div key={activeDay} className="bg-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 p-4 sm:p-8 md:p-10 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 sm:pb-6 border-b border-slate-100 gap-2 sm:gap-3 mb-6 sm:mb-8">
+        <div key={activeDay} className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 dark:border-slate-800 p-4 sm:p-8 md:p-10 animate-fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 sm:pb-6 border-b border-slate-100 dark:border-slate-800 gap-2 sm:gap-3 mb-6 sm:mb-8">
             <div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 {DAY_NAMES[activeDay]} Schedule
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1 font-medium">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 font-medium">
                 Upcoming Date: {getNextDateForDay(activeDay).toLocaleDateString('en-PH', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
@@ -318,7 +318,7 @@ export default function CalendarSection({
             {isAuthenticated && (
               <button
                 onClick={() => handleOpenAdd(activeDay)}
-                className="text-xs text-slate-900 hover:text-primary-600 font-bold self-start sm:self-auto flex items-center gap-1.5 border border-slate-200 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-xs text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 font-bold self-start sm:self-auto flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 + Add slot for {DAY_NAMES[activeDay]}
               </button>
@@ -333,23 +333,23 @@ export default function CalendarSection({
                   onClick={() => handleSlotClick(slot)}
                   className={`card-hover-lift p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border-2 flex flex-col justify-between transition-all duration-300 min-h-[220px] sm:min-h-[260px] ${
                     slot.is_blocked
-                      ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed'
-                      : 'bg-white border-slate-200/90 hover:border-slate-900 text-slate-900 cursor-pointer shadow-soft-sm hover:shadow-soft-xl'
+                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                      : 'bg-white dark:bg-slate-800/90 border-slate-200/90 dark:border-slate-700/80 hover:border-slate-900 dark:hover:border-primary-500 text-slate-900 dark:text-white cursor-pointer shadow-soft-sm hover:shadow-soft-xl'
                   }`}
                 >
                   {/* Top Badges */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3 sm:mb-5">
-                      <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                      <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                         Morning Coaching Session
                       </span>
 
                       {slot.is_blocked ? (
-                        <span className="text-xs text-rose-700 font-bold bg-rose-50 px-2.5 sm:px-3 py-1 rounded-full border border-rose-200">
+                        <span className="text-xs text-rose-700 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-rose-200 dark:border-rose-900">
                           Unavailable
                         </span>
                       ) : (
-                        <span className="inline-flex items-center text-xs text-emerald-800 font-bold bg-emerald-50 px-2.5 sm:px-3.5 py-1 rounded-full border border-emerald-200">
+                        <span className="inline-flex items-center text-xs text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 sm:px-3.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
                           <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 sm:mr-2"></span>
                           Open
                         </span>
@@ -357,19 +357,19 @@ export default function CalendarSection({
                     </div>
 
                     {/* Big Time Display */}
-                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight my-2 sm:my-4">
+                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight my-2 sm:my-4">
                       {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                     </div>
 
                     {/* Session Specs Grid */}
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 sm:pt-3 pb-2 text-xs text-slate-600 border-t border-slate-100">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 sm:pt-3 pb-2 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700/60">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Venue</span>
-                        <span className="font-semibold text-slate-800">Public Tennis Court</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold block">Venue</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">Public Tennis Court</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold block">Duration</span>
-                        <span className="font-semibold text-slate-800">1.5 – 2 Hours</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold block">Duration</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">1.5 – 2 Hours</span>
                       </div>
                     </div>
                   </div>
@@ -451,29 +451,29 @@ export default function CalendarSection({
               return (
                 <div
                   key={day}
-                  className={`bg-white rounded-2xl sm:rounded-3xl shadow-soft-sm border p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 min-h-[240px] sm:min-h-[280px] ${
-                    isToday ? 'border-slate-900 ring-2 ring-slate-200' : 'border-slate-200/90'
+                  className={`bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-sm border p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 min-h-[240px] sm:min-h-[280px] ${
+                    isToday ? 'border-slate-900 dark:border-primary-500 ring-2 ring-slate-200 dark:ring-primary-950' : 'border-slate-200/90 dark:border-slate-800'
                   }`}
                 >
                   <div>
                     {/* Day Header */}
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-base text-slate-900">{DAY_NAMES[day]}</span>
+                        <span className="font-extrabold text-base text-slate-900 dark:text-white">{DAY_NAMES[day]}</span>
                         {isToday && (
-                          <span className="text-[10px] bg-slate-900 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                          <span className="text-[10px] bg-slate-900 dark:bg-primary-600 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
                             Today
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-slate-400 font-semibold">
+                      <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold">
                         {daySlots.length} slot{daySlots.length !== 1 ? 's' : ''}
                       </span>
                     </div>
 
                     {daySlots.length === 0 ? (
                       <div className="py-12 text-center">
-                        <p className="text-xs font-semibold text-slate-400">
+                        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500">
                           {day === 3 || day === 0 ? 'Rest day' : 'No morning slots'}
                         </p>
                       </div>
@@ -485,43 +485,43 @@ export default function CalendarSection({
                             onClick={() => handleSlotClick(slot)}
                             className={`p-4 rounded-2xl border text-left transition-all duration-200 ${
                               slot.is_blocked
-                                ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
-                                : 'bg-slate-50 border-slate-200 hover:border-slate-900 hover:bg-white text-slate-900 cursor-pointer shadow-soft-xs hover:shadow-soft-sm'
+                                ? 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                                : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 hover:border-slate-900 dark:hover:border-primary-500 hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white cursor-pointer shadow-soft-xs hover:shadow-soft-sm'
                             }`}
                           >
-                            <div className="font-extrabold text-base text-slate-900">
+                            <div className="font-extrabold text-base text-slate-900 dark:text-white">
                               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                             </div>
-                            <div className="text-xs mt-1.5 flex items-center justify-between text-slate-500">
-                              <span className={slot.is_blocked ? 'text-slate-400 font-medium' : 'text-emerald-700 font-bold'}>
+                            <div className="text-xs mt-1.5 flex items-center justify-between text-slate-500 dark:text-slate-400">
+                              <span className={slot.is_blocked ? 'text-slate-400 dark:text-slate-500 font-medium' : 'text-emerald-700 dark:text-emerald-400 font-bold'}>
                                 {slot.is_blocked ? 'Blocked' : 'Available'}
                               </span>
                               {!isAuthenticated && !slot.is_blocked && (
-                                <span className="text-slate-900 font-bold hover:underline">Book →</span>
+                                <span className="text-slate-900 dark:text-primary-400 font-bold hover:underline">Book →</span>
                               )}
                             </div>
 
                             {/* Inline CRUD actions for week view */}
                             {isAuthenticated && (
                               <div
-                                className="mt-3 pt-2 border-t border-slate-200 flex items-center justify-between text-xs"
+                                className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <button
                                   onClick={(e) => handleOpenEdit(slot, e)}
-                                  className="text-slate-900 hover:underline font-bold"
+                                  className="text-slate-900 dark:text-white hover:underline font-bold"
                                 >
                                   Edit
                                 </button>
                                 <button
                                   onClick={(e) => handleToggleBlock(slot, e)}
-                                  className="text-slate-600 hover:underline font-medium"
+                                  className="text-slate-600 dark:text-slate-400 hover:underline font-medium"
                                 >
                                   {slot.is_blocked ? 'Unblock' : 'Block'}
                                 </button>
                                 <button
                                   onClick={(e) => handleDeleteSlot(slot.id, e)}
-                                  className="text-rose-600 hover:underline font-semibold"
+                                  className="text-rose-600 dark:text-rose-400 hover:underline font-semibold"
                                 >
                                   Delete
                                 </button>
@@ -536,7 +536,7 @@ export default function CalendarSection({
                   {isAuthenticated && (
                     <button
                       onClick={() => handleOpenAdd(day)}
-                      className="mt-4 text-xs text-slate-900 hover:text-primary-600 font-bold text-center w-full py-2 border border-dashed border-slate-300 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                      className="mt-4 text-xs text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 font-bold text-center w-full py-2 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
                       + Add slot
                     </button>
@@ -555,10 +555,10 @@ export default function CalendarSection({
           onClick={() => setIsModalOpen(false)}
         >
           <div
-            className="bg-white rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-200"
+            className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-200 dark:border-slate-800"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-slate-900 text-white p-6 flex items-center justify-between">
+            <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 flex items-center justify-between">
               <div>
                 <h3 className="font-extrabold text-lg">
                   {editingSlot ? 'Edit Schedule Slot' : 'Add Coaching Slot'}
@@ -577,14 +577,14 @@ export default function CalendarSection({
 
             <form onSubmit={handleSaveSlot} className="p-6 sm:p-7 space-y-4">
               {crudError && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-semibold">
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-400 rounded-xl text-xs font-semibold">
                   {crudError}
                 </div>
               )}
 
               {/* Day of Week */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                   Day of the Week (Monday – Sunday)
                 </label>
                 <select
@@ -592,7 +592,7 @@ export default function CalendarSection({
                   onChange={(e) =>
                     setFormData({ ...formData, day_of_week: Number(e.target.value) })
                   }
-                  className="w-full border border-slate-300 rounded-xl p-3 bg-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
                 >
                   {MON_TO_SUN.map((d) => (
                     <option key={d} value={d}>
@@ -605,7 +605,7 @@ export default function CalendarSection({
               {/* Time Range */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                     Start Time
                   </label>
                   <input
@@ -615,12 +615,12 @@ export default function CalendarSection({
                       setFormData({ ...formData, start_time: e.target.value })
                     }
                     required
-                    className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                     End Time
                   </label>
                   <input
@@ -630,12 +630,12 @@ export default function CalendarSection({
                       setFormData({ ...formData, end_time: e.target.value })
                     }
                     required
-                    className="w-full border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
                   />
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-700/60 leading-relaxed">
                 Default morning coaching hours: 06:00 – 09:00. Sessions typically last 1.5 – 2 hours.
               </p>
 
@@ -648,27 +648,27 @@ export default function CalendarSection({
                     onChange={(e) =>
                       setFormData({ ...formData, is_blocked: e.target.checked })
                     }
-                    className="w-4 h-4 text-slate-900 rounded border-slate-300 focus:ring-slate-900"
+                    className="w-4 h-4 text-slate-900 dark:text-primary-500 rounded border-slate-300 dark:border-slate-700 focus:ring-slate-900"
                   />
-                  <span className="text-xs font-semibold text-slate-700">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Block this slot (make unavailable to players)
                   </span>
                 </label>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-3 border-t border-slate-100">
+              <div className="flex gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-3 border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="flex-1 py-3 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-hover-glow flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold shadow-soft-xs disabled:opacity-50"
+                  className="btn-hover-glow flex-1 py-3 bg-slate-900 dark:bg-primary-600 hover:bg-slate-800 dark:hover:bg-primary-500 text-white rounded-xl text-sm font-bold shadow-soft-xs disabled:opacity-50"
                 >
                   {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Create Slot'}
                 </button>

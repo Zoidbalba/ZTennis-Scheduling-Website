@@ -32,12 +32,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-900 dark:bg-slate-950 flex items-center justify-center p-4 transition-colors">
       <div className="w-full max-w-md">
         {/* Logo with "Z" brand mark */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-2xl hover:opacity-90 transition-opacity">
-            <span className="w-10 h-10 rounded-xl bg-white text-slate-900 font-black text-xl flex items-center justify-center shadow-soft-sm">
+            <span className="w-10 h-10 rounded-xl bg-white dark:bg-primary-600 text-slate-900 dark:text-white font-black text-xl flex items-center justify-center shadow-soft-sm">
               Z
             </span>
             <span>Z Tennis Coach</span>
@@ -46,18 +46,18 @@ export default function Login() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-3xl shadow-soft-xl p-8 border border-slate-200/80">
-          <h2 className="text-2xl font-extrabold text-slate-900 mb-6 text-center">Sign In</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl p-8 border border-slate-200/80 dark:border-slate-800">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 text-center">Sign In</h2>
 
           {error && (
-            <div className="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl text-xs font-semibold mb-4">
+            <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-4 py-3 rounded-xl text-xs font-semibold mb-4">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Email
               </label>
               <input
@@ -65,13 +65,13 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
                 placeholder="coach@tennisph.com"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                 Password
               </label>
               <input
@@ -79,7 +79,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all font-medium"
+                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all font-medium"
                 placeholder="••••••••"
               />
             </div>
@@ -87,14 +87,14 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-hover-glow w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold text-sm shadow-soft-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+              className="btn-hover-glow w-full bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white py-3.5 rounded-xl font-bold text-sm shadow-soft-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/" className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors">
+            <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white font-semibold transition-colors">
               ← Return to Public Site
             </Link>
           </div>

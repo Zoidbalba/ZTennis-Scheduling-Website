@@ -66,19 +66,19 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="text-center animate-fade-in">
-          <div className="w-14 h-14 rounded-2xl bg-slate-900 text-white font-black text-2xl flex items-center justify-center mx-auto mb-4 shadow-soft-sm">
+          <div className="w-14 h-14 rounded-2xl bg-slate-900 dark:bg-slate-800 border border-slate-700/50 text-white font-black text-2xl flex items-center justify-center mx-auto mb-4 shadow-soft-sm">
             Z
           </div>
-          <p className="text-slate-400 font-semibold text-xs tracking-wider uppercase">Loading...</p>
+          <p className="text-slate-400 dark:text-slate-500 font-semibold text-xs tracking-wider uppercase">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-white transition-colors duration-200">
       <div>
         <Navbar />
 
@@ -191,7 +191,7 @@ export default function Home() {
         <button
           onClick={scrollToTop}
           aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-40 bg-white/90 hover:bg-white text-slate-800 p-3 rounded-xl shadow-soft-lg border border-slate-200 transition-all duration-300 hover:scale-105 active:scale-95 animate-scale-up cursor-pointer backdrop-blur-md"
+          className="fixed bottom-6 right-6 z-40 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 p-3 rounded-xl shadow-soft-lg border border-slate-200 dark:border-slate-700 transition-all duration-300 hover:scale-105 active:scale-95 animate-scale-up cursor-pointer backdrop-blur-md"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -200,7 +200,7 @@ export default function Home() {
       )}
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 py-10 sm:py-14 border-t border-slate-800 mt-12 sm:mt-16">
+      <footer className="bg-slate-900 dark:bg-slate-950 text-slate-400 py-10 sm:py-14 border-t border-slate-800 dark:border-slate-800/80 mt-12 sm:mt-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 md:grid-cols-3">
             <div>
