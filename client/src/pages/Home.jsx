@@ -82,24 +82,19 @@ export default function Home() {
       <div>
         <Navbar />
 
-        {/* HERO SECTION — Dominant Pink Theme with Court Green Accent */}
-        <section className="relative bg-[#14060f] dark:bg-[#0d0309] text-white overflow-hidden py-14 sm:py-24 lg:py-32 border-b border-[#EA9AB2]/25">
-          {/* Dominant Ambient Radial Glows (Rose Pompadour, Amaranth Pink & Mimi Pink) */}
-          <div className="absolute inset-0 pointer-events-none opacity-45">
-            <div className="absolute -top-10 right-1/4 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] rounded-full bg-[#E27396]/35 blur-[100px] sm:blur-[130px]"></div>
-            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-[#EA9AB2]/25 blur-[100px] sm:blur-[120px]"></div>
-            <div className="absolute top-1/2 left-10 w-[250px] h-[250px] rounded-full bg-[#337357]/20 blur-[90px]"></div>
-          </div>
-
-          {/* Minimal Geometric Court Accent */}
-          <div className="absolute inset-0 pointer-events-none opacity-15 flex items-center justify-center">
-            <div className="w-[850px] h-[450px] border border-[#EA9AB2]/30 rounded-3xl"></div>
+        {/* HERO SECTION — Solid, Smooth, Borderless Editorial Style */}
+        <section className="relative bg-[#14060f] dark:bg-[#0d0309] text-white overflow-hidden py-16 sm:py-24 lg:py-32">
+          {/* Ambient Radial Depth Glows */}
+          <div className="absolute inset-0 pointer-events-none opacity-40">
+            <div className="absolute -top-10 right-1/4 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] rounded-full bg-[#E27396]/30 blur-[110px] sm:blur-[140px]"></div>
+            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-[#EA9AB2]/20 blur-[110px] sm:blur-[130px]"></div>
+            <div className="absolute top-1/2 left-10 w-[250px] h-[250px] rounded-full bg-[#337357]/20 blur-[100px]"></div>
           </div>
 
           <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#FFDBE5]/15 backdrop-blur-md border border-[#EA9AB2]/40 px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold mb-6 text-[#FFDBE5] max-w-full shadow-soft-xs">
-              <span className="w-2 h-2 rounded-full bg-[#E27396] flex-shrink-0 animate-pulse"></span>
+            {/* Solid Pill Badge (No Outline) */}
+            <div className="inline-flex items-center gap-2 bg-[#FFDBE5] px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-bold mb-6 text-[#92334f] shadow-soft-sm max-w-full">
+              <span className="w-2 h-2 rounded-full bg-[#E27396] flex-shrink-0"></span>
               <span className="truncate sm:overflow-visible">Private & Group Tennis Coaching • Malaybalay City</span>
             </div>
 
@@ -113,11 +108,11 @@ export default function Home() {
               Structured 1-on-1 and group tennis sessions focused on stroke consistency, footwork, and live rally strategy.
             </p>
 
-            {/* Action Buttons */}
+            {/* Action Buttons — Solid & Smooth */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-md sm:max-w-none mx-auto">
               <button
                 onClick={scrollToSchedule}
-                className="btn-hover-pink w-full sm:w-auto bg-[#E27396] hover:bg-[#cf5479] text-white px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-black text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
+                className="btn-hover-pink w-full sm:w-auto bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3.5 sm:px-9 sm:py-4 rounded-2xl font-black text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
               >
                 <span>Book a Morning Session</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -125,33 +120,33 @@ export default function Home() {
 
               <Link
                 to="/coach"
-                className="w-full sm:w-auto border border-[#EA9AB2]/40 hover:border-[#E27396] bg-white/10 hover:bg-white/15 backdrop-blur-sm text-[#FFDBE5] hover:text-white px-7 py-3.5 sm:px-8 sm:py-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center min-h-[48px]"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white px-8 py-3.5 sm:px-9 sm:py-4 rounded-2xl font-bold text-sm shadow-soft-xs transition-all flex items-center justify-center min-h-[48px]"
               >
                 Meet Your Coach
               </Link>
             </div>
 
-            {/* Key Quick Stats Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5 mt-10 sm:mt-16 max-w-3xl mx-auto text-left">
-              <div className="bg-white/5 backdrop-blur-sm border border-[#EA9AB2]/30 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+            {/* Key Quick Stats Bar — Solid Tonal Tiles */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-12 sm:mt-16 max-w-3xl mx-auto text-left">
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
                 <span className="text-[10px] sm:text-[11px] text-[#FFDBE5] uppercase tracking-wider font-bold">Rates</span>
                 <p className="text-base sm:text-xl font-extrabold text-[#EA9AB2] mt-0.5 sm:mt-1">₱250 – ₱300</p>
                 <span className="text-[10px] sm:text-[11px] text-[#FFDBE5]/75">Per person</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-[#EA9AB2]/30 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
                 <span className="text-[10px] sm:text-[11px] text-[#FFDBE5] uppercase tracking-wider font-bold">Session Length</span>
                 <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">1.5 – 2 Hours</p>
-                <span className="text-[10px] sm:text-[11px] text-[#6D9F71]">Court extendable</span>
+                <span className="text-[10px] sm:text-[11px] text-[#6D9F71] font-semibold">Court extendable</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
                 <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Morning Hours</span>
                 <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">6:00 – 9:00 AM</p>
                 <span className="text-[10px] sm:text-[11px] text-slate-400">M · T · TH · F · SAT</span>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
                 <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Venue</span>
                 <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">Public Court</p>
                 <span className="text-[10px] sm:text-[11px] text-[#6D9F71] font-semibold">Malaybalay City</span>

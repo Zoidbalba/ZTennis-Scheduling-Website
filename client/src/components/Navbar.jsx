@@ -26,18 +26,18 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'glass-nav shadow-soft-sm py-2.5'
-          : 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border-b border-slate-100 dark:border-slate-800 py-3.5'
+          ? 'glass-nav py-2.5'
+          : 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-soft-xs py-3.5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo with "Z" brand mark in dominant Rose Pompadour */}
+          {/* Logo with "Z" brand mark in solid Rose Pompadour */}
           <Link
             to="/"
             className="flex items-center gap-3 font-extrabold tracking-tight text-slate-900 dark:text-white group"
           >
-            <span className="w-9 h-9 rounded-xl bg-[#E27396] text-white font-black text-lg flex items-center justify-center shadow-soft-xs group-hover:bg-[#cf5479] border border-[#FFDBE5]/40 transition-all">
+            <span className="w-9 h-9 rounded-xl bg-[#E27396] text-white font-black text-lg flex items-center justify-center shadow-soft-sm group-hover:bg-[#cf5479] transition-all">
               Z
             </span>
             <div className="flex flex-col">

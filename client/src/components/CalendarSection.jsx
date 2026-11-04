@@ -4,8 +4,6 @@ import { api } from '../api/client';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-// Standard Monday-to-Sunday order
 const MON_TO_SUN = [1, 2, 3, 4, 5, 6, 0];
 
 function formatTime(timeStr) {
@@ -16,16 +14,6 @@ function formatTime(timeStr) {
   return `${hour12}:${m.toString().padStart(2, '0')} ${ampm}`;
 }
 
-function getNextDateForDay(dayOfWeek) {
-  const today = new Date();
-  const todayDay = today.getDay();
-  let diff = dayOfWeek - todayDay;
-  if (diff < 0) diff += 7;
-  const nextDate = new Date(today);
-  nextDate.setDate(today.getDate() + diff);
-  return nextDate;
-}
-
 export default function CalendarSection({
   slots = [],
   onSlotSelect,
@@ -33,16 +21,30 @@ export default function CalendarSection({
 }) {
   const { isAuthenticated } = useAuth();
 
-  // Active view: 'tabs' (day-by-day) or 'week' (full Mon-Sun overview)
-  const [viewMode, setViewMode] = useState('tabs');
+  // Active view: 'calendar' (interactive monthly calendar) or 'week' (7-day overview)
+  const [viewMode, setViewMode] = useState('calendar');
 
-  // Active day in tab view
-  const [activeDay, setActiveDay] = useState(() => {
-    const today = new Date().getDay();
-    return MON_TO_SUN.includes(today) ? today : 1;
+  // Today's date normalized to midnight
+  const today = useMemo(() => {
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    return t;
+  }, []);
+
+  // Currently viewed month in the calendar (defaults to current month)
+  const [currentMonthDate, setCurrentMonthDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  // Modal State for CRUD
+  // Selected date on the calendar (defaults to today)
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+  });
+
+  // Modal State for Coach CRUD
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -67,31 +69,75 @@ export default function CalendarSection({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isModalOpen]);
 
-  // Group slots by day (1..6, 0)
+  // Group slots by day of week (0=Sun, 1=Mon, ..., 6=Sat)
   const slotsByDay = useMemo(() => {
     const grouped = {};
-    for (const d of MON_TO_SUN) grouped[d] = [];
+    for (let d = 0; d < 7; d++) grouped[d] = [];
     for (const slot of slots) {
       const day = Number(slot.day_of_week);
       if (grouped[day]) {
         grouped[day].push(slot);
       }
     }
-    for (const d of MON_TO_SUN) {
+    for (let d = 0; d < 7; d++) {
       grouped[d].sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
     }
     return grouped;
   }, [slots]);
 
-  const handleSlotClick = (slot) => {
+  // Calendar month calculation
+  const calendarData = useMemo(() => {
+    const year = currentMonthDate.getFullYear();
+    const month = currentMonthDate.getMonth();
+
+    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 = Sun
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    const blankDays = Array.from({ length: firstDayIndex }, (_, i) => i);
+    const monthDays = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+    return { year, month, blankDays, monthDays };
+  }, [currentMonthDate]);
+
+  // Navigate months
+  const handlePrevMonth = () => {
+    setCurrentMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonthDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  };
+
+  const handleJumpToday = () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    setCurrentMonthDate(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(now);
+  };
+
+  // Find next upcoming day with open morning slots
+  const handleJumpNextAvailable = () => {
+    const candidate = new Date(selectedDate);
+    for (let i = 1; i <= 14; i++) {
+      candidate.setDate(candidate.getDate() + 1);
+      const dayOfWeek = candidate.getDay();
+      const openSlots = (slotsByDay[dayOfWeek] || []).filter((s) => !s.is_blocked);
+      if (openSlots.length > 0) {
+        setSelectedDate(new Date(candidate));
+        setCurrentMonthDate(new Date(candidate.getFullYear(), candidate.getMonth(), 1));
+        return;
+      }
+    }
+  };
+
+  // When a user books a slot
+  const handleSlotBooking = (slot, date = selectedDate) => {
     if (slot.is_blocked) return;
-    const bookingDate = getNextDateForDay(slot.day_of_week);
-    onSlotSelect?.({ ...slot, booking_date: bookingDate });
+    onSlotSelect?.({ ...slot, booking_date: date });
   };
 
   // --- CRUD HANDLERS (Coach Only) ---
-
-  const handleOpenAdd = (dayValue = activeDay) => {
+  const handleOpenAdd = (dayValue = selectedDate.getDay()) => {
     setEditingSlot(null);
     setFormData({
       day_of_week: dayValue,
@@ -166,27 +212,43 @@ export default function CalendarSection({
     }
   };
 
+  // Selected date details
+  const selectedDayOfWeek = selectedDate.getDay();
+  const selectedDaySlots = slotsByDay[selectedDayOfWeek] || [];
+  const selectedAvailableSlots = selectedDaySlots.filter((s) => !s.is_blocked);
+  const isSelectedPast = selectedDate < today;
+  const isSelectedToday = selectedDate.getTime() === today.getTime();
+  const isSelectedRestDay = (selectedDayOfWeek === 3 || selectedDayOfWeek === 0 || selectedDaySlots.length === 0) && !isSelectedPast;
+
+  const monthTitle = currentMonthDate.toLocaleDateString('en-PH', { month: 'long', year: 'numeric' });
+  const selectedDateFormatted = selectedDate.toLocaleDateString('en-PH', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
   return (
-    <section id="schedule" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
+    <section id="schedule" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-20">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
         <span className="text-xs font-bold uppercase tracking-widest text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#FFDBE5]/15 border border-[#EA9AB2]/50 px-3.5 py-1 rounded-full shadow-soft-xs">
-          Weekly Availability
+          Interactive Court Booking
         </span>
         <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white mt-2.5 sm:mt-3.5 mb-2 sm:mb-3 tracking-tight">
-          Coaching Schedule
+          Coaching Calendar & Schedule
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-base leading-relaxed max-w-xl mx-auto">
-          Choose an open morning slot below to reserve your coaching session. Regular training hours: <strong>6:00 AM – 9:00 AM</strong>.
+          Tap any date on the calendar below to view free morning training slots and instantly reserve your session.
         </p>
 
         {/* Public Court & Duration Highlights Callout */}
         <div className="mt-4 sm:mt-5 inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 bg-white dark:bg-slate-900 border border-[#EA9AB2]/30 text-slate-800 dark:text-slate-200 text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-soft-xs">
-          <span className="font-semibold text-slate-900 dark:text-white">Venue: Public Tennis Court</span>
+          <span className="font-semibold text-slate-900 dark:text-white">Venue: Malaybalay Public Court</span>
           <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
           <span>1.5 – 2 Hours (court extendable)</span>
           <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
-          <span className="font-bold text-[#E27396] dark:text-[#EA9AB2]">M · T · TH · F · SAT</span>
+          <span className="font-bold text-[#E27396] dark:text-[#EA9AB2]">Active: M · T · TH · F · SAT</span>
         </div>
       </div>
 
@@ -203,7 +265,7 @@ export default function CalendarSection({
         </div>
       )}
 
-      {/* COACH CRUD TOOLBAR (Visible when Coach is logged in) */}
+      {/* COACH ADMIN TOOLBAR (Visible when Coach is logged in) */}
       {isAuthenticated && (
         <div className="mb-6 sm:mb-10 p-4 sm:p-7 bg-[#14060f] dark:bg-slate-900/90 text-white rounded-2xl sm:rounded-3xl shadow-soft-md border border-[#EA9AB2]/30 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-5">
@@ -215,15 +277,15 @@ export default function CalendarSection({
                 <h3 className="font-bold text-sm sm:text-lg">Schedule Manager Active</h3>
               </div>
               <p className="text-xs text-[#FFDBE5]/80 mt-1 leading-relaxed">
-                Add, edit, block, or delete slots directly on this Monday–Sunday calendar.
+                Selected date: <strong>{selectedDateFormatted}</strong> ({DAY_NAMES[selectedDayOfWeek]}). Add, edit, block, or delete slots.
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
               <button
-                onClick={() => handleOpenAdd(activeDay)}
+                onClick={() => handleOpenAdd(selectedDayOfWeek)}
                 className="btn-hover-pink flex-1 sm:flex-none justify-center bg-[#E27396] text-white hover:bg-[#cf5479] px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center gap-1.5 cursor-pointer"
               >
-                <span>+</span> Add Time Slot
+                <span>+</span> Add Slot for {DAY_SHORT[selectedDayOfWeek]}
               </button>
               <a
                 href="/dashboard/availability"
@@ -236,223 +298,363 @@ export default function CalendarSection({
         </div>
       )}
 
-      {/* View Switcher: Tabs vs Week Grid */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
-        {/* Monday to Sunday Day Tabs */}
-        <div className="flex overflow-x-auto gap-2 sm:gap-2.5 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 w-auto no-scrollbar scroll-smooth">
-          {MON_TO_SUN.map((day) => {
-            const nextDate = getNextDateForDay(day);
-            const dateStr = nextDate.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
-            const daySlotCount = slotsByDay[day]?.length || 0;
-            const isSelected = activeDay === day && viewMode === 'tabs';
-
-            return (
-              <button
-                key={day}
-                onClick={() => {
-                  setActiveDay(day);
-                  setViewMode('tabs');
-                }}
-                className={`flex-shrink-0 px-3.5 py-2.5 sm:px-5 sm:py-3.5 rounded-xl sm:rounded-2xl text-center transition-all duration-200 cursor-pointer ${
-                  isSelected
-                    ? 'bg-[#E27396] text-white shadow-soft-md font-bold scale-[1.02] border border-[#FFDBE5]/50'
-                    : 'bg-white dark:bg-slate-900 hover:bg-[#FFDBE5]/25 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 font-semibold hover:border-[#EA9AB2]/50'
-                }`}
-              >
-                <div className="text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2">
-                  <span>{DAY_SHORT[day]}</span>
-                  {daySlotCount > 0 && (
-                    <span
-                      className={`text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold ${
-                        isSelected ? 'bg-white text-[#E27396] font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      {daySlotCount}
-                    </span>
-                  )}
-                </div>
-                <div className="text-[10px] sm:text-xs opacity-75 mt-0.5 font-normal">{dateStr}</div>
-              </button>
-            );
-          })}
+      {/* VIEW SWITCHER: MONTH CALENDAR (DEFAULT) vs 7-DAY WEEK VIEW */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider hidden sm:inline">
+            View Style:
+          </span>
+          <div className="inline-flex rounded-2xl bg-slate-200/80 dark:bg-slate-800/80 p-1 text-xs font-semibold shadow-inner">
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === 'calendar'
+                  ? 'bg-white dark:bg-slate-900 text-[#E27396] dark:text-[#EA9AB2] shadow-soft-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>📅</span>
+              <span>Month Calendar</span>
+            </button>
+            <button
+              onClick={() => setViewMode('week')}
+              className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === 'week'
+                  ? 'bg-white dark:bg-slate-900 text-[#E27396] dark:text-[#EA9AB2] shadow-soft-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>📋</span>
+              <span>7-Day Week Overview</span>
+            </button>
+          </div>
         </div>
 
-        {/* View toggle */}
-        <div className="inline-flex rounded-2xl bg-slate-200/80 dark:bg-slate-800/80 p-1 text-xs font-semibold self-center sm:self-center shadow-inner">
+        {/* Quick Month Actions (when in calendar view) */}
+        {viewMode === 'calendar' && (
           <button
-            onClick={() => setViewMode('tabs')}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
-              viewMode === 'tabs'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-soft-xs font-bold'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
+            onClick={handleJumpToday}
+            className="text-xs font-bold text-[#E27396] hover:text-[#cf5479] dark:text-[#EA9AB2] dark:hover:text-white px-3 py-1.5 rounded-xl border border-[#EA9AB2]/30 bg-white dark:bg-slate-900 transition-colors shadow-soft-xs"
           >
-            Day View
+            Today
           </button>
-          <button
-            onClick={() => setViewMode('week')}
-            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${
-              viewMode === 'week'
-                ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-soft-xs font-bold'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            Full Week (7 Days)
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* VIEW MODE 1: DAY-BY-DAY TAB VIEW (Spacious & Clean Cards) */}
-      {viewMode === 'tabs' && (
-        <div key={activeDay} className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 dark:border-slate-800 p-4 sm:p-8 md:p-10 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 sm:pb-6 border-b border-slate-100 dark:border-slate-800 gap-2 sm:gap-3 mb-6 sm:mb-8">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                {DAY_NAMES[activeDay]} Schedule
+      {/* VIEW 1: INTERACTIVE MONTH CALENDAR & SELECTED DAY APPOINTMENT PANEL */}
+      {viewMode === 'calendar' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fade-in">
+          {/* LEFT: THE INTERACTIVE MONTHLY CALENDAR GRID (7 Cols) */}
+          <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 dark:border-slate-800 p-4 sm:p-7">
+            {/* Calendar Month Navigation Header */}
+            <div className="flex items-center justify-between pb-4 sm:pb-5 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                  <span>{monthTitle}</span>
+                </h3>
+                <p className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">
+                  Tap any day with an open slot to view morning times
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handlePrevMonth}
+                  aria-label="Previous month"
+                  className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-[#FFDBE5]/20 text-slate-700 dark:text-slate-300 hover:text-[#E27396] dark:hover:text-[#EA9AB2] flex items-center justify-center font-bold text-sm transition-colors shadow-soft-xs cursor-pointer"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={handleNextMonth}
+                  aria-label="Next month"
+                  className="w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-[#FFDBE5]/20 text-slate-700 dark:text-slate-300 hover:text-[#E27396] dark:hover:text-[#EA9AB2] flex items-center justify-center font-bold text-sm transition-colors shadow-soft-xs cursor-pointer"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
+            {/* Days of Week Column Headers */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 text-center">
+              {DAY_SHORT.map((d, i) => (
+                <div
+                  key={d}
+                  className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider py-1 ${
+                    i === 0 || i === 3 ? 'text-slate-400 dark:text-slate-600' : 'text-[#b03d60] dark:text-[#EA9AB2]'
+                  }`}
+                >
+                  {d}
+                </div>
+              ))}
+            </div>
+
+            {/* Month Days Grid */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
+              {/* Preceding Blank Days */}
+              {calendarData.blankDays.map((i) => (
+                <div key={`blank-${i}`} className="min-h-[46px] sm:min-h-[66px] rounded-xl sm:rounded-2xl opacity-20" />
+              ))}
+
+              {/* Month Days */}
+              {calendarData.monthDays.map((dayNum) => {
+                const dayDate = new Date(calendarData.year, calendarData.month, dayNum);
+                dayDate.setHours(0, 0, 0, 0);
+
+                const isPast = dayDate < today;
+                const isTodayDate = dayDate.getTime() === today.getTime();
+                const isSelectedDay = dayDate.getTime() === selectedDate.getTime();
+                const dayOfWeek = dayDate.getDay();
+
+                const daySlots = slotsByDay[dayOfWeek] || [];
+                const openSlots = daySlots.filter((s) => !s.is_blocked);
+                const hasOpen = !isPast && openSlots.length > 0;
+                const isRest = (dayOfWeek === 3 || dayOfWeek === 0 || daySlots.length === 0) && !isPast;
+
+                return (
+                  <button
+                    key={dayNum}
+                    onClick={() => setSelectedDate(dayDate)}
+                    disabled={isPast}
+                    className={`relative min-h-[50px] sm:min-h-[72px] p-1.5 sm:p-2 rounded-xl sm:rounded-2xl flex flex-col justify-between items-center transition-all duration-200 cursor-pointer ${
+                      isSelectedDay
+                        ? 'bg-[#E27396] text-white shadow-soft-md scale-[1.03] ring-2 ring-[#FFDBE5] z-10 font-black'
+                        : isPast
+                        ? 'bg-slate-50/60 dark:bg-slate-900/40 text-slate-300 dark:text-slate-700 cursor-not-allowed border border-transparent'
+                        : hasOpen
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-[#EA9AB2]/50 hover:border-[#E27396] hover:shadow-soft-sm hover:scale-[1.02]'
+                        : isRest
+                        ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-800'
+                        : 'bg-white dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-800'
+                    }`}
+                  >
+                    {/* Top Row: Date Number + Today Indicator */}
+                    <div className="w-full flex items-center justify-between">
+                      <span className={`text-xs sm:text-sm font-bold ${isSelectedDay ? 'text-white' : ''}`}>
+                        {dayNum}
+                      </span>
+                      {isTodayDate && (
+                        <span
+                          className={`text-[8px] sm:text-[9px] px-1 rounded font-black uppercase ${
+                            isSelectedDay ? 'bg-white text-[#E27396]' : 'bg-[#E27396] text-white'
+                          }`}
+                        >
+                          Today
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Bottom Status Indicator Pill */}
+                    <div className="w-full mt-1 flex justify-center">
+                      {isSelectedDay ? (
+                        <span className="text-[9px] sm:text-[10px] font-bold text-white/90">
+                          Selected
+                        </span>
+                      ) : isPast ? (
+                        <span className="text-[9px] text-slate-300 dark:text-slate-700 font-normal">Passed</span>
+                      ) : hasOpen ? (
+                        <span className="inline-flex items-center gap-1 text-[8px] sm:text-[10px] font-black text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#20101a] px-1.5 py-0.5 rounded-full border border-[#EA9AB2]/40">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#6D9F71] animate-pulse"></span>
+                          <span className="hidden sm:inline">Open</span>
+                        </span>
+                      ) : isRest ? (
+                        <span className="text-[8px] sm:text-[9px] text-slate-400 dark:text-slate-500 font-semibold">
+                          Rest
+                        </span>
+                      ) : (
+                        <span className="text-[8px] sm:text-[9px] text-slate-400">Off</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Calendar Legend Bar */}
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#6D9F71]"></span>
+                <span>Open Morning Slot</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E27396]"></span>
+                <span>Selected Date</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                <span>Rest Day (Wed & Sun)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: SELECTED DATE'S OPEN SESSIONS & RESERVATION CARD */}
+          <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/90 dark:border-slate-800 p-5 sm:p-7 space-y-5">
+            {/* Selected Date Header */}
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#20101a] px-2.5 py-0.5 rounded-full border border-[#EA9AB2]/40">
+                  {isSelectedToday ? "Today's Schedule" : 'Selected Date'}
+                </span>
+
+                {selectedAvailableSlots.length > 0 && !isSelectedPast && (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#6D9F71] animate-pulse"></span>
+                    <span>Morning Session Open</span>
+                  </span>
+                )}
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                {selectedDateFormatted}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 font-medium">
-                Upcoming Date: {getNextDateForDay(activeDay).toLocaleDateString('en-PH', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Malaybalay City Public Tennis Court • Single-coach training
               </p>
             </div>
 
-            {isAuthenticated && (
-              <button
-                onClick={() => handleOpenAdd(activeDay)}
-                className="text-xs text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 font-bold self-start sm:self-auto flex items-center gap-1.5 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-              >
-                + Add slot for {DAY_NAMES[activeDay]}
-              </button>
-            )}
-          </div>
-
-          {slotsByDay[activeDay]?.length > 0 ? (
-            <div className="grid gap-4 sm:gap-6 sm:grid-cols-1 md:grid-cols-2">
-              {slotsByDay[activeDay].map((slot) => (
-                <div
-                  key={slot.id || `${slot.day_of_week}-${slot.start_time}`}
-                  onClick={() => handleSlotClick(slot)}
-                  className={`card-hover-lift p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border-2 flex flex-col justify-between transition-all duration-300 min-h-[220px] sm:min-h-[260px] ${
-                    slot.is_blocked
-                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-                      : 'bg-white dark:bg-slate-800/90 border-slate-200/90 dark:border-slate-700/80 hover:border-slate-900 dark:hover:border-primary-500 text-slate-900 dark:text-white cursor-pointer shadow-soft-sm hover:shadow-soft-xl'
-                  }`}
+            {/* Content for this Date */}
+            {isSelectedPast ? (
+              <div className="py-10 text-center bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Date Has Passed</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Please pick today or an upcoming day on the calendar to book your lesson.
+                </p>
+                <button
+                  onClick={handleJumpToday}
+                  className="mt-3.5 btn-hover-pink px-4 py-2 bg-[#E27396] text-white rounded-xl text-xs font-bold shadow-soft-xs"
                 >
-                  {/* Top Badges */}
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-3 sm:mb-5">
-                      <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider px-2.5 sm:px-3.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                        Morning Coaching Session
+                  Jump to Today →
+                </button>
+              </div>
+            ) : selectedDaySlots.length > 0 ? (
+              <div className="space-y-3.5">
+                {selectedDaySlots.map((slot) => (
+                  <div
+                    key={slot.id || `${slot.day_of_week}-${slot.start_time}`}
+                    className={`card-hover-lift p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 ${
+                      slot.is_blocked
+                        ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400'
+                        : 'bg-white dark:bg-slate-800/80 border-[#EA9AB2]/50 hover:border-[#E27396] text-slate-900 dark:text-white shadow-soft-xs'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        Regular Morning Schedule
                       </span>
-
                       {slot.is_blocked ? (
-                        <span className="text-xs text-rose-700 dark:text-rose-400 font-bold bg-rose-50 dark:bg-rose-950/60 px-2.5 sm:px-3 py-1 rounded-full border border-rose-200 dark:border-rose-900">
+                        <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-200">
                           Unavailable
                         </span>
                       ) : (
-                        <span className="inline-flex items-center text-xs text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 sm:px-3.5 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 sm:mr-2"></span>
-                          Open
+                        <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                          Available
                         </span>
                       )}
                     </div>
 
                     {/* Big Time Display */}
-                    <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight my-2 sm:my-4">
+                    <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight my-1">
                       {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                     </div>
 
-                    {/* Session Specs Grid */}
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-2 sm:pt-3 pb-2 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700/60">
+                    <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 dark:text-slate-400 py-2 border-y border-slate-100 dark:border-slate-700/60 my-2.5">
                       <div>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold block">Venue</span>
+                        <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Venue</span>
                         <span className="font-semibold text-slate-800 dark:text-slate-200">Public Tennis Court</span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold block">Duration</span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">1.5 – 2 Hours</span>
+                        <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-400">Duration</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">1.5 – 2 Hours (Extendable)</span>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Bottom Action Area */}
-                  {isAuthenticated ? (
-                    <div
-                      className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <button
-                        onClick={(e) => handleToggleBlock(slot, e)}
-                        className={`font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                          slot.is_blocked
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
-                        }`}
-                      >
-                        {slot.is_blocked ? 'Unblock Slot' : 'Block Slot'}
-                      </button>
-                      <div className="flex items-center gap-2">
+                    {/* Booking Action / Coach Actions */}
+                    {isAuthenticated ? (
+                      <div className="pt-2 flex items-center justify-between text-xs gap-2">
                         <button
-                          onClick={(e) => handleOpenEdit(slot, e)}
-                          className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg font-bold transition-colors"
+                          onClick={(e) => handleToggleBlock(slot, e)}
+                          className="px-3 py-1.5 rounded-xl border font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"
                         >
-                          Edit
+                          {slot.is_blocked ? 'Unblock' : 'Block Slot'}
                         </button>
-                        <button
-                          onClick={(e) => handleDeleteSlot(slot.id, e)}
-                          className="text-rose-600 hover:bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-bold transition-colors"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={(e) => handleOpenEdit(slot, e)}
+                            className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 font-bold hover:bg-slate-100"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={(e) => handleDeleteSlot(slot.id, e)}
+                            className="px-3 py-1.5 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 font-bold hover:bg-rose-50"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <span className="text-[11px] sm:text-xs text-slate-400 font-medium">Tap to reserve</span>
-                      <span className="btn-hover-pink inline-flex items-center gap-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white font-black text-xs sm:text-sm px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-soft-xs transition-all">
-                        <span>Reserve</span>
+                    ) : (
+                      <button
+                        onClick={() => handleSlotBooking(slot, selectedDate)}
+                        disabled={slot.is_blocked}
+                        className="btn-hover-pink w-full mt-2 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl font-black text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                      >
+                        <span>Reserve This Morning Slot</span>
                         <span>→</span>
-                      </span>
-                    </div>
-                  )}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-8 text-center bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+                <span className="text-3xl">🎾</span>
+                <h4 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  {isSelectedRestDay ? 'Rest Day Scheduled' : 'No Morning Sessions on this Date'}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
+                  {isSelectedRestDay
+                    ? 'Coach is off on this day. Coaching takes place on Monday, Tuesday, Thursday, Friday, and Saturday mornings.'
+                    : 'No regular session is open on this day. Select an alternate open day on the calendar.'}
+                </p>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleJumpNextAvailable}
+                    className="btn-hover-pink px-4 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors"
+                  >
+                    View Next Open Day →
+                  </button>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 px-6 rounded-3xl bg-slate-50 border border-slate-200 max-w-2xl mx-auto">
-              <h4 className="font-extrabold text-slate-900 text-lg">
-                {activeDay === 3 || activeDay === 0 ? 'Rest Day Scheduled' : 'No Scheduled Slots for this Day'}
-              </h4>
-              <p className="text-slate-500 text-sm mt-2 leading-relaxed max-w-md mx-auto">
-                {activeDay === 3 || activeDay === 0
-                  ? 'No regular morning slot on this day. If you need a special training schedule, reach out on Messenger, Facebook, or Instagram.'
-                  : 'No morning session is currently open on this day. Browse other days or contact the coach directly.'}
-              </p>
-              {isAuthenticated && (
-                <button
-                  onClick={() => handleOpenAdd(activeDay)}
-                  className="mt-6 inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl text-xs font-bold shadow-soft-xs transition-all cursor-pointer"
-                >
-                  + Add Time Slot for {DAY_NAMES[activeDay]}
-                </button>
-              )}
-            </div>
-          )}
+
+                {isAuthenticated && (
+                  <div className="pt-2">
+                    <button
+                      onClick={() => handleOpenAdd(selectedDayOfWeek)}
+                      className="text-xs text-[#E27396] font-bold hover:underline"
+                    >
+                      + Add a slot for {DAY_NAMES[selectedDayOfWeek]}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* VIEW MODE 2: FULL WEEK VIEW (Spacious Grid Layout) */}
+      {/* VIEW 2: 7-DAY WEEK VIEW (FOR PLAYERS WHO PREFER THE RECURRING WEEKLY OVERVIEW) */}
       {viewMode === 'week' && (
         <div className="space-y-4 sm:space-y-6 animate-fade-in">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {MON_TO_SUN.map((day) => {
               const daySlots = slotsByDay[day] || [];
-              const isToday = new Date().getDay() === day;
+              const isTodayDay = today.getDay() === day;
 
               return (
                 <div
                   key={day}
                   className={`bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-sm border p-4 sm:p-6 flex flex-col justify-between transition-all duration-200 min-h-[240px] sm:min-h-[280px] ${
-                    isToday ? 'border-slate-900 dark:border-primary-500 ring-2 ring-slate-200 dark:ring-primary-950' : 'border-slate-200/90 dark:border-slate-800'
+                    isTodayDay ? 'border-[#E27396] ring-2 ring-[#FFDBE5]' : 'border-slate-200/90 dark:border-slate-800'
                   }`}
                 >
                   <div>
@@ -460,8 +662,8 @@ export default function CalendarSection({
                     <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-base text-slate-900 dark:text-white">{DAY_NAMES[day]}</span>
-                        {isToday && (
-                          <span className="text-[10px] bg-slate-900 dark:bg-primary-600 text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                        {isTodayDay && (
+                          <span className="text-[10px] bg-[#E27396] text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
                             Today
                           </span>
                         )}
@@ -482,51 +684,30 @@ export default function CalendarSection({
                         {daySlots.map((slot) => (
                           <div
                             key={slot.id}
-                            onClick={() => handleSlotClick(slot)}
+                            onClick={() => {
+                              // Compute next upcoming date for this day
+                              const diff = (day - today.getDay() + 7) % 7;
+                              const targetDate = new Date(today);
+                              targetDate.setDate(today.getDate() + (diff === 0 ? 0 : diff));
+                              handleSlotBooking(slot, targetDate);
+                            }}
                             className={`p-4 rounded-2xl border text-left transition-all duration-200 ${
                               slot.is_blocked
-                                ? 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-                                : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 hover:border-slate-900 dark:hover:border-primary-500 hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white cursor-pointer shadow-soft-xs hover:shadow-soft-sm'
+                                ? 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 cursor-not-allowed'
+                                : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200 dark:border-slate-700 hover:border-[#E27396] hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white cursor-pointer shadow-soft-xs hover:shadow-soft-sm'
                             }`}
                           >
                             <div className="font-extrabold text-base text-slate-900 dark:text-white">
                               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                             </div>
                             <div className="text-xs mt-1.5 flex items-center justify-between text-slate-500 dark:text-slate-400">
-                              <span className={slot.is_blocked ? 'text-slate-400 dark:text-slate-500 font-medium' : 'text-emerald-700 dark:text-emerald-400 font-bold'}>
+                              <span className={slot.is_blocked ? 'text-slate-400' : 'text-emerald-700 dark:text-emerald-400 font-bold'}>
                                 {slot.is_blocked ? 'Blocked' : 'Available'}
                               </span>
                               {!isAuthenticated && !slot.is_blocked && (
-                                <span className="text-slate-900 dark:text-primary-400 font-bold hover:underline">Book →</span>
+                                <span className="text-[#E27396] font-bold hover:underline">Book →</span>
                               )}
                             </div>
-
-                            {/* Inline CRUD actions for week view */}
-                            {isAuthenticated && (
-                              <div
-                                className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <button
-                                  onClick={(e) => handleOpenEdit(slot, e)}
-                                  className="text-slate-900 dark:text-white hover:underline font-bold"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={(e) => handleToggleBlock(slot, e)}
-                                  className="text-slate-600 dark:text-slate-400 hover:underline font-medium"
-                                >
-                                  {slot.is_blocked ? 'Unblock' : 'Block'}
-                                </button>
-                                <button
-                                  onClick={(e) => handleDeleteSlot(slot.id, e)}
-                                  className="text-rose-600 dark:text-rose-400 hover:underline font-semibold"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
@@ -536,7 +717,7 @@ export default function CalendarSection({
                   {isAuthenticated && (
                     <button
                       onClick={() => handleOpenAdd(day)}
-                      className="mt-4 text-xs text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 font-bold text-center w-full py-2 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="mt-4 text-xs text-[#E27396] hover:underline font-bold text-center w-full py-2 border border-dashed border-[#EA9AB2]/40 rounded-xl hover:bg-[#FFDBE5]/20 transition-colors cursor-pointer"
                     >
                       + Add slot
                     </button>
@@ -592,7 +773,7 @@ export default function CalendarSection({
                   onChange={(e) =>
                     setFormData({ ...formData, day_of_week: Number(e.target.value) })
                   }
-                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
+                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
                 >
                   {MON_TO_SUN.map((d) => (
                     <option key={d} value={d}>
@@ -615,7 +796,7 @@ export default function CalendarSection({
                       setFormData({ ...formData, start_time: e.target.value })
                     }
                     required
-                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
+                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
                   />
                 </div>
 
@@ -630,7 +811,7 @@ export default function CalendarSection({
                       setFormData({ ...formData, end_time: e.target.value })
                     }
                     required
-                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-primary-500 outline-none transition-all font-medium"
+                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
                   />
                 </div>
               </div>
@@ -648,7 +829,7 @@ export default function CalendarSection({
                     onChange={(e) =>
                       setFormData({ ...formData, is_blocked: e.target.checked })
                     }
-                    className="w-4 h-4 text-slate-900 dark:text-primary-500 rounded border-slate-300 dark:border-slate-700 focus:ring-slate-900"
+                    className="w-4 h-4 text-[#E27396] rounded border-slate-300 dark:border-slate-700 focus:ring-[#E27396]"
                   />
                   <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Block this slot (make unavailable to players)
