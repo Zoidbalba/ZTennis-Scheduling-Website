@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 
 const navItems = [
-  { to: '/dashboard/bookings', label: 'Bookings & Schedule', icon: '📅' },
-  { to: '/dashboard/trainees', label: 'Trainees Roster', icon: '👥' },
-  { to: '/dashboard/availability', label: 'Availability', icon: '⏰' },
-  { to: '/dashboard/rates', label: 'Rates & Pricing', icon: '🏷️' },
-  { to: '/dashboard/profile', label: 'Coach Profile', icon: '👤' },
+  { to: '/dashboard/bookings', label: 'Bookings & Schedule' },
+  { to: '/dashboard/trainees', label: 'Trainees Roster' },
+  { to: '/dashboard/availability', label: 'Availability' },
+  { to: '/dashboard/rates', label: 'Rates & Pricing' },
+  { to: '/dashboard/profile', label: 'Coach Profile' },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -39,18 +39,17 @@ export default function DashboardLayout({ children }) {
       {/* Mobile tabs */}
       <div className="lg:hidden bg-white dark:bg-slate-900 shadow-soft-xs overflow-x-auto no-scrollbar sticky top-[53px] z-30 py-1">
         <div className="flex px-3 space-x-1.5">
-          {navItems.map(({ to, label, icon }) => (
+          {navItems.map(({ to, label }) => (
             <Link
               key={to}
               to={to}
-              className={`text-center px-4 py-2 text-xs font-bold whitespace-nowrap transition-all rounded-xl my-1 flex items-center gap-1.5 ${
+              className={`text-center px-4 py-2 text-xs font-bold whitespace-nowrap transition-all rounded-xl my-1 ${
                 location.pathname === to
                   ? 'text-white bg-[#E27396] shadow-soft-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              <span>{icon}</span>
-              <span>{label}</span>
+              {label}
             </Link>
           ))}
         </div>
@@ -81,18 +80,17 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <nav className="flex-1 px-4 space-y-1.5">
-            {navItems.map(({ to, label, icon }) => (
+            {navItems.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
+                className={`flex items-center px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                   location.pathname === to
                     ? 'bg-[#E27396] text-white shadow-soft-sm'
                     : 'text-slate-600 dark:text-slate-300 hover:bg-[#FFDBE5]/30 hover:text-[#92334f] dark:hover:bg-slate-800/80 dark:hover:text-white'
                 }`}
               >
-                <span className="text-sm">{icon}</span>
-                <span>{label}</span>
+                {label}
               </Link>
             ))}
           </nav>

@@ -271,20 +271,17 @@ export default function DashboardBookings() {
         {/* SMS Notification Banner / Toast */}
         {smsToast && (
           <div
-            className={`p-4 rounded-2xl border flex items-start justify-between gap-3 shadow-soft-sm animate-fade-in ${
+            className={`p-4 rounded-2xl flex items-start justify-between gap-3 shadow-soft-sm animate-fade-in ${
               smsToast.type === 'success'
-                ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-100'
+                ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-100'
                 : smsToast.type === 'warning'
-                ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100'
-                : 'bg-primary-50 dark:bg-primary-950/60 border-primary-200 dark:border-primary-800 text-primary-950 dark:text-primary-100'
+                ? 'bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-100'
+                : 'bg-[#FFDBE5] text-[#92334f] dark:bg-[#20101a] dark:text-[#FFDBE5]'
             }`}
           >
-            <div className="flex items-start gap-2.5">
-              <span className="text-lg">📱</span>
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider">{smsToast.title}</h4>
-                <p className="text-xs mt-0.5 leading-relaxed opacity-90">{smsToast.message}</p>
-              </div>
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider">{smsToast.title}</h4>
+              <p className="text-xs mt-0.5 leading-relaxed opacity-90">{smsToast.message}</p>
             </div>
             <button
               onClick={() => setSmsToast(null)}
@@ -375,15 +372,12 @@ export default function DashboardBookings() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <span className="absolute inset-y-0 left-3.5 flex items-center text-slate-400 pointer-events-none text-xs">
-                🔍
-              </span>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search trainee name, phone, or date..."
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                className="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
               />
             </div>
 
@@ -501,19 +495,16 @@ export default function DashboardBookings() {
 
                       {/* SMS Notification Status Badge */}
                       {b.sms_status === 'sent' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
-                          <span>✓</span>
-                          <span>SMS Sent</span>
+                        <span className="inline-flex items-center text-[10px] px-3 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+                          SMS Sent
                         </span>
                       ) : b.sms_status === 'simulated' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300">
-                          <span>📱</span>
-                          <span>SMS Logged</span>
+                        <span className="inline-flex items-center text-[10px] px-3 py-1 rounded-full font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300">
+                          SMS Logged
                         </span>
                       ) : b.sms_status?.startsWith('failed') ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
-                          <span>⚠️</span>
-                          <span>SMS Failed</span>
+                        <span className="inline-flex items-center text-[10px] px-3 py-1 rounded-full font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
+                          SMS Failed
                         </span>
                       ) : null}
                     </div>
@@ -604,7 +595,7 @@ export default function DashboardBookings() {
                         className="px-3 py-1.5 bg-[#FFDBE5] dark:bg-[#20101a] hover:bg-[#EA9AB2]/30 text-[#92334f] dark:text-[#FFDBE5] text-xs font-bold rounded-xl transition-colors shadow-soft-xs"
                         title="Compose/Send SMS via Semaphore Gateway"
                       >
-                        SMS 💬
+                        SMS
                       </button>
 
                       {/* Note Button */}
@@ -682,8 +673,8 @@ export default function DashboardBookings() {
             <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-md w-full overflow-hidden animate-scale-up">
               <div className="bg-[#180a13] text-white p-6 flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                    <span>📱 Send SMS to Trainee</span>
+                  <h3 className="text-base font-extrabold text-white">
+                    Send SMS to Trainee
                   </h3>
                   <p className="text-xs text-[#FFDBE5]/80 mt-0.5">
                     Recipient: {smsModalBooking.player_name} ({smsModalBooking.player_contact})
