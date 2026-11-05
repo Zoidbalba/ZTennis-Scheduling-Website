@@ -15,30 +15,30 @@ export default function RatesSection({ rates = [] }) {
     <section id="rates" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#b03d60] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#FFDBE5]/15 border border-[#EA9AB2]/50 px-3.5 py-1 rounded-full shadow-soft-xs">
+        <span className="text-xs font-bold uppercase tracking-widest text-[#92334f] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#20101a] px-4 py-1.5 rounded-full shadow-soft-xs inline-block">
           Transparent Pricing
         </span>
-        <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2.5 sm:mt-3 mb-2 tracking-tight">
+        <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-2 tracking-tight">
           Session Rates & Pricing
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-base leading-relaxed">
           Affordable, straightforward rates per person. No hidden membership fees.
         </p>
 
-        {/* Public Court & Duration Highlights */}
-        <div className="mt-4 sm:mt-5 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-900 border border-[#6D9F71]/35 dark:border-[#6D9F71]/30 text-left max-w-xl mx-auto text-xs sm:text-sm text-slate-800 dark:text-slate-200 shadow-soft-xs">
-          <p className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#6D9F71]"></span>
+        {/* Public Court & Duration Highlights — Solid Card */}
+        <div className="mt-5 p-5 rounded-3xl bg-white dark:bg-slate-900 text-left max-w-xl mx-auto text-xs sm:text-sm text-slate-800 dark:text-slate-200 shadow-soft-sm">
+          <p className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#6D9F71]"></span>
             <span>Flexible Court Playtime Notice:</span>
           </p>
-          <p className="text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">
             Sessions run for about <strong>1 hr 30 min to 2 hours</strong>. Because training takes place on a <strong>public court</strong>, sessions can comfortably extend depending on open queue and court availability.
           </p>
         </div>
       </div>
 
-      {/* Rates Cards Grid */}
-      <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+      {/* Rates Cards Grid — Solid Smooth Cards (No Outlines) */}
+      <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
         {rates.map((rate) => {
           const isGroup = rate.session_type.toLowerCase().includes('group') || Number(rate.price) === 250;
 
@@ -59,19 +59,16 @@ export default function RatesSection({ rates = [] }) {
           return (
             <div
               key={rate.id}
-              className={`card-hover-lift relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md hover:shadow-soft-xl border p-5 sm:p-8 flex flex-col justify-between transition-all duration-300 ${
-                isGroup
-                  ? 'border-[#E27396] dark:border-[#E27396]/60 shadow-pink-glow/20'
-                  : 'border-[#EA9AB2]/40 dark:border-[#EA9AB2]/30'
-              }`}
+              className="card-hover-lift relative bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md hover:shadow-soft-xl p-6 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300"
             >
+              {/* Solid Corner Tag */}
               <div className="absolute top-0 right-0">
                 {isGroup ? (
-                  <span className="inline-block bg-[#E27396] text-white text-[10px] sm:text-[11px] font-black px-3.5 py-1 rounded-bl-xl sm:rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
+                  <span className="inline-block bg-[#E27396] text-white text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
                     Group (2+ Players)
                   </span>
                 ) : (
-                  <span className="inline-block bg-[#6D9F71] text-white text-[10px] sm:text-[11px] font-bold px-3.5 py-1 rounded-bl-xl sm:rounded-bl-2xl uppercase tracking-wider">
+                  <span className="inline-block bg-[#6D9F71] text-white text-[10px] sm:text-[11px] font-bold px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
                     Private 1-on-1
                   </span>
                 )}
@@ -80,12 +77,12 @@ export default function RatesSection({ rates = [] }) {
               <div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">{rate.session_type}</h3>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5 block">
                     {isGroup ? 'Learn, Rally & Compete with Friends' : 'Dedicated Private Tennis Coaching'}
                   </span>
                 </div>
 
-                <div className="mt-4 sm:mt-6 mb-2 sm:mb-3 flex items-baseline">
+                <div className="mt-5 mb-3 flex items-baseline">
                   <span className={`text-3xl sm:text-5xl font-black tracking-tight ${
                     isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-slate-900 dark:text-white'
                   }`}>
@@ -94,29 +91,30 @@ export default function RatesSection({ rates = [] }) {
                   <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm ml-2 font-semibold">/ person</span>
                 </div>
 
-                <div className={`inline-flex items-center text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-xl border mb-4 sm:mb-5 ${
+                {/* Solid Duration Pill */}
+                <div className={`inline-flex items-center text-[11px] sm:text-xs font-bold px-3 py-1.5 rounded-xl mb-4 sm:mb-5 ${
                   isGroup
-                    ? 'bg-[#FFDBE5] dark:bg-[#FFDBE5]/15 text-[#b03d60] dark:text-[#FFDBE5] border-[#EA9AB2]/40'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#FFDBE5] text-[#92334f] dark:bg-[#20101a] dark:text-[#FFDBE5]'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                 }`}>
                   Duration: 1.5 – 2 Hours (court extendable)
                 </div>
 
                 {rate.description && (
-                  <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 sm:mb-6 font-normal">
+                  <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 font-normal">
                     {rate.description}
                   </p>
                 )}
 
                 {/* What's Included bullets */}
-                <div className="space-y-2.5 border-t border-slate-100 dark:border-slate-800 pt-4 sm:pt-5 mb-5 sm:mb-6 text-xs text-slate-600 dark:text-slate-400">
-                  <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${
+                <div className="space-y-2.5 pt-3 mb-5 text-xs text-slate-600 dark:text-slate-400">
+                  <p className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${
                     isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-[#6D9F71] dark:text-[#9ec4b1]'
                   }`}>
                     {isGroup ? "Group Training Highlights:" : "Personalized Focus:"}
                   </p>
                   {highlights.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
+                    <div key={idx} className="flex items-start gap-2.5">
                       <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
                         isGroup ? 'bg-[#E27396]' : 'bg-[#6D9F71]'
                       }`}></span>
@@ -126,11 +124,11 @@ export default function RatesSection({ rates = [] }) {
                 </div>
               </div>
 
-              <div className="pt-4 sm:pt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div className="pt-5 flex items-center justify-between border-t border-slate-100/70 dark:border-slate-800/70">
                 <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Public Court</span>
                 <button
                   onClick={scrollToSchedule}
-                  className="btn-hover-pink px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-xs cursor-pointer flex items-center gap-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white"
+                  className="btn-hover-pink px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-xs cursor-pointer flex items-center gap-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white"
                 >
                   <span>Book Slot</span>
                   <span>→</span>

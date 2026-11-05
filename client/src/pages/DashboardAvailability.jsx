@@ -146,7 +146,7 @@ export default function DashboardAvailability() {
         )}
 
         {loading ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800">
+          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm">
             <p className="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Loading schedule...</p>
           </div>
         ) : (
@@ -156,24 +156,24 @@ export default function DashboardAvailability() {
               const isRestDay = day.value === 3 || day.value === 0;
 
               return (
-                <div key={day.value} className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6">
+                <div key={day.value} className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6">
                   <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
                     <div className="flex items-center gap-2">
                       <span className="text-base font-extrabold text-slate-900 dark:text-white">{day.name}</span>
-                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
-                        daySlots.length > 0 ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500'
+                      <span className={`text-xs px-3 py-1 rounded-full font-bold ${
+                        daySlots.length > 0 ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300' : 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500'
                       }`}>
                         {daySlots.length} slot{daySlots.length !== 1 ? 's' : ''}
                       </span>
                       {isRestDay && daySlots.length === 0 && (
-                        <span className="text-xs text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800/50 px-2 py-0.5 rounded">
+                        <span className="text-xs text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-0.5 rounded-full font-medium">
                           (Rest Day)
                         </span>
                       )}
                     </div>
                     <button
                       onClick={() => openAddModal(day.value)}
-                      className="text-xs text-slate-900 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 font-bold transition-colors cursor-pointer"
+                      className="text-xs text-[#E27396] hover:text-[#cf5479] font-bold transition-colors cursor-pointer"
                     >
                       + Add slot
                     </button>
@@ -188,10 +188,10 @@ export default function DashboardAvailability() {
                       {daySlots.map((slot) => (
                         <div
                           key={slot.id}
-                          className={`p-4 rounded-2xl border transition-all flex flex-col justify-between ${
+                          className={`p-4 rounded-2xl transition-all flex flex-col justify-between ${
                             slot.is_blocked
-                              ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400'
-                              : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white shadow-soft-xs'
+                              ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400'
+                              : 'bg-slate-50/80 dark:bg-slate-800 text-slate-900 dark:text-white shadow-soft-xs hover:shadow-soft-sm'
                           }`}
                         >
                           <div className="flex items-start justify-between">
@@ -201,11 +201,11 @@ export default function DashboardAvailability() {
                               </div>
                               <div className="mt-1">
                                 {slot.is_blocked ? (
-                                  <span className="inline-flex items-center text-[10px] font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/50 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-800">
+                                  <span className="inline-flex items-center text-[10px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-950/70 px-2.5 py-0.5 rounded-full">
                                     Blocked
                                   </span>
                                 ) : (
-                                  <span className="inline-flex items-center text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                                  <span className="inline-flex items-center text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full">
                                     Open
                                   </span>
                                 )}

@@ -37,7 +37,7 @@ export default function Login() {
         {/* Logo with "Z" brand mark */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-2xl hover:opacity-90 transition-opacity">
-            <span className="w-10 h-10 rounded-xl bg-[#E27396] text-white font-black text-xl flex items-center justify-center shadow-soft-sm border border-[#FFDBE5]/30">
+            <span className="w-10 h-10 rounded-2xl bg-[#E27396] text-white font-black text-xl flex items-center justify-center shadow-soft-sm">
               Z
             </span>
             <span>Z Tennis Coach</span>
@@ -46,11 +46,11 @@ export default function Login() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl p-8 border border-slate-200/80 dark:border-slate-800">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl p-8">
           <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 text-center">Sign In</h2>
 
           {error && (
-            <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-4 py-3 rounded-xl text-xs font-semibold mb-4">
+            <div className="bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-200 px-4 py-3 rounded-2xl text-xs font-semibold mb-4">
               {error}
             </div>
           )}
@@ -65,7 +65,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
                 placeholder="coach@tennisph.com"
               />
             </div>
@@ -79,7 +79,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
                 placeholder="••••••••"
               />
             </div>

@@ -345,25 +345,25 @@ export default function DashboardBookings() {
 
         {/* Overview Stat Counters */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-soft-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-soft-sm">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Requests</p>
             <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">{counts.all}</p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">All-time bookings</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-soft-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-soft-sm">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending Action</p>
             <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1">{counts.pending}</p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Needs coach reply</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-soft-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-soft-sm">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Confirmed Lessons</p>
             <p className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{counts.confirmed}</p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Scheduled on calendar</p>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-soft-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-soft-sm">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Declined</p>
             <p className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 mt-1">{counts.declined}</p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Declined or canceled</p>
@@ -371,11 +371,11 @@ export default function DashboardBookings() {
         </div>
 
         {/* Filter Toolbar */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-soft-sm space-y-3">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 shadow-soft-sm space-y-3">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none text-xs">
+              <span className="absolute inset-y-0 left-3.5 flex items-center text-slate-400 pointer-events-none text-xs">
                 🔍
               </span>
               <input
@@ -383,7 +383,7 @@ export default function DashboardBookings() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search trainee name, phone, or date..."
-                className="w-full pl-8 pr-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none"
+                className="w-full pl-9 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
               />
             </div>
 
@@ -465,7 +465,7 @@ export default function DashboardBookings() {
             {filteredBookings.map((b) => (
               <div
                 key={b.id}
-                className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 hover:border-[#EA9AB2]/60 dark:hover:border-[#EA9AB2]/40 transition-all"
+                className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6 hover:shadow-soft-md transition-all"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-5">
                   {/* Left Column: Player, Date, Court & Notes */}
@@ -481,19 +481,19 @@ export default function DashboardBookings() {
                       </span>
 
                       {b.skill_level && (
-                        <span className="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">
                           {b.skill_level}
                         </span>
                       )}
 
                       {/* Status Badge */}
                       <span
-                        className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+                        className={`text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
                           b.status === 'confirmed'
-                            ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300'
                             : b.status === 'declined'
-                            ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-                            : 'bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                            ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300'
+                            : 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300'
                         }`}
                       >
                         {b.status}
@@ -501,17 +501,17 @@ export default function DashboardBookings() {
 
                       {/* SMS Notification Status Badge */}
                       {b.sms_status === 'sent' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
                           <span>✓</span>
                           <span>SMS Sent</span>
                         </span>
                       ) : b.sms_status === 'simulated' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300">
                           <span>📱</span>
                           <span>SMS Logged</span>
                         </span>
                       ) : b.sms_status?.startsWith('failed') ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                        <span className="inline-flex items-center gap-1 text-[10px] px-3 py-1 rounded-full font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
                           <span>⚠️</span>
                           <span>SMS Failed</span>
                         </span>
@@ -519,7 +519,7 @@ export default function DashboardBookings() {
                     </div>
 
                     {/* Schedule Time & Location Details */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-slate-50/80 dark:bg-slate-800/50 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-slate-50 dark:bg-slate-850 p-4 rounded-2xl">
                       <div>
                         <span className="text-slate-400 dark:text-slate-500 font-medium">Session Date:</span>{' '}
                         <span className="font-bold text-slate-900 dark:text-white">{formatDate(b.booking_date)}</span>

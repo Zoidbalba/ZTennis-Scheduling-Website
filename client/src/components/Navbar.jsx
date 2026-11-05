@@ -160,7 +160,7 @@ function PublicNav() {
       {isAuthenticated ? (
         <Link
           to="/dashboard/bookings"
-          className="text-xs bg-primary-50 hover:bg-primary-100 dark:bg-primary-950/80 dark:hover:bg-primary-900/80 text-primary-700 dark:text-primary-300 hover:text-primary-800 px-3.5 py-2 rounded-xl font-bold transition-all border border-primary-200/60 dark:border-primary-800/60"
+          className="text-xs bg-[#FFDBE5] hover:bg-[#fcc5d7] dark:bg-[#20101a] dark:hover:bg-[#2e1725] text-[#92334f] dark:text-[#FFDBE5] px-4 py-2 rounded-xl font-bold transition-all shadow-soft-xs"
         >
           Dashboard
         </Link>

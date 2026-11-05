@@ -96,17 +96,17 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] overflow-y-auto animate-scale-up border border-slate-200/80 dark:border-slate-800"
+        className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] overflow-y-auto animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-[#14060f] dark:bg-[#0d0309] text-white p-5 sm:p-7 rounded-t-2xl sm:rounded-t-3xl relative border-b border-[#EA9AB2]/30">
+        <div className="bg-[#180a13] dark:bg-[#0d0309] text-white p-6 sm:p-7 rounded-t-3xl relative">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#FFDBE5]">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#FFDBE5] bg-white/10 px-3 py-1 rounded-full">
                 Lesson Reservation
               </span>
-              <h3 className="text-lg sm:text-2xl font-extrabold mt-0.5 sm:mt-1">Book a Session</h3>
+              <h3 className="text-xl sm:text-2xl font-extrabold mt-2">Book a Session</h3>
             </div>
             <button
               onClick={onClose}
@@ -116,8 +116,8 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </button>
           </div>
 
-          <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 bg-white/5 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#EA9AB2]/30 text-xs sm:text-sm text-slate-300">
-            <p className="font-bold text-[#FFDBE5]">
+          <div className="mt-4 p-4 bg-white/10 backdrop-blur-md rounded-2xl text-xs sm:text-sm text-slate-200">
+            <p className="font-bold text-[#FFDBE5] text-sm">
               {bookingDate}
             </p>
             <p className="mt-0.5 text-slate-300">
@@ -145,9 +145,9 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-3.5 sm:space-y-4">
+          <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
             {error && (
-              <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-4 py-3 rounded-2xl text-xs font-semibold">
+              <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 px-4 py-3 rounded-2xl text-xs font-semibold">
                 {error}
               </div>
             )}
@@ -162,7 +162,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.player_name}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
                 placeholder="Full Name"
               />
             </div>
@@ -177,7 +177,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.contact_number}
                 onChange={handleChange}
                 required
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
                 placeholder="0917 123 4567"
               />
             </div>
@@ -191,7 +191,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
                 placeholder="email@example.com"
               />
             </div>
@@ -204,7 +204,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="skill_level"
                 value={form.skill_level}
                 onChange={handleChange}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
               >
                 {SKILL_LEVELS.map((level) => (
                   <option key={level} value={level} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
@@ -223,7 +223,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.message}
                 onChange={handleChange}
                 rows={2}
-                className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 sm:py-3 text-base sm:text-sm focus:ring-2 focus:ring-[#E27396]/30 focus:border-[#E27396] outline-none transition-all resize-none font-medium"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all resize-none font-medium border-0"
                 placeholder="Individual or group session, technique focus, etc."
               />
             </div>

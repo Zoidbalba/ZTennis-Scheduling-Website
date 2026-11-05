@@ -69,10 +69,10 @@ export default function CoachDetails() {
           </div>
 
           {/* Profile Card Header */}
-          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md overflow-hidden">
             {/* Header banner */}
-            <div className="bg-[#14060f] dark:bg-[#0d0309] h-32 sm:h-44 relative overflow-hidden border-b border-[#EA9AB2]/30">
-              <div className="absolute top-4 right-4 bg-[#FFDBE5]/20 border border-[#EA9AB2]/40 backdrop-blur-md text-[#FFDBE5] text-xs font-bold px-3.5 py-1.5 rounded-full">
+            <div className="bg-[#180a13] dark:bg-[#0d0309] h-32 sm:h-44 relative overflow-hidden">
+              <div className="absolute top-4 right-4 bg-[#FFDBE5] text-[#92334f] text-xs font-bold px-4 py-1.5 rounded-full shadow-soft-xs">
                 Personal Tennis Coach
               </div>
             </div>
@@ -85,15 +85,15 @@ export default function CoachDetails() {
                     <img
                       src={profile.photo_url}
                       alt={profile.name}
-                      className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 object-cover shadow-soft-xl bg-white dark:bg-slate-800 ring-2 ring-[#EA9AB2]"
+                      className="w-28 h-28 sm:w-44 sm:h-44 rounded-full object-cover shadow-soft-xl bg-white dark:bg-slate-800 ring-4 ring-[#FFDBE5] dark:ring-[#20101a]"
                     />
                   ) : (
-                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full border-4 border-white dark:border-slate-900 bg-[#E27396] flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black">
+                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-[#E27396] flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
                       Z
                     </div>
                   )}
                   <span
-                    className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 bg-[#6D9F71] border-2 border-white dark:border-slate-900 rounded-full flex items-center justify-center text-white text-[10px] sm:text-xs font-bold"
+                    className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 w-6 h-6 bg-[#6D9F71] text-white rounded-full flex items-center justify-center text-xs font-bold shadow-soft-xs"
                     title="Active Coach"
                   >
                     ✓
@@ -126,24 +126,24 @@ export default function CoachDetails() {
           </div>
 
           {/* Key Highlights Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
-            <div className="card-hover-lift bg-white dark:bg-slate-900 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div className="card-hover-lift bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-soft-sm">
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Location</p>
               <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1">{profile.location || 'Malaybalay City'}</p>
             </div>
 
-            <div className="card-hover-lift bg-white dark:bg-slate-900 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800">
+            <div className="card-hover-lift bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-soft-sm">
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Venue</p>
               <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1">Public Court</p>
             </div>
 
-            <div className="card-hover-lift bg-white dark:bg-slate-900 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800">
+            <div className="card-hover-lift bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-soft-sm">
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Session Time</p>
               <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1">1.5 – 2 Hours</p>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Court extendable</p>
             </div>
 
-            <div className="card-hover-lift bg-white dark:bg-slate-900 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-soft-sm border border-slate-200/80 dark:border-slate-800">
+            <div className="card-hover-lift bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-soft-sm">
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Schedule</p>
               <p className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1">M-T-TH-F-SAT</p>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">6:00 – 9:00 AM</p>
@@ -151,7 +151,7 @@ export default function CoachDetails() {
           </div>
 
           {/* Coach Bio */}
-          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 p-5 sm:p-9 space-y-4">
+          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md p-6 sm:p-9 space-y-4">
             <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
               About Your Coach & Teaching Philosophy
             </h2>
@@ -160,8 +160,8 @@ export default function CoachDetails() {
             </p>
 
             {profile.court_details && (
-              <div className="mt-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
-                <h4 className="font-bold text-slate-900 dark:text-white mb-0.5">Court Details & Playtime:</h4>
+              <div className="mt-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                <h4 className="font-bold text-slate-900 dark:text-white mb-1">Court Details & Playtime:</h4>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                   {profile.court_details}
                 </p>
@@ -171,15 +171,15 @@ export default function CoachDetails() {
 
           {/* Specialties & Focus Areas */}
           {specialtiesList.length > 0 && (
-            <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 p-5 sm:p-9">
+            <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md p-6 sm:p-9">
               <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mb-4">
                 Specialties & Training Drills
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {specialtiesList.map((item, idx) => (
                   <span
                     key={idx}
-                    className="inline-flex items-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors"
+                    className="inline-flex items-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-colors"
                   >
                     {item.trim()}
                   </span>
@@ -189,8 +189,8 @@ export default function CoachDetails() {
           )}
 
           {/* Session Rates */}
-          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 p-5 sm:p-9">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 sm:mb-6 gap-2">
+          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md p-6 sm:p-9">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
               <div>
                 <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
                   Coaching Rates & Options
@@ -199,17 +199,17 @@ export default function CoachDetails() {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
               {rates.map((rate) => {
                 const isGroup = rate.session_type.toLowerCase().includes('group') || Number(rate.price) === 250;
 
                 return (
                   <div
                     key={rate.id}
-                    className={`p-5 sm:p-6 rounded-2xl border flex flex-col justify-between ${
+                    className={`p-6 sm:p-7 rounded-3xl shadow-soft-xs flex flex-col justify-between ${
                       isGroup
-                        ? 'border-[#E27396] dark:border-[#E27396]/60 bg-[#FFDBE5]/15 dark:bg-[#20101a]/70'
-                        : 'border-[#EA9AB2]/40 dark:border-[#EA9AB2]/30 bg-slate-50 dark:bg-slate-800/50'
+                        ? 'bg-[#FFDBE5]/30 dark:bg-[#20101a]'
+                        : 'bg-slate-50 dark:bg-slate-800/60'
                     }`}
                   >
                     <div>
@@ -217,23 +217,23 @@ export default function CoachDetails() {
                         <div className="flex items-center gap-2">
                           <h3 className="font-extrabold text-slate-900 dark:text-white text-lg">{rate.session_type}</h3>
                           {isGroup && (
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#E27396] text-white">
+                            <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#E27396] text-white shadow-soft-xs">
                               2+ Players
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 shadow-soft-xs">
                           1.5 – 2 hrs
                         </span>
                       </div>
 
-                      <div className="my-3.5">
+                      <div className="my-4">
                         <span className={`text-4xl font-black ${isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-slate-900 dark:text-white'}`}>₱{rate.price}</span>
                         <span className="text-slate-500 dark:text-slate-400 text-sm ml-1.5 font-semibold">/ person</span>
                       </div>
 
                       {rate.description && (
-                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-3">{rate.description}</p>
+                        <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-4">{rate.description}</p>
                       )}
 
                       <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
@@ -243,7 +243,7 @@ export default function CoachDetails() {
                       </div>
                     </div>
 
-                    <div className="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                    <div className="mt-5 pt-3.5 border-t border-slate-200/60 dark:border-slate-700/60 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                       Extended playtime possible depending on public court vacancy
                     </div>
                   </div>
@@ -253,7 +253,7 @@ export default function CoachDetails() {
           </div>
 
           {/* Weekly Schedule Overview */}
-          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md border border-slate-200/80 dark:border-slate-800 p-7 sm:p-9">
+          <div className="card-hover-lift bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md p-7 sm:p-9">
             <h2 className="text-xl font-extrabold text-slate-900 dark:text-white mb-1">
               Weekly Morning Availability
             </h2>
@@ -261,7 +261,7 @@ export default function CoachDetails() {
               Regular coaching sessions run between 6:00 AM – 9:00 AM on active days
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2.5 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3 text-center">
               {[
                 { name: 'Mon', active: true, time: '6:00 - 9:00 AM' },
                 { name: 'Tue', active: true, time: '6:00 - 9:00 AM' },
@@ -273,24 +273,24 @@ export default function CoachDetails() {
               ].map((day, i) => (
                 <div
                   key={i}
-                  className={`p-3.5 rounded-2xl border transition-all ${
+                  className={`p-4 rounded-2xl transition-all ${
                     day.active
-                      ? 'bg-slate-900 dark:bg-primary-950/70 border-slate-900 dark:border-primary-800 text-white font-bold shadow-soft-xs'
-                      : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500'
+                      ? 'bg-slate-900 text-white font-bold shadow-soft-xs'
+                      : 'bg-slate-50 dark:bg-slate-800/40 text-slate-400 dark:text-slate-500'
                   }`}
                 >
                   <p className="text-sm font-extrabold">{day.name}</p>
-                  <p className={`text-[10px] mt-1 ${day.active ? 'text-slate-300 dark:text-primary-300 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
+                  <p className={`text-[10px] mt-1 ${day.active ? 'text-slate-300 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
                     {day.time}
                   </p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-7 text-center">
+            <div className="mt-8 text-center">
               <Link
                 to="/#schedule"
-                className="inline-flex items-center gap-1.5 text-slate-900 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 font-bold text-sm hover:underline"
+                className="inline-flex items-center gap-1.5 text-slate-900 dark:text-white hover:text-[#E27396] dark:hover:text-[#EA9AB2] font-bold text-sm transition-colors"
               >
                 <span>View Full Interactive Schedule & Book Available Slot →</span>
               </Link>
@@ -298,10 +298,10 @@ export default function CoachDetails() {
           </div>
 
           {/* Contact Section: Phone, Messenger, Facebook, Instagram */}
-          <div className="bg-[#14060f] dark:bg-[#0d0309] text-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 shadow-soft-xl border border-[#EA9AB2]/30">
+          <div className="bg-[#180a13] dark:bg-[#0d0309] text-white rounded-3xl p-6 sm:p-10 shadow-soft-xl">
             <div className="max-w-2xl">
               <h2 className="text-xl sm:text-3xl font-black mb-2">Ready to Hit the Court?</h2>
-              <p className="text-[#FFDBE5]/90 text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed font-normal">
+              <p className="text-[#FFDBE5]/90 text-xs sm:text-base mb-6 leading-relaxed font-normal">
                 Book an open morning slot directly through the schedule or reach out directly on Messenger, Facebook, or Instagram.
               </p>
 
@@ -316,7 +316,7 @@ export default function CoachDetails() {
                 {profile.phone && (
                   <a
                     href={`tel:${profile.phone}`}
-                    className="w-full sm:w-auto text-center bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all min-h-[44px] flex items-center justify-center"
+                    className="w-full sm:w-auto text-center bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all min-h-[44px] flex items-center justify-center"
                   >
                     Call / SMS: {profile.phone}
                   </a>

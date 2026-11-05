@@ -187,7 +187,7 @@ export default function Home() {
         <button
           onClick={scrollToTop}
           aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-40 bg-[#E27396] hover:bg-[#cf5479] text-white p-3 rounded-xl shadow-soft-lg border border-[#FFDBE5]/30 transition-all duration-300 hover:scale-105 active:scale-95 animate-scale-up cursor-pointer backdrop-blur-md"
+          className="fixed bottom-6 right-6 z-40 bg-[#E27396] hover:bg-[#cf5479] text-white p-3 rounded-2xl shadow-soft-lg transition-all duration-300 hover:scale-105 active:scale-95 animate-scale-up cursor-pointer backdrop-blur-md"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -196,7 +196,7 @@ export default function Home() {
       )}
 
       {/* FOOTER */}
-      <footer className="bg-[#14060f] dark:bg-[#0d0309] text-slate-400 py-10 sm:py-14 border-t border-[#EA9AB2]/20 mt-12 sm:mt-16">
+      <footer className="bg-[#14060f] dark:bg-[#0d0309] text-slate-400 py-12 sm:py-16 mt-14 sm:mt-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 md:grid-cols-3">
             <div>
