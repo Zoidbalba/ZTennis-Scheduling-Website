@@ -296,20 +296,20 @@ export default function DashboardBookings() {
         )}
 
         {/* Automated SMS Information Callout */}
-        <div className="bg-white dark:bg-slate-900 border border-[#EA9AB2]/30 rounded-2xl p-4 sm:p-5 shadow-soft-xs">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-soft-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <span className="w-8 h-8 rounded-xl bg-[#FFDBE5] dark:bg-[#20101a] text-[#E27396] flex items-center justify-center font-black text-sm shrink-0 mt-0.5">
+            <div className="flex items-start gap-3.5">
+              <span className="w-9 h-9 rounded-2xl bg-[#FFDBE5] dark:bg-[#20101a] text-[#92334f] dark:text-[#FFDBE5] flex items-center justify-center font-black text-sm shrink-0 mt-0.5 shadow-soft-xs">
                 SMS
               </span>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                   <span>Automated SMS Notifications Active</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#FFDBE5] dark:bg-[#20101a] text-[#E27396] border border-[#EA9AB2]/40">
+                  <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold bg-[#FFDBE5] dark:bg-[#20101a] text-[#92334f] dark:text-[#FFDBE5] shadow-soft-xs">
                     Auto-Send
                   </span>
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                   When you click <strong>Accept</strong> or <strong>Decline</strong>, an automated text message is instantly dispatched to the trainee's mobile number.
                 </p>
               </div>
@@ -332,8 +332,8 @@ export default function DashboardBookings() {
               <ol className="list-decimal list-inside space-y-1.5 pl-1 text-slate-600 dark:text-slate-400">
                 <li>Create a free account on <a href="https://semaphore.co" target="_blank" rel="noreferrer" className="text-[#E27396] underline font-bold">Semaphore.co</a> (The #1 SMS gateway for PH telcos).</li>
                 <li>Copy your <strong>API Key</strong> from the Semaphore dashboard.</li>
-                <li>Go to your <strong>Render Dashboard → Environment Variables</strong> (the screen you opened earlier).</li>
-                <li>Add variable key <code className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-900 dark:text-white font-mono">SEMAPHORE_API_KEY</code> and paste your key.</li>
+                <li>Go to your <strong>Render Dashboard → Environment Variables</strong>.</li>
+                <li>Add variable key <code className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg text-slate-900 dark:text-white font-mono">SEMAPHORE_API_KEY</code> and paste your key.</li>
                 <li>Save changes. Render will automatically redeploy and live SMS will start sending instantly to trainees!</li>
               </ol>
               <p className="text-[11px] text-slate-400 italic">
@@ -601,7 +601,7 @@ export default function DashboardBookings() {
                       {/* Custom/Resend SMS Button */}
                       <button
                         onClick={() => handleOpenSmsModal(b, b.status === 'confirmed' ? 'accepted' : 'reminder')}
-                        className="px-2.5 py-1.5 bg-[#FFDBE5] dark:bg-[#20101a] hover:bg-[#EA9AB2]/30 text-[#E27396] text-xs font-bold rounded-xl transition-colors border border-[#EA9AB2]/40"
+                        className="px-3 py-1.5 bg-[#FFDBE5] dark:bg-[#20101a] hover:bg-[#EA9AB2]/30 text-[#92334f] dark:text-[#FFDBE5] text-xs font-bold rounded-xl transition-colors shadow-soft-xs"
                         title="Compose/Send SMS via Semaphore Gateway"
                       >
                         SMS 💬
@@ -610,7 +610,7 @@ export default function DashboardBookings() {
                       {/* Note Button */}
                       <button
                         onClick={() => handleOpenNote(b)}
-                        className="px-2.5 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                         title="Add/Edit Note"
                       >
                         {b.coach_notes ? 'Note' : '+ Note'}
@@ -632,7 +632,7 @@ export default function DashboardBookings() {
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'declined')}
                             disabled={actionLoading === b.id}
-                            className="px-3.5 py-2 bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-xs font-bold rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+                            className="px-3.5 py-2 bg-rose-100 dark:bg-rose-950/70 hover:bg-rose-200 text-rose-800 dark:text-rose-200 text-xs font-bold rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                             title="Decline appointment and send automated SMS notification"
                           >
                             Decline
@@ -643,7 +643,7 @@ export default function DashboardBookings() {
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'declined')}
                             disabled={actionLoading === b.id}
-                            className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/50 text-slate-600 dark:text-slate-300 hover:text-rose-700 dark:hover:text-rose-300 text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                            className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 text-slate-600 dark:text-slate-300 hover:text-rose-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
                             title="Cancel appointment and notify trainee via SMS"
                           >
                             Decline
@@ -653,7 +653,7 @@ export default function DashboardBookings() {
                         <button
                           onClick={() => handleStatusUpdate(b.id, 'confirmed')}
                           disabled={actionLoading === b.id}
-                          className="px-3 py-1.5 bg-[#FFDBE5] dark:bg-[#20101a] hover:bg-[#E27396] hover:text-white text-[#E27396] text-xs font-bold rounded-xl transition-colors cursor-pointer border border-[#EA9AB2]/40"
+                          className="px-3.5 py-1.5 bg-[#FFDBE5] dark:bg-[#20101a] hover:bg-[#E27396] hover:text-white text-[#92334f] dark:text-[#FFDBE5] text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-soft-xs"
                           title="Re-activate and notify trainee via SMS"
                         >
                           Re-activate & SMS
@@ -678,9 +678,9 @@ export default function DashboardBookings() {
 
         {/* Manual SMS Modal */}
         {smsModalBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-xs animate-fade-in">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-md w-full overflow-hidden border border-slate-200 dark:border-slate-800">
-              <div className="bg-[#14060f] dark:bg-[#0d0309] text-white p-5 border-b border-[#EA9AB2]/25 flex items-center justify-between">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-md w-full overflow-hidden animate-scale-up">
+              <div className="bg-[#180a13] text-white p-6 flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-extrabold text-white flex items-center gap-2">
                     <span>📱 Send SMS to Trainee</span>
@@ -697,31 +697,31 @@ export default function DashboardBookings() {
                 </button>
               </div>
 
-              <div className="p-5 sm:p-6 space-y-4">
+              <div className="p-6 space-y-4">
                 {/* Quick Presets */}
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
                     Quick Template Presets:
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => handleOpenSmsModal(smsModalBooking, 'accepted')}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300"
+                      className="px-3 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-[#FFDBE5]/40 hover:text-[#92334f] text-slate-700 dark:text-slate-300 transition-colors"
                     >
                       Accepted
                     </button>
                     <button
                       type="button"
                       onClick={() => handleOpenSmsModal(smsModalBooking, 'reminder')}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300"
+                      className="px-3 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-[#FFDBE5]/40 hover:text-[#92334f] text-slate-700 dark:text-slate-300 transition-colors"
                     >
                       Reminder
                     </button>
                     <button
                       type="button"
                       onClick={() => handleOpenSmsModal(smsModalBooking, 'declined')}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300"
+                      className="px-3 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 hover:text-rose-700 text-slate-700 dark:text-slate-300 transition-colors"
                     >
                       Declined
                     </button>
@@ -737,7 +737,7 @@ export default function DashboardBookings() {
                     value={smsModalText}
                     onChange={(e) => setSmsModalText(e.target.value)}
                     rows={4}
-                    className="w-full p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none font-medium resize-none"
+                    className="w-full p-3.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E27396] outline-none font-medium resize-none border-0"
                     placeholder="Type your SMS message..."
                   />
                   <div className="flex justify-between items-center text-[10px] text-slate-400 mt-1">
@@ -760,14 +760,14 @@ export default function DashboardBookings() {
                 <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
                   <button
                     onClick={() => setSmsModalBooking(null)}
-                    className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors"
+                    className="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSendManualSms}
                     disabled={sendingSms || !smsModalText.trim()}
-                    className="btn-hover-pink px-5 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors disabled:opacity-50"
+                    className="btn-hover-pink px-5 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {sendingSms ? 'Sending SMS...' : 'Send SMS Now →'}
                   </button>
@@ -779,19 +779,19 @@ export default function DashboardBookings() {
 
         {/* Delete Confirmation Modal */}
         {deleteModalBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-xs">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-800">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-sm w-full p-6 sm:p-7 animate-scale-up">
               <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">Delete Booking?</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
                 Are you sure you want to remove the booking for{' '}
                 <strong className="text-slate-800 dark:text-slate-200">{deleteModalBooking.player_name}</strong> on{' '}
                 {formatDate(deleteModalBooking.booking_date)}? This cannot be undone.
               </p>
 
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-2.5">
                 <button
                   onClick={() => setDeleteModalBooking(null)}
-                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -809,8 +809,8 @@ export default function DashboardBookings() {
 
         {/* Coach Note Edit Modal */}
         {noteModalBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-xs">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/75 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl max-w-md w-full p-6 sm:p-7 animate-scale-up">
               <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">
                 Coach Notes ({noteModalBooking.player_name})
               </h3>
@@ -823,13 +823,13 @@ export default function DashboardBookings() {
                 onChange={(e) => setBookingNote(e.target.value)}
                 placeholder="E.g., Trainee brought Wilson Clash racket; focused on footwork and baseline deep balls..."
                 rows={4}
-                className="w-full p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E27396]/20 focus:border-[#E27396] outline-none font-medium mb-4"
+                className="w-full p-3.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E27396] outline-none font-medium mb-4 border-0"
               />
 
-              <div className="flex items-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-2.5">
                 <button
                   onClick={() => setNoteModalBooking(null)}
-                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

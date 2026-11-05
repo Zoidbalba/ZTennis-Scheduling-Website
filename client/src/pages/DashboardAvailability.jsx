@@ -133,14 +133,14 @@ export default function DashboardAvailability() {
           </div>
           <button
             onClick={() => openAddModal(1)}
-            className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all cursor-pointer"
+            className="btn-hover-pink inline-flex items-center gap-2 bg-[#E27396] hover:bg-[#cf5479] text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all cursor-pointer"
           >
             <span>+</span> Add Time Slot
           </button>
         </div>
 
         {error && (
-          <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 p-4 rounded-xl text-xs font-semibold">
+          <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">
             {error}
           </div>
         )}
@@ -251,22 +251,25 @@ export default function DashboardAvailability() {
         {/* Modal for Add / Edit */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-200 dark:border-slate-800">
-              <div className="bg-slate-900 dark:bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
-                <h3 className="font-bold text-base">
-                  {editingSlot ? 'Edit Time Slot' : 'Add Availability Slot'}
-                </h3>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up">
+              <div className="bg-[#180a13] text-white p-6 flex items-center justify-between">
+                <div>
+                  <h3 className="font-extrabold text-lg text-white">
+                    {editingSlot ? 'Edit Time Slot' : 'Add Availability Slot'}
+                  </h3>
+                  <p className="text-xs text-[#FFDBE5]/80 mt-0.5">Configure regular coaching availability</p>
+                </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-white cursor-pointer"
+                  className="text-slate-400 hover:text-white cursor-pointer font-bold text-lg"
                 >
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                     Day of the Week (Monday to Sunday)
                   </label>
                   <select
@@ -274,7 +277,7 @@ export default function DashboardAvailability() {
                     onChange={(e) =>
                       setFormData({ ...formData, day_of_week: Number(e.target.value) })
                     }
-                    className="w-full border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                    className="w-full rounded-xl px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                   >
                     {DAYS.map((d) => (
                       <option key={d.value} value={d.value} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
@@ -286,7 +289,7 @@ export default function DashboardAvailability() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                       Start Time
                     </label>
                     <input
@@ -296,12 +299,12 @@ export default function DashboardAvailability() {
                         setFormData({ ...formData, start_time: e.target.value })
                       }
                       required
-                      className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                       End Time
                     </label>
                     <input
@@ -311,20 +314,20 @@ export default function DashboardAvailability() {
                         setFormData({ ...formData, end_time: e.target.value })
                       }
                       required
-                      className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                     />
                   </div>
                 </div>
 
                 <div className="pt-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.is_blocked}
                       onChange={(e) =>
                         setFormData({ ...formData, is_blocked: e.target.checked })
                       }
-                      className="w-4 h-4 text-slate-900 rounded border-slate-300 dark:border-slate-700 focus:ring-primary-500"
+                      className="w-4 h-4 text-[#E27396] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E27396]"
                     />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Block off this slot (unavailable for bookings)
@@ -336,14 +339,14 @@ export default function DashboardAvailability() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white rounded-xl text-xs font-bold transition-colors disabled:opacity-50 cursor-pointer"
+                    className="btn-hover-pink flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Add Slot'}
                   </button>

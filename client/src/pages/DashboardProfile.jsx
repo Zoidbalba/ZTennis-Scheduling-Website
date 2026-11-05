@@ -101,47 +101,47 @@ export default function DashboardProfile() {
     <DashboardLayout>
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Edit Profile</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Update your coaching profile, location, and social media channels</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Edit Coach Profile</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Update your coaching bio, credentials, court details, and trainee contact channels</p>
         </div>
 
         {error && (
-          <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 p-4 rounded-xl text-xs font-semibold">{error}</div>
+          <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">{error}</div>
         )}
         {success && (
-          <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 p-4 rounded-xl text-xs font-semibold">
+          <div className="bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">
             {success}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Profile photo preview */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6 sm:p-7">
             <div className="flex items-center gap-6">
               {formData.photo_url ? (
                 <img
                   src={formData.photo_url}
                   alt="Coach"
-                  className="w-20 h-20 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700"
+                  className="w-20 h-20 rounded-full object-cover shadow-soft-md ring-4 ring-[#FFDBE5] dark:ring-[#20101a]"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-slate-900 dark:bg-primary-600 flex items-center justify-center text-white font-black text-2xl">
+                <div className="w-20 h-20 rounded-full bg-[#E27396] text-white flex items-center justify-center font-black text-2xl shadow-soft-md ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
                   Z
                 </div>
               )}
               <div>
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">{formData.name || 'Coach Name'}</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">{formData.location || 'Malaybalay City'}</p>
+                <h3 className="font-extrabold text-lg text-slate-900 dark:text-white">{formData.name || 'Coach Name'}</h3>
+                <p className="text-[#92334f] dark:text-[#FFDBE5] text-xs font-bold mt-0.5">{formData.location || 'Malaybalay City'}</p>
               </div>
             </div>
           </div>
 
           {/* Basic Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6 sm:p-8 space-y-4">
+            <h2 className="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
               Basic Information
             </h2>
             {fields.map((field) => (
@@ -154,7 +154,7 @@ export default function DashboardProfile() {
                     onChange={handleChange}
                     rows={field.rows || 3}
                     placeholder={field.placeholder}
-                    className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none resize-none"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none resize-none border-0"
                   />
                 ) : (
                   <input
@@ -163,7 +163,7 @@ export default function DashboardProfile() {
                     value={formData[field.name]}
                     onChange={handleChange}
                     placeholder={field.placeholder}
-                    className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                   />
                 )}
               </div>
@@ -171,8 +171,8 @@ export default function DashboardProfile() {
           </div>
 
           {/* Contact & Social Info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6 sm:p-8 space-y-4">
+            <h2 className="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
               Contact & Social Channels
             </h2>
             <p className="text-xs text-slate-400 dark:text-slate-500 -mt-2">
@@ -187,7 +187,7 @@ export default function DashboardProfile() {
                   value={formData[field.name]}
                   onChange={handleChange}
                   placeholder={field.placeholder}
-                  className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                 />
               </div>
             ))}
@@ -198,9 +198,9 @@ export default function DashboardProfile() {
             <button
               type="submit"
               disabled={saving}
-              className="btn-hover-glow bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-8 py-3 rounded-xl font-bold text-xs shadow-soft-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="btn-hover-pink bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all disabled:opacity-50 cursor-pointer"
             >
-              {saving ? 'Saving...' : 'Save Profile'}
+              {saving ? 'Saving...' : 'Save Profile Changes →'}
             </button>
           </div>
         </form>

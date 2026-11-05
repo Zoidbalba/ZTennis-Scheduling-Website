@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 
 const navItems = [
-  { to: '/dashboard/bookings', label: 'Bookings & Schedule' },
-  { to: '/dashboard/trainees', label: 'Trainees Roster' },
-  { to: '/dashboard/availability', label: 'Availability' },
-  { to: '/dashboard/rates', label: 'Rates' },
-  { to: '/dashboard/profile', label: 'Profile' },
+  { to: '/dashboard/bookings', label: 'Bookings & Schedule', icon: '📅' },
+  { to: '/dashboard/trainees', label: 'Trainees Roster', icon: '👥' },
+  { to: '/dashboard/availability', label: 'Availability', icon: '⏰' },
+  { to: '/dashboard/rates', label: 'Rates & Pricing', icon: '🏷️' },
+  { to: '/dashboard/profile', label: 'Coach Profile', icon: '👤' },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -16,90 +16,98 @@ export default function DashboardLayout({ children }) {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen bg-slate-100/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Mobile top bar */}
-      <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
-        <Link to="/" className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-          <span className="w-7 h-7 rounded-lg bg-[#E27396] text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
+      <div className="lg:hidden bg-white dark:bg-slate-900 shadow-soft-xs px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+        <Link to="/" className="flex items-center gap-2 font-black text-slate-900 dark:text-white">
+          <span className="w-8 h-8 rounded-xl bg-[#E27396] text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
             Z
           </span>
-          <span className="text-sm">Z Tennis Coach</span>
+          <span className="text-sm font-extrabold tracking-tight">Z Tennis Coach</span>
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-semibold">
-            View Site
+          <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-bold px-2 py-1">
+            Site
           </Link>
-          <button onClick={logout} className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 transition-colors">
+          <button onClick={logout} className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 px-2 py-1 transition-colors">
             Logout
           </button>
         </div>
       </div>
 
       {/* Mobile tabs */}
-      <div className="lg:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar sticky top-[49px] z-30">
-        <div className="flex px-2 space-x-1">
-          {navItems.map(({ to, label }) => (
+      <div className="lg:hidden bg-white dark:bg-slate-900 shadow-soft-xs overflow-x-auto no-scrollbar sticky top-[53px] z-30 py-1">
+        <div className="flex px-3 space-x-1.5">
+          {navItems.map(({ to, label, icon }) => (
             <Link
               key={to}
               to={to}
-              className={`text-center px-3.5 py-2.5 text-xs font-bold whitespace-nowrap transition-colors rounded-lg my-1.5 ${
+              className={`text-center px-4 py-2 text-xs font-bold whitespace-nowrap transition-all rounded-xl my-1 flex items-center gap-1.5 ${
                 location.pathname === to
                   ? 'text-white bg-[#E27396] shadow-soft-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              {label}
+              <span>{icon}</span>
+              <span>{label}</span>
             </Link>
           ))}
         </div>
       </div>
 
-      <div className="flex">
-        {/* Desktop sidebar */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 min-h-screen">
-          <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-            <Link to="/" className="flex items-center gap-2.5 font-extrabold text-lg text-slate-900 dark:text-white mb-4">
-              <span className="w-8 h-8 rounded-xl bg-[#E27396] text-white font-black text-sm flex items-center justify-center shadow-soft-xs">
+      <div className="flex min-h-screen">
+        {/* Desktop sidebar — Solid Smooth Card Navigation */}
+        <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white dark:bg-slate-900 shadow-soft-sm min-h-screen">
+          <div className="p-6">
+            <Link to="/" className="flex items-center gap-2.5 font-black text-lg text-slate-900 dark:text-white mb-5">
+              <span className="w-9 h-9 rounded-2xl bg-[#E27396] text-white font-black text-base flex items-center justify-center shadow-soft-sm">
                 Z
               </span>
-              <span>Z Tennis Coach</span>
+              <span className="tracking-tight">Z Tennis Coach</span>
             </Link>
+
             {coach && (
-              <div className="text-xs text-slate-600 dark:text-slate-300">
-                <p className="font-bold text-slate-900 dark:text-white">{coach.name || 'Coach'}</p>
-                <p className="text-slate-400 dark:text-slate-500">Coach Dashboard</p>
+              <div className="bg-slate-50 dark:bg-slate-800/70 p-3.5 rounded-2xl flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#FFDBE5] text-[#92334f] font-black text-xs flex items-center justify-center shadow-soft-xs shrink-0">
+                  {coach.name ? coach.name.charAt(0).toUpperCase() : 'Z'}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-extrabold text-xs text-slate-900 dark:text-white truncate">{coach.name || 'Coach'}</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider">Coach Admin</p>
+                </div>
               </div>
             )}
           </div>
 
-          <nav className="flex-1 p-4 space-y-1">
-            {navItems.map(({ to, label }) => (
+          <nav className="flex-1 px-4 space-y-1.5">
+            {navItems.map(({ to, label, icon }) => (
               <Link
                 key={to}
                 to={to}
-                className={`flex items-center px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center gap-2.5 px-4 py-3 rounded-2xl text-xs font-bold transition-all ${
                   location.pathname === to
-                    ? 'bg-[#E27396] text-white shadow-soft-xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
+                    ? 'bg-[#E27396] text-white shadow-soft-sm'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-[#FFDBE5]/30 hover:text-[#92334f] dark:hover:bg-slate-800/80 dark:hover:text-white'
                 }`}
               >
-                {label}
+                <span className="text-sm">{icon}</span>
+                <span>{label}</span>
               </Link>
             ))}
           </nav>
 
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
-            <ThemeToggle showLabel={true} className="w-full justify-start px-4 py-2.5 rounded-xl" />
+          <div className="p-4 space-y-2">
+            <ThemeToggle showLabel={true} className="w-full justify-start px-4 py-2.5 rounded-2xl" />
             <Link
               to="/"
-              className="w-full flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+              className="w-full flex items-center justify-center px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              ← View Public Site
+              ← Public Site
             </Link>
             <button
               onClick={logout}
-              className="w-full flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center px-4 py-2.5 rounded-2xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-950/60 transition-colors cursor-pointer"
             >
               Logout
             </button>
@@ -107,7 +115,7 @@ export default function DashboardLayout({ children }) {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-slate-950">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-slate-100/60 dark:bg-slate-950">
           {children}
         </main>
       </div>

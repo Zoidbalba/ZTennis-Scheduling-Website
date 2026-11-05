@@ -105,27 +105,27 @@ export default function DashboardRates() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Session Rates</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage your pricing for different session types</p>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Session Rates & Pricing</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Manage public rates, durations, and session packages</p>
           </div>
           <button
             onClick={openAddModal}
-            className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all cursor-pointer"
+            className="btn-hover-pink inline-flex items-center gap-2 bg-[#E27396] hover:bg-[#cf5479] text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all cursor-pointer"
           >
-            <span>+</span> Add Rate
+            <span>+</span> Add New Rate
           </button>
         </div>
 
         {error && (
-          <div className="bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 p-4 rounded-xl text-xs font-semibold">{error}</div>
+          <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">{error}</div>
         )}
 
         {loading ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800">
+          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm">
             <p className="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Loading rates...</p>
           </div>
         ) : rates.length === 0 ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800">
+          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm">
             <h3 className="text-base font-bold text-slate-800 dark:text-white mt-2">No rates yet</h3>
             <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">Add your first session rate to get started.</p>
           </div>
@@ -134,17 +134,17 @@ export default function DashboardRates() {
             {rates.map((rate) => (
               <div
                 key={rate.id}
-                className="relative bg-white dark:bg-slate-900 rounded-2xl shadow-soft-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all hover:shadow-soft-md"
+                className="relative bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm overflow-hidden transition-all hover:shadow-soft-md"
               >
                 {rate.is_package ? (
-                  <div className="absolute top-0 right-0 bg-slate-900 dark:bg-primary-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                  <div className="absolute top-0 right-0 bg-[#FFDBE5] text-[#92334f] dark:bg-[#20101a] dark:text-[#FFDBE5] text-[10px] font-black px-3.5 py-1 rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
                     Package
                   </div>
                 ) : null}
 
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{rate.session_type}</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                <div className="p-6 sm:p-7">
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-1">{rate.session_type}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 font-medium">
                     {rate.duration_minutes} minutes
                     {rate.is_package && rate.package_sessions > 1
                       ? ` · ${rate.package_sessions} sessions`
@@ -152,11 +152,11 @@ export default function DashboardRates() {
                   </p>
 
                   <div className="mb-4">
-                    <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                    <span className="text-3xl sm:text-4xl font-black text-[#E27396] dark:text-[#EA9AB2] tracking-tight">
                       {formatPrice(rate.price)}
                     </span>
                     {rate.is_package && rate.package_sessions > 1 && (
-                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-2">
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-2 font-medium">
                         ({formatPrice(Math.round(rate.price / rate.package_sessions))}/session)
                       </span>
                     )}
@@ -169,14 +169,13 @@ export default function DashboardRates() {
                   <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                     <button
                       onClick={() => openEditModal(rate)}
-                      className="text-xs text-slate-900 dark:text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 font-bold cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Edit
                     </button>
-                    <span className="text-slate-300 dark:text-slate-600">|</span>
                     <button
                       onClick={() => handleDelete(rate.id)}
-                      className="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 font-bold cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors cursor-pointer"
                     >
                       Delete
                     </button>
@@ -190,30 +189,30 @@ export default function DashboardRates() {
         {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-200 dark:border-slate-800">
-              <div className="bg-slate-900 dark:bg-slate-950 text-white p-5 flex items-center justify-between border-b border-slate-800">
-                <h3 className="font-bold text-base">{editingRate ? 'Edit Rate' : 'Add New Rate'}</h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white cursor-pointer">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up">
+              <div className="bg-[#180a13] text-white p-6 flex items-center justify-between">
+                <h3 className="font-extrabold text-lg text-white">{editingRate ? 'Edit Rate' : 'Add New Rate'}</h3>
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white cursor-pointer font-bold text-lg">
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Session Type</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Session Type</label>
                   <input
                     type="text"
                     value={formData.session_type}
                     onChange={(e) => setFormData({ ...formData, session_type: e.target.value })}
                     required
                     placeholder="e.g. Individual Session"
-                    className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Duration (min)</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Duration (min)</label>
                     <input
                       type="number"
                       value={formData.duration_minutes}
@@ -221,12 +220,12 @@ export default function DashboardRates() {
                       required
                       min="15"
                       step="15"
-                      className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Price (₱)</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Price (₱)</label>
                     <input
                       type="number"
                       value={formData.price}
@@ -235,36 +234,36 @@ export default function DashboardRates() {
                       min="0"
                       step="50"
                       placeholder="300"
-                      className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">Description</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Description</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={2}
                     placeholder="Brief description of the session..."
-                    className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none resize-none"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none resize-none border-0"
                   />
                 </div>
 
                 <div className="space-y-3 pt-2">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.is_package}
                       onChange={(e) => setFormData({ ...formData, is_package: e.target.checked })}
-                      className="w-4 h-4 text-slate-900 rounded border-slate-300 dark:border-slate-700 focus:ring-primary-500"
+                      className="w-4 h-4 text-[#E27396] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E27396]"
                     />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">This is a package deal</span>
                   </label>
 
                   {formData.is_package && (
                     <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                         Number of Sessions in Package
                       </label>
                       <input
@@ -272,7 +271,7 @@ export default function DashboardRates() {
                         value={formData.package_sessions}
                         onChange={(e) => setFormData({ ...formData, package_sessions: e.target.value })}
                         min="2"
-                        className="w-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
+                        className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
                       />
                     </div>
                   )}
@@ -282,14 +281,14 @@ export default function DashboardRates() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="flex-1 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white rounded-xl text-xs font-bold transition-colors disabled:opacity-50 cursor-pointer"
+                    className="btn-hover-pink flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingRate ? 'Update Rate' : 'Add Rate'}
                   </button>
