@@ -5,13 +5,17 @@
  * Mounts all API routes under /api/*.
  */
 
+import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '.env') });
 dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Route modules
 import authRoutes from './routes/auth.js';
@@ -19,9 +23,6 @@ import profileRoutes from './routes/profile.js';
 import availabilityRoutes from './routes/availability.js';
 import ratesRoutes from './routes/rates.js';
 import bookingsRoutes from './routes/bookings.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
