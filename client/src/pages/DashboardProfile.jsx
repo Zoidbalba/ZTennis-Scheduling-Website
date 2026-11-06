@@ -193,6 +193,27 @@ export default function DashboardProfile() {
             ))}
           </div>
 
+          {/* Account Security */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6 sm:p-8 space-y-4">
+            <h2 className="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
+              Account Security & Login Password
+            </h2>
+            <p className="text-xs text-slate-400 dark:text-slate-500 -mt-2">
+              Change the password you use to log in to the Coach Dashboard. Leave blank if you don't want to change it.
+            </p>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">New Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password || ''}
+                onChange={handleChange}
+                placeholder="Enter at least 6 characters to update password"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+              />
+            </div>
+          </div>
+
           {/* Submit */}
           <div className="flex justify-end gap-3 pt-2">
             <button

@@ -14,21 +14,6 @@ import { authMiddleware } from '../middleware/auth.js';
 const router = Router();
 
 /**
- * Helper: convert sql.js result set to an array of plain objects.
- */
-function rowsToObjects(result) {
-  if (!result || result.length === 0) return [];
-  const { columns, values } = result[0];
-  return values.map((row) => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    return obj;
-  });
-}
-
-/**
  * GET /api/rates
  *
  * Returns all session rates.
@@ -36,8 +21,8 @@ function rowsToObjects(result) {
 router.get('/', async (req, res) => {
   try {
     const db = await getDb();
-    const result = db.exec('SELECT * FROM rates');
-    res.json(rowsToObjects(result));
+    const rows = await db.query('SELECT * FROM rates');
+    res.json(rows);
   } catch (err) {
     console.error('Get rates error:', err);
     res.status(500).json({ error: err.message });
@@ -70,7 +55,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const db = await getDb();
 
-    db.run(
+    const runRes = await db.run(
       `INSERT INTO rates
          (session_type, duration_minutes, price, description, is_package, package_sessions)
        VALUES (?, ?, ?, ?, ?, ?)`,
@@ -86,18 +71,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     saveDb(db);
 
-    // Retrieve the newly created rate
-    const stmt = db.prepare('SELECT * FROM rates WHERE id = last_insert_rowid()');
-    let rate = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      rate = {};
-      columns.forEach((col, i) => {
-        rate[col] = row[i];
-      });
-    }
-    stmt.free();
+    const rate = await db.get('SELECT * FROM rates WHERE id = ?', [runRes.lastInsertRowid]);
 
     res.status(201).json({ message: 'Rate created', rate });
   } catch (err) {
@@ -159,22 +133,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
     }
 
     values.push(Number(id));
-    db.run(`UPDATE rates SET ${updates.join(', ')} WHERE id = ?`, values);
+    await db.run(`UPDATE rates SET ${updates.join(', ')} WHERE id = ?`, values);
     saveDb(db);
 
-    // Return the updated rate
-    const stmt = db.prepare('SELECT * FROM rates WHERE id = ?');
-    stmt.bind([Number(id)]);
-    let rate = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      rate = {};
-      columns.forEach((col, i) => {
-        rate[col] = row[i];
-      });
-    }
-    stmt.free();
+    const rate = await db.get('SELECT * FROM rates WHERE id = ?', [Number(id)]);
 
     res.json({ message: 'Rate updated', rate });
   } catch (err) {
@@ -194,7 +156,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
     const db = await getDb();
 
-    db.run('DELETE FROM rates WHERE id = ?', [Number(id)]);
+    await db.run('DELETE FROM rates WHERE id = ?', [Number(id)]);
     saveDb(db);
 
     res.json({ message: 'Rate deleted' });

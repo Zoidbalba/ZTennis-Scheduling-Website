@@ -15,21 +15,6 @@ import { authMiddleware } from '../middleware/auth.js';
 const router = Router();
 
 /**
- * Helper: convert sql.js result set to an array of plain objects.
- */
-function rowsToObjects(result) {
-  if (!result || result.length === 0) return [];
-  const { columns, values } = result[0];
-  return values.map((row) => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    return obj;
-  });
-}
-
-/**
  * GET /api/availability
  *
  * Returns all availability slots that are NOT blocked (public view).
@@ -37,8 +22,8 @@ function rowsToObjects(result) {
 router.get('/', async (req, res) => {
   try {
     const db = await getDb();
-    const result = db.exec('SELECT * FROM availability_slots WHERE is_blocked = 0');
-    res.json(rowsToObjects(result));
+    const rows = await db.query('SELECT * FROM availability_slots WHERE is_blocked = 0');
+    res.json(rows);
   } catch (err) {
     console.error('Get availability error:', err);
     res.status(500).json({ error: err.message });
@@ -54,8 +39,8 @@ router.get('/', async (req, res) => {
 router.get('/all', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const result = db.exec('SELECT * FROM availability_slots');
-    res.json(rowsToObjects(result));
+    const rows = await db.query('SELECT * FROM availability_slots');
+    res.json(rows);
   } catch (err) {
     console.error('Get all availability error:', err);
     res.status(500).json({ error: err.message });
@@ -79,7 +64,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const db = await getDb();
 
-    db.run(
+    const runRes = await db.run(
       `INSERT INTO availability_slots (day_of_week, start_time, end_time, specific_date, is_blocked)
        VALUES (?, ?, ?, ?, ?)`,
       [day_of_week, start_time, end_time, specific_date || null, is_blocked ? 1 : 0]
@@ -87,11 +72,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
     saveDb(db);
 
-    // Retrieve the newly created slot
-    const result = db.exec('SELECT * FROM availability_slots WHERE id = last_insert_rowid()');
-    const rows = rowsToObjects(result);
+    const slot = await db.get('SELECT * FROM availability_slots WHERE id = ?', [runRes.lastInsertRowid]);
 
-    res.status(201).json({ message: 'Slot created', slot: rows[0] });
+    res.status(201).json({ message: 'Slot created', slot });
   } catch (err) {
     console.error('Create slot error:', err);
     res.status(500).json({ error: err.message });
@@ -139,23 +122,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'No valid fields to update.' });
     }
 
-    values.push(id);
-    db.run(`UPDATE availability_slots SET ${updates.join(', ')} WHERE id = ?`, values);
+    values.push(Number(id));
+    await db.run(`UPDATE availability_slots SET ${updates.join(', ')} WHERE id = ?`, values);
     saveDb(db);
 
-    // Return the updated slot
-    const stmt = db.prepare('SELECT * FROM availability_slots WHERE id = ?');
-    stmt.bind([Number(id)]);
-    let slot = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      slot = {};
-      columns.forEach((col, i) => {
-        slot[col] = row[i];
-      });
-    }
-    stmt.free();
+    const slot = await db.get('SELECT * FROM availability_slots WHERE id = ?', [Number(id)]);
 
     res.json({ message: 'Slot updated', slot });
   } catch (err) {
@@ -175,7 +146,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
     const db = await getDb();
 
-    db.run('DELETE FROM availability_slots WHERE id = ?', [Number(id)]);
+    await db.run('DELETE FROM availability_slots WHERE id = ?', [Number(id)]);
     saveDb(db);
 
     res.json({ message: 'Slot deleted' });

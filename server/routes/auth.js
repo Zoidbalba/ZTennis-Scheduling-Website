@@ -14,28 +14,12 @@ import { JWT_SECRET } from '../middleware/auth.js';
 const router = Router();
 
 /**
- * Helper: convert sql.js result set to an array of plain objects.
- */
-function rowsToObjects(result) {
-  if (!result || result.length === 0) return [];
-  const { columns, values } = result[0];
-  return values.map((row) => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    return obj;
-  });
-}
-
-/**
  * POST /api/auth/login
  *
  * Body: { email: string, password: string }
  *    or { username: string, password: string }
  *
- * There is only one coach (id = 1). The email / username field is accepted
- * for convenience but the lookup always targets the single profile row.
+ * Targets coach id = 1 (or the first registered coach profile).
  */
 router.post('/login', async (req, res) => {
   try {
@@ -48,14 +32,11 @@ router.post('/login', async (req, res) => {
     const db = await getDb();
 
     // Fetch the single coach profile
-    const result = db.exec('SELECT * FROM coach_profile WHERE id = 1');
-    const rows = rowsToObjects(result);
+    const coach = await db.get('SELECT * FROM coach_profile WHERE id = 1');
 
-    if (rows.length === 0) {
+    if (!coach) {
       return res.status(401).json({ error: 'Coach profile not found. Run the seed script first.' });
     }
-
-    const coach = rows[0];
 
     // Compare supplied password against the stored hash
     const isMatch = bcrypt.compareSync(password, coach.password_hash);

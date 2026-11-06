@@ -1,11 +1,12 @@
 /**
  * Seed Script — populates database with initial data
+ * Supports both PostgreSQL (Supabase) and SQLite (sql.js)
  *
  * Coach info:
  * - Coach Zoid
  * - Location: Malaybalay City
  * - Phone: 09350034792
- * - Socials: Facebook, Instagram, Messenger (Viber removed)
+ * - Socials: Facebook, Instagram, Messenger
  * - Availability: Monday, Tuesday, Thursday, Friday, Saturday (6:00 AM - 9:00 AM)
  * - Rates: ₱300 / person (Individual), ₱250 / person (Group)
  * - Court: Public court, session lasts ~1.5 - 2 hrs (can extend based on court availability)
@@ -19,18 +20,27 @@ export async function seedDatabase(existingDb) {
   const db = existingDb || (await getDb());
 
   // 1. Reset tables
-  db.run('DELETE FROM coach_profile');
-  db.run('DELETE FROM availability_slots');
-  db.run('DELETE FROM rates');
-  db.run('DELETE FROM bookings');
+  await db.run('DELETE FROM bookings');
+  await db.run('DELETE FROM rates');
+  await db.run('DELETE FROM availability_slots');
+  await db.run('DELETE FROM coach_profile');
 
-  try {
-    db.run("DELETE FROM sqlite_sequence WHERE name IN ('coach_profile', 'availability_slots', 'rates', 'bookings')");
-  } catch (e) {}
+  if (db.isPostgres) {
+    try {
+      await db.run('ALTER SEQUENCE IF EXISTS coach_profile_id_seq RESTART WITH 1');
+      await db.run('ALTER SEQUENCE IF EXISTS availability_slots_id_seq RESTART WITH 1');
+      await db.run('ALTER SEQUENCE IF EXISTS rates_id_seq RESTART WITH 1');
+      await db.run('ALTER SEQUENCE IF EXISTS bookings_id_seq RESTART WITH 1');
+    } catch (e) {}
+  } else {
+    try {
+      await db.run("DELETE FROM sqlite_sequence WHERE name IN ('coach_profile', 'availability_slots', 'rates', 'bookings')");
+    } catch (e) {}
+  }
 
   // 2. Coach Profile (id = 1)
   const passwordHash = bcrypt.hashSync('admin123', 10);
-  db.run(
+  await db.run(
     `INSERT INTO coach_profile (
       id, name, photo_url, bio, experience, specialties,
       location, court_details, phone, email,
@@ -67,7 +77,7 @@ export async function seedDatabase(existingDb) {
   ];
 
   for (const item of activeDays) {
-    db.run(
+    await db.run(
       `INSERT INTO availability_slots (day_of_week, start_time, end_time, is_blocked)
        VALUES (?, ?, ?, 0)`,
       [item.day, '06:00', '09:00']
@@ -76,7 +86,7 @@ export async function seedDatabase(existingDb) {
   console.log('  ✅ 5 availability slots created (M, T, TH, F, SAT: 06:00 - 09:00)');
 
   // 4. Session Rates
-  db.run(
+  await db.run(
     `INSERT INTO rates (session_type, duration_minutes, price, description, is_package, package_sessions)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [
@@ -89,7 +99,7 @@ export async function seedDatabase(existingDb) {
     ]
   );
 
-  db.run(
+  await db.run(
     `INSERT INTO rates (session_type, duration_minutes, price, description, is_package, package_sessions)
      VALUES (?, ?, ?, ?, ?, ?)`,
     [
@@ -156,7 +166,7 @@ export async function seedDatabase(existingDb) {
   ];
 
   for (const b of sampleBookings) {
-    db.run(
+    await db.run(
       `INSERT INTO bookings
          (player_name, player_contact, player_email, skill_level, message, coach_notes, status, booking_date, start_time, end_time)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -177,7 +187,7 @@ export async function seedDatabase(existingDb) {
   console.log('  ✅ 4 sample trainee bookings created (Mateo, Andrea, Chris, Bea)');
 
   saveDb(db);
-  console.log('🎉 Seed complete! Database updated at server/db/tennis_coach.db');
+  console.log('🎉 Seed complete!');
 }
 
 // Run automatically if executed directly via node CLI

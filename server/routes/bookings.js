@@ -3,7 +3,11 @@
  *
  * POST   /              — public: creates a booking request (status: pending)
  * GET    /              — auth:   returns all bookings, newest first
- * PUT    /:id/status    — auth:   updates booking status (confirmed / declined)
+ * GET    /trainees      — auth:   returns aggregated trainee profiles
+ * PUT    /:id/status    — auth:   updates booking status (confirmed / declined) & sends automated SMS
+ * POST   /:id/send-sms  — auth:   manually dispatches SMS to trainee
+ * PUT    /:id           — auth:   updates booking details & coach notes
+ * DELETE /:id           — auth:   deletes a booking
  */
 
 import { Router } from 'express';
@@ -12,21 +16,6 @@ import { authMiddleware } from '../middleware/auth.js';
 import { sendBookingStatusSms, sendSms } from '../services/sms.js';
 
 const router = Router();
-
-/**
- * Helper: convert sql.js result set to an array of plain objects.
- */
-function rowsToObjects(result) {
-  if (!result || result.length === 0) return [];
-  const { columns, values } = result[0];
-  return values.map((row) => {
-    const obj = {};
-    columns.forEach((col, i) => {
-      obj[col] = row[i];
-    });
-    return obj;
-  });
-}
 
 /**
  * POST /api/bookings
@@ -58,7 +47,7 @@ router.post('/', async (req, res) => {
 
     const db = await getDb();
 
-    db.run(
+    const runRes = await db.run(
       `INSERT INTO bookings
          (slot_id, player_name, player_contact, player_email,
           skill_level, message, status, booking_date, start_time, end_time)
@@ -78,18 +67,7 @@ router.post('/', async (req, res) => {
 
     saveDb(db);
 
-    // Retrieve the newly created booking
-    const stmt = db.prepare('SELECT * FROM bookings WHERE id = last_insert_rowid()');
-    let booking = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      booking = {};
-      columns.forEach((col, i) => {
-        booking[col] = row[i];
-      });
-    }
-    stmt.free();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [runRes.lastInsertRowid]);
 
     res.status(201).json({ message: 'Booking request submitted', booking });
   } catch (err) {
@@ -107,8 +85,10 @@ router.post('/', async (req, res) => {
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const result = db.exec('SELECT * FROM bookings ORDER BY booking_date DESC, start_time DESC, created_at DESC');
-    res.json(rowsToObjects(result));
+    const rows = await db.query(
+      'SELECT * FROM bookings ORDER BY booking_date DESC, start_time DESC, created_at DESC'
+    );
+    res.json(rows);
   } catch (err) {
     console.error('Get bookings error:', err);
     res.status(500).json({ error: err.message });
@@ -124,8 +104,9 @@ router.get('/', authMiddleware, async (req, res) => {
 router.get('/trainees', authMiddleware, async (req, res) => {
   try {
     const db = await getDb();
-    const result = db.exec('SELECT * FROM bookings ORDER BY booking_date DESC, start_time DESC');
-    const allBookings = rowsToObjects(result);
+    const allBookings = await db.query(
+      'SELECT * FROM bookings ORDER BY booking_date DESC, start_time DESC'
+    );
 
     // Group bookings by trainee (using lowercased player_name + player_contact as key)
     const traineesMap = new Map();
@@ -191,28 +172,15 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
     const db = await getDb();
 
     // Check existing booking
-    const stmtCheck = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    stmtCheck.bind([Number(id)]);
-    if (!stmtCheck.step()) {
-      stmtCheck.free();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
-    const booking = {};
-    stmtCheck.getColumnNames().forEach((col, i) => {
-      booking[col] = stmtCheck.get()[i];
-    });
-    stmtCheck.free();
 
     // Fetch coach profile for SMS sender info
     let coachProfile = null;
     try {
-      const profileRes = db.exec('SELECT name, phone FROM coach_profile LIMIT 1');
-      if (profileRes && profileRes[0] && profileRes[0].values.length > 0) {
-        coachProfile = {
-          name: profileRes[0].values[0][0],
-          phone: profileRes[0].values[0][1],
-        };
-      }
+      coachProfile = await db.get('SELECT name, phone FROM coach_profile LIMIT 1');
     } catch (e) {}
 
     // Send automated SMS if accepted or rejected
@@ -237,22 +205,13 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
     }
 
     // Update status and SMS tracking in database
-    db.run(
+    await db.run(
       'UPDATE bookings SET status = ?, sms_status = ?, sms_sent_at = ? WHERE id = ?',
       [status, smsStatusVal, smsSentAtVal, Number(id)]
     );
     saveDb(db);
 
-    // Re-fetch updated booking
-    const stmtUpdated = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    stmtUpdated.bind([Number(id)]);
-    const updatedBooking = {};
-    if (stmtUpdated.step()) {
-      stmtUpdated.getColumnNames().forEach((col, i) => {
-        updatedBooking[col] = stmtUpdated.get()[i];
-      });
-    }
-    stmtUpdated.free();
+    const updatedBooking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
 
     res.json({
       message: `Booking status updated to ${status}`,
@@ -278,17 +237,10 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
     const { message } = req.body;
 
     const db = await getDb();
-    const stmtCheck = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    stmtCheck.bind([Number(id)]);
-    if (!stmtCheck.step()) {
-      stmtCheck.free();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
-    const booking = {};
-    stmtCheck.getColumnNames().forEach((col, i) => {
-      booking[col] = stmtCheck.get()[i];
-    });
-    stmtCheck.free();
 
     if (!booking.player_contact) {
       return res.status(400).json({ error: 'No phone number for this booking' });
@@ -296,13 +248,7 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
 
     let coachProfile = null;
     try {
-      const profileRes = db.exec('SELECT name, phone FROM coach_profile LIMIT 1');
-      if (profileRes && profileRes[0] && profileRes[0].values.length > 0) {
-        coachProfile = {
-          name: profileRes[0].values[0][0],
-          phone: profileRes[0].values[0][1],
-        };
-      }
+      coachProfile = await db.get('SELECT name, phone FROM coach_profile LIMIT 1');
     } catch (e) {}
 
     let smsResult;
@@ -318,7 +264,7 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
     const smsStatusVal = smsResult.sent ? (smsResult.simulated ? 'simulated' : 'sent') : `failed: ${smsResult.error || 'error'}`;
     const smsSentAtVal = smsResult.sent ? new Date().toISOString() : booking.sms_sent_at;
 
-    db.run(
+    await db.run(
       'UPDATE bookings SET sms_status = ?, sms_sent_at = ? WHERE id = ?',
       [smsStatusVal, smsSentAtVal, Number(id)]
     );
@@ -348,17 +294,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const db = await getDb();
 
     // Fetch existing
-    const checkStmt = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    checkStmt.bind([Number(id)]);
-    if (!checkStmt.step()) {
-      checkStmt.free();
+    const current = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!current) {
       return res.status(404).json({ error: 'Booking not found' });
     }
-    const current = {};
-    checkStmt.getColumnNames().forEach((col, i) => {
-      current[col] = checkStmt.get()[i];
-    });
-    checkStmt.free();
 
     const newDate = booking_date !== undefined ? booking_date : current.booking_date;
     const newStart = start_time !== undefined ? start_time : current.start_time;
@@ -366,24 +305,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const newNotes = coach_notes !== undefined ? coach_notes : current.coach_notes;
     const newStatus = status !== undefined ? status : current.status;
 
-    db.run(
+    await db.run(
       'UPDATE bookings SET booking_date = ?, start_time = ?, end_time = ?, coach_notes = ?, status = ? WHERE id = ?',
       [newDate, newStart, newEnd, newNotes, newStatus, Number(id)]
     );
     saveDb(db);
 
-    const stmt = db.prepare('SELECT * FROM bookings WHERE id = ?');
-    stmt.bind([Number(id)]);
-    let booking = null;
-    if (stmt.step()) {
-      const columns = stmt.getColumnNames();
-      const row = stmt.get();
-      booking = {};
-      columns.forEach((col, i) => {
-        booking[col] = row[i];
-      });
-    }
-    stmt.free();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
 
     res.json({ message: 'Booking updated successfully', booking });
   } catch (err) {
@@ -403,7 +331,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     const { id } = req.params;
     const db = await getDb();
 
-    db.run('DELETE FROM bookings WHERE id = ?', [Number(id)]);
+    await db.run('DELETE FROM bookings WHERE id = ?', [Number(id)]);
     saveDb(db);
 
     res.json({ message: 'Booking deleted successfully' });
