@@ -303,14 +303,7 @@ router.post('/google', async (req, res) => {
       });
     }
 
-    // MODE: SIGNUP — If ALREADY registered, inform them
-    if (mode === 'signup' && trainee) {
-      return res.status(409).json({
-        error: 'An account with this Google email already exists. Please switch to Sign In.',
-      });
-    }
-
-    // Create new trainee if in signup mode
+    // MODE: SIGNUP — If not registered yet, create new trainee; if already registered, log in directly
     if (!trainee) {
       const insertRes = await db.run(
         `INSERT INTO trainees (email, name, picture, google_id)

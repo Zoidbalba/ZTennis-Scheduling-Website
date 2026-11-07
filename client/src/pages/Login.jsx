@@ -6,7 +6,7 @@ import ZTennisLogo from '../components/ZTennisLogo';
 export default function Login() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { login, loginTrainee, signupTrainee, loginWithGoogle, isAuthenticated, isTraineeAuthenticated } = useAuth();
+  const { login, signupTrainee, loginWithGoogle, isAuthenticated, isTraineeAuthenticated } = useAuth();
 
   const isBookingRedirect = searchParams.get('redirect') === 'booking' || searchParams.get('action') === 'book';
   const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'signin';
@@ -14,18 +14,39 @@ export default function Login() {
   // Mode: 'signin' or 'signup'
   const [mode, setMode] = useState(initialMode);
 
-  // Form states
+  // Form states for manual registration
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
+  // Google Account prompt state
+  const [googlePromptOpen, setGooglePromptOpen] = useState(false);
+  const [googleEmail, setGoogleEmail] = useState('');
+  const [googleName, setGoogleName] = useState('');
+  const [rememberedAccount, setRememberedAccount] = useState(null);
+
   // UI status
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState('');
+  const [googleError, setGoogleError] = useState('');
   const [notRegisteredError, setNotRegisteredError] = useState(false);
   const [alreadyRegisteredError, setAlreadyRegisteredError] = useState(false);
+
+  // Load any previously remembered Google account
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('last_google_account') || localStorage.getItem('trainee_user');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.email) {
+          setRememberedAccount(parsed);
+          setGoogleEmail(parsed.email);
+        }
+      }
+    } catch (e) {}
+  }, []);
 
   // If already logged in, redirect appropriately
   useEffect(() => {
@@ -53,11 +74,12 @@ export default function Login() {
   const handleModeSwitch = (newMode) => {
     setMode(newMode);
     setError('');
+    setGoogleError('');
     setNotRegisteredError(false);
     setAlreadyRegisteredError(false);
   };
 
-  // Submit Sign In or Sign Up
+  // Submit Manual Sign In or Sign Up
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -71,7 +93,7 @@ export default function Login() {
         await signupTrainee({ name, email, phone, password });
         handleSuccessRedirect();
       } else {
-        // Sign In (Checks coach first, then trainee. If trainee not registered, backend rejects!)
+        // Sign In (Checks coach first, then trainee)
         const res = await login(email, password);
         if (res.role === 'coach') {
           navigate('/dashboard/bookings', { replace: true });
@@ -94,28 +116,47 @@ export default function Login() {
     }
   };
 
-  // 1-Click Google Sign In / Sign Up
-  const handleGoogleAuth = async () => {
+  // Open Google Account selector (does NOT require manual form input!)
+  const handleOpenGoogleAuth = () => {
     setError('');
+    setGoogleError('');
     setNotRegisteredError(false);
     setAlreadyRegisteredError(false);
+    setGooglePromptOpen(true);
+  };
 
-    if (!email || !email.includes('@')) {
-      setError('Please type your Gmail or email address into the Email field above to continue with Google.');
+  // Execute Google Authentication with chosen Google account
+  const handleExecuteGoogle = async (targetEmail, targetName = '', currentMode = mode) => {
+    const emailToUse = (targetEmail || googleEmail).trim().toLowerCase();
+    const nameToUse = (targetName || googleName || (emailToUse ? emailToUse.split('@')[0] : '')).trim();
+
+    if (!emailToUse || !emailToUse.includes('@')) {
+      setGoogleError('Please provide a valid Gmail or Google account address.');
       return;
     }
 
     try {
       setGoogleLoading(true);
-      await loginWithGoogle({
-        email: email.trim().toLowerCase(),
-        name: name.trim() || email.split('@')[0],
-        mode, // 'signin' or 'signup'
+      setGoogleError('');
+
+      const res = await loginWithGoogle({
+        email: emailToUse,
+        name: nameToUse,
+        mode: currentMode, // 'signin' or 'signup'
       });
+
+      // Remember Google account in localStorage for seamless 1-click return
+      localStorage.setItem('last_google_account', JSON.stringify({
+        email: emailToUse,
+        name: res.trainee?.name || nameToUse,
+        picture: res.trainee?.picture || '',
+      }));
+
+      setGooglePromptOpen(false);
       handleSuccessRedirect();
     } catch (err) {
       const msg = err.message || 'Google authentication failed';
-      setError(msg);
+      setGoogleError(msg);
       if (err.notRegistered || msg.toLowerCase().includes('not signed up') || msg.toLowerCase().includes('no account found')) {
         setNotRegisteredError(true);
       } else if (err.status === 409 || msg.toLowerCase().includes('already exists')) {
@@ -238,7 +279,37 @@ export default function Login() {
             </div>
           )}
 
-          {/* Authentication Form */}
+          {/* 1-Click Google Sign In / Sign Up Button (Prominently at Top!) */}
+          <button
+            type="button"
+            onClick={handleOpenGoogleAuth}
+            className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-soft-xs hover:shadow-soft-sm flex items-center justify-center gap-3 cursor-pointer"
+          >
+            {/* Official Google G Logo */}
+            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>
+              {mode === 'signup'
+                ? 'Sign Up with Google Account'
+                : 'Sign In with Google Account'}
+            </span>
+          </button>
+
+          {/* Simple Divider */}
+          <div className="relative my-6 text-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
+            </div>
+            <span className="relative bg-white dark:bg-slate-900 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              or with email & password
+            </span>
+          </div>
+
+          {/* Manual Authentication Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
               <>
@@ -319,39 +390,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Simple Divider */}
-          <div className="relative my-6 text-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
-            </div>
-            <span className="relative bg-white dark:bg-slate-900 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              or continue with Google
-            </span>
-          </div>
-
-          {/* Google Sign In / Sign Up Button */}
-          <button
-            type="button"
-            onClick={handleGoogleAuth}
-            disabled={googleLoading}
-            className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-          >
-            {/* Official Google G Logo */}
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
-              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-            </svg>
-            <span>
-              {googleLoading
-                ? 'Connecting to Google...'
-                : mode === 'signup'
-                ? 'Sign Up with Google / Gmail'
-                : 'Sign In with Google / Gmail'}
-            </span>
-          </button>
-
           {/* Toggle between Sign In and Sign Up at bottom */}
           <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
             {mode === 'signin' ? (
@@ -381,10 +419,163 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <div className="max-w-md mx-auto w-full text-center pb-4 text-slate-500 text-[11px]">
         ZTennis Coaching Portal • Coach Zoid • Malaybalay City
       </div>
+
+      {/* DEDICATED GOOGLE ACCOUNT SELECTOR MODAL (AUTOMATICALLY ASKS FOR GOOGLE ACCOUNT) */}
+      {googlePromptOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/75 dark:bg-black/85 backdrop-blur-sm animate-fade-in"
+          onClick={() => setGooglePromptOpen(false)}
+        >
+          <div
+            className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-2xl w-full max-w-md overflow-hidden animate-scale-up border border-slate-100 dark:border-slate-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Google Brand Header */}
+            <div className="p-6 sm:p-7 text-center border-b border-slate-100 dark:border-slate-800 relative bg-slate-50/60 dark:bg-slate-850">
+              <button
+                type="button"
+                onClick={() => setGooglePromptOpen(false)}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+
+              <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-soft-xs flex items-center justify-center mx-auto mb-3">
+                <svg className="w-6 h-6" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+              </div>
+
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                {mode === 'signup' ? 'Sign up with Google' : 'Sign in with Google'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Choose an account to continue to <strong>ZTennis</strong>
+              </p>
+            </div>
+
+            {/* Google Prompt Body */}
+            <div className="p-6 sm:p-7 space-y-4">
+              {googleError && (
+                <div className="bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200 p-3.5 rounded-2xl text-xs font-semibold space-y-2">
+                  <div className="flex items-start gap-2">
+                    <span>⚠️</span>
+                    <p className="flex-1 leading-snug">{googleError}</p>
+                  </div>
+                  {notRegisteredError && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleModeSwitch('signup');
+                        handleExecuteGoogle(googleEmail, googleName, 'signup');
+                      }}
+                      className="w-full bg-[#E0749A] hover:bg-[#cf5479] text-white py-2 px-3 rounded-xl font-bold text-xs shadow-soft-xs cursor-pointer text-center"
+                    >
+                      Sign Up with this Google Account Now →
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* 1-Tap Quick Select from Remembered Google Account */}
+              {rememberedAccount && rememberedAccount.email && (
+                <div className="space-y-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Recently Used Account
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleExecuteGoogle(rememberedAccount.email, rememberedAccount.name)}
+                    disabled={googleLoading}
+                    className="w-full p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-[#E0749A] dark:hover:border-[#E0749A] bg-white dark:bg-slate-800 flex items-center justify-between text-left transition-all cursor-pointer group shadow-soft-xs"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {rememberedAccount.picture ? (
+                        <img
+                          src={rememberedAccount.picture}
+                          alt=""
+                          className="w-10 h-10 rounded-full object-cover ring-2 ring-pink-100"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#E0749A] to-[#1F7A5A] text-white font-black text-sm flex items-center justify-center">
+                          {(rememberedAccount.name || rememberedAccount.email)[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <div className="font-extrabold text-xs text-slate-900 dark:text-white truncate">
+                          {rememberedAccount.name || 'Google Account'}
+                        </div>
+                        <div className="text-[11px] text-slate-400 dark:text-slate-400 font-mono truncate">
+                          {rememberedAccount.email}
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-[#E0749A] group-hover:translate-x-0.5 transition-transform shrink-0">
+                      {googleLoading ? 'Connecting...' : 'Continue →'}
+                    </span>
+                  </button>
+                </div>
+              )}
+
+              {/* Enter or Confirm Google Account */}
+              <div className="space-y-3 pt-1">
+                {rememberedAccount && (
+                  <div className="relative text-center my-3">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
+                    </div>
+                    <span className="relative bg-white dark:bg-slate-900 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      or use another Google account
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    Google / Gmail Account:
+                  </label>
+                  <input
+                    type="email"
+                    value={googleEmail}
+                    onChange={(e) => setGoogleEmail(e.target.value)}
+                    placeholder="yourname@gmail.com"
+                    autoFocus={!rememberedAccount}
+                    className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0 transition-all placeholder:text-slate-400"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleExecuteGoogle(googleEmail, googleName)}
+                  disabled={googleLoading || !googleEmail}
+                  className="w-full py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <span>
+                    {googleLoading
+                      ? 'Connecting Google Account...'
+                      : mode === 'signup'
+                      ? 'Sign Up with this Google Account →'
+                      : 'Sign In with this Google Account →'}
+                  </span>
+                </button>
+              </div>
+
+              <div className="pt-2 text-center">
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  To continue, Google will share your name, email address, and profile picture with ZTennis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
