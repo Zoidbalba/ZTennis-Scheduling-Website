@@ -34,6 +34,9 @@ export default function TraineeBookings() {
   const [lookupEmail, setLookupEmail] = useState('');
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [followUpBooking, setFollowUpBooking] = useState(null);
+  const [cancelModalBooking, setCancelModalBooking] = useState(null);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelToast, setCancelToast] = useState(null);
 
   const activeEmail = trainee?.email || lookupEmail;
 
@@ -68,6 +71,28 @@ export default function TraineeBookings() {
     e.preventDefault();
     if (lookupEmail) {
       fetchBookings(lookupEmail);
+    }
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!cancelModalBooking) return;
+    try {
+      setCancelling(true);
+      await api.deleteBooking(cancelModalBooking.id);
+      const cancelledDate = formatDate(cancelModalBooking.booking_date);
+      setCancelModalBooking(null);
+      setCancelToast({
+        title: 'Booking Cancelled',
+        message: `Your coaching appointment for ${cancelledDate} has been removed.`,
+      });
+      setTimeout(() => setCancelToast(null), 5000);
+      if (activeEmail) {
+        fetchBookings(activeEmail);
+      }
+    } catch (err) {
+      alert(err.message || 'Failed to cancel booking.');
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -385,14 +410,24 @@ export default function TraineeBookings() {
                           )}
                         </div>
 
-                        {/* Interactive Follow-Up Button */}
-                        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                        {/* Action Buttons: Follow-Up & Cancel */}
+                        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
                           <button
                             onClick={() => setFollowUpBooking(b)}
-                            className="py-2.5 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                            className="py-2 px-3.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
                             <span>💬</span>
-                            <span>{b.follow_up_message ? 'Update Follow-Up' : 'Send Follow-Up Note'}</span>
+                            <span>{b.follow_up_message ? 'Update Note' : 'Follow Up'}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setCancelModalBooking(b)}
+                            className="py-2 px-3.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                            title="Cancel this appointment"
+                          >
+                            <span>🗑️</span>
+                            <span>Cancel Booking</span>
                           </button>
                         </div>
                       </div>
@@ -410,7 +445,6 @@ export default function TraineeBookings() {
         <p>© {new Date().getFullYear()} ZTennis • Coach Zoid • Malaybalay City, Bukidnon</p>
       </footer>
 
-      {/* Google Sign-In Modal */}
       {/* Trainee Follow-Up Modal */}
       <FollowUpModal
         booking={followUpBooking}
@@ -420,6 +454,96 @@ export default function TraineeBookings() {
           if (activeEmail) fetchBookings(activeEmail);
         }}
       />
+
+      {/* CANCEL BOOKING CONFIRMATION MODAL */}
+      {cancelModalBooking && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm animate-fade-in"
+          onClick={() => !cancelling && setCancelModalBooking(null)}
+        >
+          <div
+            className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden relative animate-scale-up border border-slate-100 dark:border-slate-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top-Right Corner Exit Button */}
+            <button
+              type="button"
+              onClick={() => !cancelling && setCancelModalBooking(null)}
+              aria-label="Close"
+              className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-50 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 flex items-center justify-center text-xs font-black transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <div className="p-6 sm:p-8 text-center space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 font-black text-2xl flex items-center justify-center mx-auto shadow-soft-xs">
+                🗑️
+              </div>
+
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-3 py-1 rounded-full border border-rose-200/60">
+                  Cancel Appointment
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-2">
+                  Cancel This Session?
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
+                  Are you sure you want to cancel your scheduled lesson? This will immediately free up the morning court slot.
+                </p>
+              </div>
+
+              {/* Booking Details Summary */}
+              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-2xl text-left text-xs space-y-2 border border-slate-100 dark:border-slate-750">
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-semibold">Date:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{formatDate(cancelModalBooking.booking_date)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-semibold">Time:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">
+                    {formatTime(cancelModalBooking.start_time)} – {formatTime(cancelModalBooking.end_time)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-semibold">Session:</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{cancelModalBooking.session_type}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCancelModalBooking(null)}
+                  disabled={cancelling}
+                  className="flex-1 py-3 px-4 rounded-xl font-bold text-xs text-slate-700 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 transition-colors cursor-pointer"
+                >
+                  Keep Booking
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCancel}
+                  disabled={cancelling}
+                  className="flex-1 py-3 px-4 rounded-xl font-bold text-xs text-white bg-rose-600 hover:bg-rose-700 shadow-soft-xs transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <span>{cancelling ? 'Cancelling...' : 'Yes, Cancel Lesson'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST NOTIFICATION */}
+      {cancelToast && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-soft-xl flex items-center gap-3 animate-fade-in-up border border-slate-700">
+          <span className="text-xl">✓</span>
+          <div>
+            <p className="text-xs font-bold">{cancelToast.title}</p>
+            <p className="text-[11px] text-slate-300 mt-0.5">{cancelToast.message}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -481,20 +481,70 @@ router.put('/:id', authMiddleware, async (req, res) => {
 /**
  * DELETE /api/bookings/:id
  *
- * Deletes a booking by ID.
- * Requires authentication.
+ * Deletes or cancels a booking by ID.
+ * Allowed for Coach OR the Trainee who owns the booking.
  */
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const db = await getDb();
 
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    const isCoach = req.coach && req.coach.role === 'coach';
+    const isOwner = req.coach && req.coach.email && booking.player_email &&
+      req.coach.email.trim().toLowerCase() === booking.player_email.trim().toLowerCase();
+
+    if (!isCoach && !isOwner) {
+      return res.status(403).json({ error: 'You are only authorized to cancel your own appointments.' });
+    }
+
     await db.run('DELETE FROM bookings WHERE id = ?', [Number(id)]);
     saveDb(db);
 
-    res.json({ message: 'Booking deleted successfully' });
+    console.log(`[BOOKING CANCELLED] ID ${id} for ${booking.player_name} (${booking.booking_date})`);
+
+    res.json({ message: 'Appointment cancelled and removed successfully', id: Number(id) });
   } catch (err) {
     console.error('Delete booking error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/bookings/:id/cancel
+ *
+ * Dedicated trainee cancel route.
+ */
+router.post('/:id/cancel', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const db = await getDb();
+
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    const isCoach = req.coach && req.coach.role === 'coach';
+    const isOwner = req.coach && req.coach.email && booking.player_email &&
+      req.coach.email.trim().toLowerCase() === booking.player_email.trim().toLowerCase();
+
+    if (!isCoach && !isOwner) {
+      return res.status(403).json({ error: 'You are only authorized to cancel your own appointments.' });
+    }
+
+    await db.run('DELETE FROM bookings WHERE id = ?', [Number(id)]);
+    saveDb(db);
+
+    console.log(`[BOOKING CANCELLED VIA CANCEL ENDPOINT] ID ${id} for ${booking.player_name} (${booking.booking_date})`);
+
+    res.json({ message: 'Appointment cancelled successfully', id: Number(id) });
+  } catch (err) {
+    console.error('Cancel booking error:', err);
     res.status(500).json({ error: err.message });
   }
 });
