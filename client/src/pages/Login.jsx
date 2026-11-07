@@ -60,39 +60,70 @@ export default function Login() {
 
   // Initialize native Google Identity Services if a Client ID is provided
   useEffect(() => {
-    if (window.google?.accounts?.id && googleClientId) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: googleClientId,
-          callback: async (response) => {
-            if (response.credential) {
-              setGoogleLoading(true);
-              try {
-                await loginWithGoogle({ credential: response.credential, mode });
-                handleSuccessRedirect();
-              } catch (err) {
-                setError(err.message || 'Google sign-in failed');
-              } finally {
-                setGoogleLoading(false);
-              }
-            }
-          },
-        });
+    let cancel = false;
 
-        if (googleBtnRef.current) {
-          googleBtnRef.current.innerHTML = '';
-          window.google.accounts.id.renderButton(googleBtnRef.current, {
-            theme: 'outline',
-            size: 'large',
-            text: mode === 'signup' ? 'signup_with' : 'signin_with',
-            shape: 'pill',
-            width: 380,
+    const initGis = () => {
+      if (cancel) return;
+      if (window.google?.accounts?.id && googleClientId) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: googleClientId,
+            callback: async (response) => {
+              if (response.credential) {
+                setGoogleLoading(true);
+                setError('');
+                setNotRegisteredError(false);
+                setAlreadyRegisteredError(false);
+                try {
+                  await loginWithGoogle({ credential: response.credential, mode });
+                  handleSuccessRedirect();
+                } catch (err) {
+                  console.error('Google login error:', err);
+                  setError(err.message || 'Google sign-in failed');
+                  if (err.notRegistered) {
+                    setNotRegisteredError(true);
+                  }
+                } finally {
+                  setGoogleLoading(false);
+                }
+              }
+            },
           });
+
+          if (googleBtnRef.current) {
+            googleBtnRef.current.innerHTML = '';
+            window.google.accounts.id.renderButton(googleBtnRef.current, {
+              theme: 'outline',
+              size: 'large',
+              text: mode === 'signup' ? 'signup_with' : 'signin_with',
+              shape: 'pill',
+              width: 350,
+            });
+          }
+        } catch (err) {
+          console.warn('Google Identity Services init error:', err);
         }
-      } catch (err) {
-        console.warn('Google Identity Services init error:', err);
       }
+    };
+
+    if (window.google?.accounts?.id) {
+      initGis();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          clearInterval(interval);
+          initGis();
+        }
+      }, 150);
+      return () => {
+        cancel = true;
+        clearInterval(interval);
+      };
     }
+
+    return () => {
+      cancel = true;
+    };
   }, [mode, googleClientId]);
 
   const handleSuccessRedirect = () => {
@@ -305,32 +336,36 @@ export default function Login() {
             </div>
           )}
 
-          {/* Native Google Identity Services Button Container (if configured) */}
-          {googleClientId && (
-            <div className="flex justify-center mb-2">
-              <div ref={googleBtnRef} />
+          {/* Single Unified Google Sign In / Sign Up Button */}
+          {googleClientId ? (
+            <div className="flex flex-col items-center justify-center w-full min-h-[46px]">
+              <div ref={googleBtnRef} className="w-full flex justify-center" />
+              {googleLoading && (
+                <div className="mt-2 text-center text-xs font-bold text-[#E0749A] animate-pulse">
+                  Verifying Google account with ZTennis...
+                </div>
+              )}
             </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleOpenGoogleAuth}
+              className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-soft-xs hover:shadow-soft-sm flex items-center justify-center gap-3 cursor-pointer"
+            >
+              {/* Official Google G Logo */}
+              <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+              <span>
+                {mode === 'signup'
+                  ? 'Sign Up with Google'
+                  : 'Sign In with Google'}
+              </span>
+            </button>
           )}
-
-          {/* Custom Google Sign In / Sign Up Button */}
-          <button
-            type="button"
-            onClick={handleOpenGoogleAuth}
-            className="w-full bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-3.5 px-4 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-soft-xs hover:shadow-soft-sm flex items-center justify-center gap-3 cursor-pointer"
-          >
-            {/* Official Google G Logo */}
-            <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
-              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-            </svg>
-            <span>
-              {mode === 'signup'
-                ? 'Sign Up with Google Account'
-                : 'Sign In with Google Account'}
-            </span>
-          </button>
 
           {/* Simple Divider */}
           <div className="relative my-6 text-center">
