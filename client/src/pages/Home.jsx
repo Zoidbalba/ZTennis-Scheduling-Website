@@ -62,10 +62,10 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
-        <div className="text-center animate-fade-in">
-          <ZTennisLogo className="w-12 h-12 mx-auto mb-4" showText={false} />
-          <p className="text-[#E27396] font-bold text-xs tracking-wider uppercase">Loading ZTennis...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#14060f]">
+        <div className="text-center animate-fade-in space-y-3">
+          <ZTennisLogo className="w-14 h-14 mx-auto" showText={true} showTagline={true} />
+          <p className="text-[#E0749A] font-bold text-xs tracking-wider uppercase">Loading ZTennis...</p>
         </div>
       </div>
     );
@@ -215,7 +215,7 @@ export default function Home() {
       {/* Minimal Clean Footer */}
       <footer className="border-t border-slate-100 dark:border-slate-800/80 py-8 px-4 text-center text-xs text-slate-400">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <ZTennisLogo className="w-6 h-6" textClassName="text-base" />
+          <ZTennisLogo className="w-7 h-7" textClassName="text-base font-black" showTagline={true} />
           <p>© {new Date().getFullYear()} ZTennis • Coach Zoid • Malaybalay City, Bukidnon</p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

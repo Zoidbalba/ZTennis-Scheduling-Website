@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ZTennisLogo from '../components/ZTennisLogo';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,15 +35,18 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-[#14060f] dark:bg-[#0d0309] flex items-center justify-center p-4 transition-colors">
       <div className="w-full max-w-md">
-        {/* Logo with "Z" brand mark */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 text-white font-extrabold text-2xl hover:opacity-90 transition-opacity">
-            <span className="w-10 h-10 rounded-2xl bg-[#E27396] text-white font-black text-xl flex items-center justify-center shadow-soft-sm">
-              Z
-            </span>
-            <span>Z Tennis Coach</span>
+        {/* Official Brand Logo */}
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+            <ZTennisLogo
+              className="w-12 h-12 mx-auto"
+              textClassName="text-2xl text-white font-black"
+              textColor="text-white"
+              showTagline={true}
+              taglineColor="text-[#E0749A]"
+            />
           </Link>
-          <p className="text-[#FFDBE5]/80 mt-2 text-sm font-medium">Coach Dashboard Portal</p>
+          <p className="text-[#FFDBE5]/80 mt-2 text-xs font-semibold">Coach Dashboard Portal</p>
         </div>
 
         {/* Login Card */}

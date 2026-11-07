@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <clipPath id="fav-ball-clip">
+      <circle cx="50" cy="50" r="46" />
+    </clipPath>
+  </defs>
+  <!-- Rose Ball Base -->
+  <circle cx="50" cy="50" r="46" fill="#E0749A" />
+  <!-- White Curved Seams clipped to ball circle -->
+  <g clip-path="url(#fav-ball-clip)">
+    <path d="M 17 15 C 38 32 38 68 17 85" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" fill="none" />
+    <path d="M 83 15 C 62 32 62 68 83 85" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" fill="none" />
+  </g>
+  <!-- Bold Ink Z Center -->
+  <path d="M 37 35.5 H 63 V 42.5 L 47 57.5 H 63 V 64.5 H 37 V 57.5 L 53 42.5 H 37 V 35.5 Z" fill="#1A1118" />
+</svg>

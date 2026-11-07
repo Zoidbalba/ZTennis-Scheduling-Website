@@ -78,7 +78,13 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
       {/* Mobile Top Header */}
       <div className="lg:hidden bg-[#163829] px-4 py-3.5 flex items-center justify-between text-white sticky top-0 z-40 shadow-sm">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <ZTennisLogo className="w-7 h-7" textClassName="text-lg text-white" textColor="text-white" />
+          <ZTennisLogo
+            className="w-7 h-7"
+            textClassName="text-lg text-white font-black"
+            textColor="text-white"
+            showTagline={true}
+            taglineColor="text-[#E0749A]"
+          />
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -132,9 +138,15 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
       {/* Desktop Deep Forest Green Sidebar matching Figma Screenshots 4 & 5 */}
       <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-[#163829] text-white min-h-screen px-5 py-6 justify-between flex-shrink-0">
         <div>
-          {/* Logo matching Figma */}
+          {/* Official ZTennis Logo matching dark styleguide card */}
           <Link to="/" className="flex items-center mb-8 pl-1">
-            <ZTennisLogo className="w-8 h-8" textClassName="text-xl text-white font-black" textColor="text-white" />
+            <ZTennisLogo
+              className="w-9 h-9"
+              textClassName="text-xl text-white font-black"
+              textColor="text-white"
+              showTagline={true}
+              taglineColor="text-[#E0749A]"
+            />
           </Link>
 
           {/* Coach Mini Profile Box with new Coach Portrait */}

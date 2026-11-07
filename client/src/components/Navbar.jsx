@@ -44,9 +44,13 @@ export default function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Brand Logo matching Figma */}
+          {/* Official ZTennis Brand Logo matching Brand Guide */}
           <Link to="/" className="flex items-center">
-            <ZTennisLogo className="w-8 h-8" textClassName="text-xl sm:text-2xl font-black" />
+            <ZTennisLogo
+              className="w-8 h-8 sm:w-9 sm:h-9"
+              textClassName="text-xl sm:text-2xl font-black"
+              showTagline={true}
+            />
           </Link>
 
           {/* Desktop Navigation matching Figma Screenshot 1 */}
