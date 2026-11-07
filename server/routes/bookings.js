@@ -11,9 +11,15 @@
  */
 
 import { Router } from 'express';
+import jwt from 'jsonwebtoken';
 import { getDb, saveDb } from '../db/database.js';
-import { authMiddleware } from '../middleware/auth.js';
+import { authMiddleware, JWT_SECRET } from '../middleware/auth.js';
 import { sendBookingStatusSms, sendSms } from '../services/sms.js';
+import {
+  sendBookingConfirmationEmail,
+  sendBookingSubmittedEmail,
+  sendFollowUpNotificationToCoach,
+} from '../services/email.js';
 
 const router = Router();
 
@@ -86,7 +92,18 @@ router.post('/', async (req, res) => {
 
     const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [runRes.lastInsertRowid]);
 
-    res.status(201).json({ message: 'Booking request submitted', booking });
+    // Send confirmation receipt email to trainee if email was provided
+    let emailResult = null;
+    if (booking && booking.player_email && booking.player_email.includes('@')) {
+      try {
+        const coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
+        emailResult = await sendBookingSubmittedEmail({ booking, coachProfile });
+      } catch (emailErr) {
+        console.warn('Booking submission email notice:', emailErr.message);
+      }
+    }
+
+    res.status(201).json({ message: 'Booking request submitted', booking, email: emailResult });
   } catch (err) {
     console.error('Create booking error:', err);
     res.status(500).json({ error: err.message });
@@ -232,13 +249,39 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    // Fetch coach profile for SMS sender info
+    // Fetch coach profile for notifications
     let coachProfile = null;
     try {
-      coachProfile = await db.get('SELECT name, phone FROM coach_profile LIMIT 1');
+      coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
     } catch (e) {}
 
-    // Send automated SMS if accepted or rejected
+    // 1. Send automated email confirmation to trainee's Gmail/email
+    let emailResult = null;
+    let emailStatusVal = booking.email_status || '';
+    let emailSentAtVal = booking.email_sent_at || '';
+
+    if (send_notification && booking.player_email && (status === 'confirmed' || status === 'declined' || status === 'completed')) {
+      try {
+        emailResult = await sendBookingConfirmationEmail({
+          booking,
+          coachProfile,
+          status,
+        });
+
+        if (emailResult.sent) {
+          emailStatusVal = emailResult.simulated ? 'sent (simulated)' : 'sent';
+          emailSentAtVal = new Date().toISOString();
+        } else {
+          emailStatusVal = `failed: ${emailResult.error || 'unknown'}`;
+        }
+      } catch (emailErr) {
+        console.error('Error dispatching automated email confirmation:', emailErr);
+        emailResult = { sent: false, error: emailErr.message };
+        emailStatusVal = `failed: ${emailErr.message}`;
+      }
+    }
+
+    // 2. Send automated SMS if accepted or rejected (secondary channel)
     let smsResult = null;
     let smsStatusVal = booking.sms_status || '';
     let smsSentAtVal = booking.sms_sent_at || '';
@@ -259,10 +302,12 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       }
     }
 
-    // Update status and SMS tracking in database
+    // Update status, email, and SMS tracking in database
     await db.run(
-      'UPDATE bookings SET status = ?, sms_status = ?, sms_sent_at = ? WHERE id = ?',
-      [status, smsStatusVal, smsSentAtVal, Number(id)]
+      `UPDATE bookings
+       SET status = ?, sms_status = ?, sms_sent_at = ?, email_status = ?, email_sent_at = ?
+       WHERE id = ?`,
+      [status, smsStatusVal, smsSentAtVal, emailStatusVal, emailSentAtVal, Number(id)]
     );
     saveDb(db);
 
@@ -271,6 +316,7 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
     res.json({
       message: `Booking status updated to ${status}`,
       booking: updatedBooking,
+      email: emailResult,
       sms: smsResult,
     });
   } catch (err) {
@@ -394,6 +440,111 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     res.json({ message: 'Booking deleted successfully' });
   } catch (err) {
     console.error('Delete booking error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * GET /api/bookings/my-bookings
+ *
+ * Trainee route to fetch their personal bookings.
+ * Accepts:
+ * - Authorization Bearer token (containing trainee email)
+ * - OR ?email=user@gmail.com
+ */
+router.get('/my-bookings', async (req, res) => {
+  try {
+    let email = req.query.email;
+
+    // Check token if provided
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const decoded = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
+        if (decoded.email) {
+          email = decoded.email;
+        }
+      } catch (e) {}
+    }
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Email parameter or trainee authentication is required.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const db = await getDb();
+
+    const rows = await db.query(
+      `SELECT * FROM bookings
+       WHERE LOWER(player_email) = LOWER(?)
+       ORDER BY booking_date DESC, start_time DESC`,
+      [cleanEmail]
+    );
+
+    res.json(rows || []);
+  } catch (err) {
+    console.error('Get my-bookings error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/bookings/:id/follow-up
+ *
+ * Trainee sends a personal follow-up message to manually inform the coach about their pending schedule.
+ * Body: { message: string }
+ */
+router.post('/:id/follow-up', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Follow-up message cannot be empty.' });
+    }
+
+    const db = await getDb();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking schedule not found.' });
+    }
+
+    const cleanMsg = message.trim();
+    const nowIso = new Date().toISOString();
+
+    await db.run(
+      'UPDATE bookings SET follow_up_message = ?, follow_up_sent_at = ? WHERE id = ?',
+      [cleanMsg, nowIso, Number(id)]
+    );
+    saveDb(db);
+
+    const updatedBooking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+
+    // Notify Coach Zoid via email
+    let coachProfile = null;
+    try {
+      coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
+    } catch (e) {}
+
+    let notifyResult = null;
+    try {
+      notifyResult = await sendFollowUpNotificationToCoach({
+        booking: updatedBooking,
+        followUpMessage: cleanMsg,
+        coachProfile,
+      });
+    } catch (notifyErr) {
+      console.warn('Follow-up coach email notice:', notifyErr.message);
+    }
+
+    res.json({
+      message: 'Follow-up message sent to Coach Zoid!',
+      booking: updatedBooking,
+      notification: notifyResult,
+    });
+  } catch (err) {
+    console.error('Follow-up error:', err);
     res.status(500).json({ error: err.message });
   }
 });

@@ -1,7 +1,7 @@
 const API_BASE = '/api';
 
 async function request(endpoint, options = {}) {
-  const token = localStorage.getItem('coach_token');
+  const token = localStorage.getItem('coach_token') || localStorage.getItem('trainee_token');
   const headers = { 'Content-Type': 'application/json', ...options.headers };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -18,6 +18,8 @@ export const api = {
 
   // Auth
   login: (credentials) => request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
+  loginGoogle: (payload) => request('/auth/google', { method: 'POST', body: JSON.stringify(payload) }),
+  getAuthMe: () => request('/auth/me'),
 
   // Availability
   getAvailability: () => request('/availability'),
@@ -36,6 +38,8 @@ export const api = {
   getBookedDates: () => request('/bookings/booked-dates'),
   createBooking: (data) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
   getBookings: () => request('/bookings'),
+  getMyBookings: (email) => request('/bookings/my-bookings' + (email ? `?email=${encodeURIComponent(email)}` : '')),
+  sendFollowUpMessage: (id, message) => request(`/bookings/${id}/follow-up`, { method: 'POST', body: JSON.stringify({ message }) }),
   getTrainees: () => request('/bookings/trainees'),
   updateBookingStatus: (id, status, extra = {}) => request(`/bookings/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, ...extra }) }),
   sendBookingSms: (id, data = {}) => request(`/bookings/${id}/send-sms`, { method: 'POST', body: JSON.stringify(data) }),

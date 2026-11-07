@@ -106,7 +106,21 @@ export default function DashboardBookings() {
       setActionLoading(id);
       const res = await api.updateBookingStatus(id, status);
 
-      if (res.sms) {
+      if (res.email) {
+        if (res.email.sent && !res.email.simulated) {
+          setSmsToast({
+            type: 'success',
+            title: `Email Sent to ${res.booking.player_name}!`,
+            message: `Official schedule confirmation delivered to ${res.booking.player_email || res.booking.player_contact}.`,
+          });
+        } else if (res.email.simulated) {
+          setSmsToast({
+            type: 'info',
+            title: `Status: ${status === 'confirmed' ? 'Accepted' : 'Declined'}`,
+            message: `Schedule updated! Trainee email notification simulated for ${res.booking.player_email || res.booking.player_name}.`,
+          });
+        }
+      } else if (res.sms) {
         if (res.sms.sent && !res.sms.simulated) {
           setSmsToast({
             type: 'success',
@@ -587,12 +601,23 @@ export default function DashboardBookings() {
                             <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">
                               {b.player_name}
                             </h4>
-                            <a
-                              href={`tel:${b.player_contact}`}
-                              className="text-xs text-slate-400 hover:text-slate-600 font-semibold"
-                            >
-                              {b.player_contact}
-                            </a>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <a
+                                href={`tel:${b.player_contact}`}
+                                className="text-xs text-slate-400 hover:text-slate-600 font-semibold"
+                              >
+                                {b.player_contact}
+                              </a>
+                              {b.player_email && (
+                                <a
+                                  href={`mailto:${b.player_email}`}
+                                  className="text-[11px] text-[#E0749A] hover:underline font-medium truncate max-w-[170px]"
+                                  title={b.player_email}
+                                >
+                                  ✉️ {b.player_email}
+                                </a>
+                              )}
+                            </div>
                           </div>
                         </div>
 
@@ -625,11 +650,30 @@ export default function DashboardBookings() {
                         </span>
                       </div>
 
-                      {/* Trainee Message */}
+                      {/* Trainee Initial Booking Message */}
                       {b.message && (
                         <p className="text-xs italic text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800/80 p-2.5 rounded-xl border-l-2 border-[#E0749A]">
                           "{b.message}"
                         </p>
+                      )}
+
+                      {/* Trainee Follow-Up Reminder Alert */}
+                      {b.follow_up_message && (
+                        <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl space-y-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                              <span>🔔 Trainee Follow-Up</span>
+                            </span>
+                            {b.follow_up_sent_at && (
+                              <span className="text-[9.5px] font-semibold text-amber-600/80 dark:text-amber-400/80">
+                                {new Date(b.follow_up_sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-amber-950 dark:text-amber-100 font-medium italic">
+                            "{b.follow_up_message}"
+                          </p>
+                        </div>
                       )}
 
                       {/* Quick Action Buttons */}
@@ -639,9 +683,10 @@ export default function DashboardBookings() {
                             <button
                               onClick={() => handleStatusUpdate(b.id, 'confirmed')}
                               disabled={actionLoading === b.id}
-                              className="flex-1 bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs py-2 px-3 rounded-xl transition-colors cursor-pointer"
+                              className="flex-1 bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs py-2 px-3 rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                             >
-                              {actionLoading === b.id ? 'Saving...' : '✓ Accept'}
+                              <span>✓</span>
+                              <span>{actionLoading === b.id ? 'Confirming...' : 'Accept & Email'}</span>
                             </button>
                             <button
                               onClick={() => handleStatusUpdate(b.id, 'declined')}
@@ -754,15 +799,27 @@ export default function DashboardBookings() {
                             </span>
                           )}
                         </div>
-                        <a
-                          href={`tel:${b.player_contact}`}
-                          className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1.5 mt-1 font-semibold"
-                        >
-                          <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                          </svg>
-                          <span>{b.player_contact}</span>
-                        </a>
+                        <div className="flex items-center gap-2 flex-wrap mt-1">
+                          <a
+                            href={`tel:${b.player_contact}`}
+                            className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1.5 font-semibold"
+                          >
+                            <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <span>{b.player_contact}</span>
+                          </a>
+                          {b.player_email && (
+                            <a
+                              href={`mailto:${b.player_email}`}
+                              className="text-xs text-[#E0749A] hover:underline font-semibold flex items-center gap-1"
+                              title={b.player_email}
+                            >
+                              <span>✉️</span>
+                              <span className="truncate max-w-[150px]">{b.player_email}</span>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -792,14 +849,32 @@ export default function DashboardBookings() {
                       </div>
                     </div>
 
-                    {/* Quote / Message Box */}
-                    <div className="flex-1 max-w-md">
+                    {/* Quote / Message Box & Trainee Follow-Up */}
+                    <div className="flex-1 max-w-md space-y-2">
                       {b.message ? (
                         <p className="text-xs italic text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border-l-2 border-[#E0749A]">
                           "{b.message}"
                         </p>
                       ) : (
                         <p className="text-xs italic text-slate-300 dark:text-slate-600">No message provided</p>
+                      )}
+
+                      {b.follow_up_message && (
+                        <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl space-y-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                              <span>🔔 Trainee Follow-Up Reminder</span>
+                            </span>
+                            {b.follow_up_sent_at && (
+                              <span className="text-[9.5px] font-semibold text-amber-600/80 dark:text-amber-400/80">
+                                {new Date(b.follow_up_sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-amber-950 dark:text-amber-100 font-medium italic">
+                            "{b.follow_up_message}"
+                          </p>
+                        </div>
                       )}
                     </div>
 
@@ -815,7 +890,7 @@ export default function DashboardBookings() {
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>{actionLoading === b.id ? 'Updating...' : 'Accept & send SMS'}</span>
+                            <span>{actionLoading === b.id ? 'Updating...' : 'Accept & Send Email'}</span>
                           </button>
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'declined')}
@@ -846,6 +921,15 @@ export default function DashboardBookings() {
                           >
                             💬
                           </button>
+                          {b.player_email && (
+                            <a
+                              href={`mailto:${b.player_email}?subject=ZTennis%20Session%20Update%20-%20Coach%20Zoid&body=Hi%20${encodeURIComponent(b.player_name)},%0A%0A`}
+                              className="p-2 rounded-xl text-slate-400 hover:text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 text-xs font-bold transition-colors cursor-pointer"
+                              title={`Email ${b.player_email}`}
+                            >
+                              ✉️
+                            </a>
+                          )}
                         </div>
                       )}
                     </div>

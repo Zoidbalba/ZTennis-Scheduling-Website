@@ -248,6 +248,16 @@ async function initPostgresSchema(pool) {
         package_sessions INTEGER DEFAULT 1
       );
 
+      CREATE TABLE IF NOT EXISTS trainees (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        picture TEXT DEFAULT '',
+        google_id TEXT DEFAULT '',
+        phone TEXT DEFAULT '',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE TABLE IF NOT EXISTS bookings (
         id SERIAL PRIMARY KEY,
         slot_id INTEGER REFERENCES availability_slots(id) ON DELETE SET NULL,
@@ -265,6 +275,10 @@ async function initPostgresSchema(pool) {
         end_time TEXT NOT NULL,
         sms_status TEXT DEFAULT '',
         sms_sent_at TEXT DEFAULT '',
+        email_status TEXT DEFAULT '',
+        email_sent_at TEXT DEFAULT '',
+        follow_up_message TEXT DEFAULT '',
+        follow_up_sent_at TEXT DEFAULT '',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
@@ -278,6 +292,10 @@ async function initPostgresSchema(pool) {
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS coach_notes TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS sms_status TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS sms_sent_at TEXT DEFAULT ''",
+      "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS email_status TEXT DEFAULT ''",
+      "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS email_sent_at TEXT DEFAULT ''",
+      "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS follow_up_message TEXT DEFAULT ''",
+      "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS follow_up_sent_at TEXT DEFAULT ''",
     ];
 
     for (const mig of migrations) {
@@ -334,6 +352,16 @@ async function initSqliteSchema(sqliteDb) {
       package_sessions INTEGER DEFAULT 1
     );
 
+    CREATE TABLE IF NOT EXISTS trainees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      picture TEXT DEFAULT '',
+      google_id TEXT DEFAULT '',
+      phone TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       slot_id INTEGER,
@@ -351,6 +379,10 @@ async function initSqliteSchema(sqliteDb) {
       end_time TEXT NOT NULL,
       sms_status TEXT DEFAULT '',
       sms_sent_at TEXT DEFAULT '',
+      email_status TEXT DEFAULT '',
+      email_sent_at TEXT DEFAULT '',
+      follow_up_message TEXT DEFAULT '',
+      follow_up_sent_at TEXT DEFAULT '',
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (slot_id) REFERENCES availability_slots(id)
     );
@@ -364,6 +396,10 @@ async function initSqliteSchema(sqliteDb) {
     "ALTER TABLE bookings ADD COLUMN coach_notes TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN sms_status TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN sms_sent_at TEXT DEFAULT ''",
+    "ALTER TABLE bookings ADD COLUMN email_status TEXT DEFAULT ''",
+    "ALTER TABLE bookings ADD COLUMN email_sent_at TEXT DEFAULT ''",
+    "ALTER TABLE bookings ADD COLUMN follow_up_message TEXT DEFAULT ''",
+    "ALTER TABLE bookings ADD COLUMN follow_up_sent_at TEXT DEFAULT ''",
   ];
 
   for (const mig of migrations) {

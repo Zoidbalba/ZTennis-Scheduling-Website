@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 
 const SKILL_LEVELS = ['Beginner (New to tennis)', 'Intermediate (Can rally & serve)', 'Advanced (Competitive)', 'Kids'];
@@ -14,12 +16,13 @@ function formatTime(timeStr) {
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
+  const { trainee, isTraineeAuthenticated } = useAuth();
   const [form, setForm] = useState({
     session_type: selectedSlot?.session_type || 'Individual Session',
     member_count: selectedSlot?.member_count || (selectedSlot?.session_type === 'Group Session' ? 2 : 1),
-    player_name: '',
-    contact_number: '',
-    email: '',
+    player_name: trainee?.name || '',
+    contact_number: trainee?.phone || '',
+    email: trainee?.email || '',
     skill_level: 'Beginner (New to tennis)',
     message: '',
   });
@@ -142,29 +145,57 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
 
         {/* Content */}
         {success ? (
-          <div className="p-6 sm:p-10 text-center animate-fade-in">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E0749A] text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-soft-sm">
+          <div className="p-6 sm:p-10 text-center animate-fade-in space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#E0749A] text-white font-black text-2xl flex items-center justify-center mx-auto shadow-soft-sm">
               Z
             </div>
-            <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Booking Request Sent</h4>
-            <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A] mb-3">
+            <div>
+              <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Booking Request Sent</h4>
+              <p className="text-xs text-slate-400 mt-0.5">We've received your morning session request!</p>
+            </div>
+
+            <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A]">
               {form.session_type === 'Group Session'
                 ? `👥 Group Session · ${form.member_count || 2} players · ₱${250 * (form.member_count || 2)} total`
                 : '👤 Individual Session · ₱300'}
             </div>
-            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-sm mx-auto mb-6 sm:mb-8 leading-relaxed">
-              Coach will contact you via <strong>SMS or phone</strong> at{' '}
-              <span className="font-bold text-slate-900 dark:text-white">{form.contact_number}</span> to confirm your session and court arrangements.
-            </p>
-            <button
-              onClick={onClose}
-              className="w-full sm:w-auto bg-[#E0749A] hover:bg-[#cf5479] text-white px-8 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer transition-colors"
-            >
-              Done
-            </button>
+
+            <div className="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-2xl border border-emerald-200/60 dark:border-emerald-800/60 text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+              <span className="font-extrabold text-[#1F7A5A] dark:text-emerald-400 block mb-1">
+                ✉️ Email Confirmation Notice
+              </span>
+              Confirmation updates will be delivered to <strong className="text-slate-900 dark:text-white">{form.email || form.contact_number}</strong>. You can also view your live schedule status anytime on your Trainee Portal!
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
+              <Link
+                to="/my-bookings"
+                className="py-3 px-6 bg-[#1F7A5A] hover:bg-[#165a42] text-white rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center justify-center gap-1.5"
+              >
+                <span>Track in My Bookings →</span>
+              </Link>
+              <button
+                onClick={onClose}
+                className="py-3 px-6 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+              >
+                Done
+              </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
+            {isTraineeAuthenticated && trainee && (
+              <div className="bg-pink-50/70 dark:bg-[#20101a] border border-pink-200/80 dark:border-pink-900/60 p-3 rounded-2xl flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    Booking as {trainee.name} ({trainee.email})
+                  </span>
+                </div>
+                <span className="text-[10px] font-black uppercase text-[#E0749A]">Gmail Synced</span>
+              </div>
+            )}
+
             {error && (
               <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 px-4 py-3 rounded-2xl text-xs font-semibold">
                 {error}
@@ -331,16 +362,18 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-                Email Address (optional)
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                <span>Gmail / Email Address *</span>
+                <span className="text-[10px] text-[#1F7A5A] dark:text-emerald-400 font-bold lowercase">for schedule confirmation</span>
               </label>
               <input
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
+                required
                 className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
-                placeholder="email@example.com"
+                placeholder="yourname@gmail.com"
               />
             </div>
 

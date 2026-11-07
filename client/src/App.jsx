@@ -10,6 +10,7 @@ import DashboardTrainees from './pages/DashboardTrainees';
 import DashboardAvailability from './pages/DashboardAvailability';
 import DashboardRates from './pages/DashboardRates';
 import DashboardProfile from './pages/DashboardProfile';
+import TraineeBookings from './pages/TraineeBookings';
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -37,6 +38,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/coach" element={<CoachDetails />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/my-bookings" element={<TraineeBookings />} />
+          <Route path="/trainee" element={<Navigate to="/my-bookings" replace />} />
           <Route path="/dashboard" element={<Navigate to="/dashboard/bookings" replace />} />
           <Route path="/dashboard/bookings" element={<ProtectedRoute><DashboardBookings /></ProtectedRoute>} />
           <Route path="/dashboard/trainees" element={<ProtectedRoute><DashboardTrainees /></ProtectedRoute>} />
