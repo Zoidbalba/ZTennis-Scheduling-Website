@@ -98,13 +98,20 @@ export default function DashboardProfile() {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="max-w-3xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Edit Coach Profile</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1">Update your coaching bio, credentials, court details, and trainee contact channels</p>
-        </div>
-
+    <DashboardLayout
+      title="Coach Profile"
+      subtitle="Update your coaching bio, credentials, court details, and trainee contact channels."
+      headerAction={
+        <button
+          onClick={handleSubmit}
+          disabled={saving}
+          className="bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+        >
+          <span>{saving ? 'Saving...' : 'Save profile changes'}</span>
+        </button>
+      }
+    >
+      <div className="max-w-3xl space-y-6">
         {error && (
           <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">{error}</div>
         )}

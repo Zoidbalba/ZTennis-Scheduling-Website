@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
+import ZTennisLogo from './ZTennisLogo';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const isDashboard = location.pathname.startsWith('/dashboard');
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,58 +19,107 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
+
+  const scrollToSection = (id) => {
+    if (location.pathname !== '/') {
+      navigate('/#' + id);
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'glass-nav py-2.5'
-          : 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-soft-xs py-3.5'
+          ? 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shadow-sm py-3'
+          : 'bg-white dark:bg-slate-950 py-4 sm:py-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo with "Z" brand mark in solid Rose Pompadour */}
-          <Link
-            to="/"
-            className="flex items-center gap-3 font-extrabold tracking-tight text-slate-900 dark:text-white group"
-          >
-            <span className="w-9 h-9 rounded-xl bg-[#E27396] text-white font-black text-lg flex items-center justify-center shadow-soft-sm group-hover:bg-[#cf5479] transition-all">
-              Z
-            </span>
-            <div className="flex flex-col">
-              <span className="leading-none text-slate-900 dark:text-white font-extrabold text-base tracking-tight">
-                Z Tennis <span className="text-[#E27396] dark:text-[#EA9AB2] font-black text-xs tracking-normal">PH</span>
-              </span>
-              <span className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold tracking-wider uppercase mt-0.5">
-                Personal Coaching
-              </span>
-            </div>
+          {/* Brand Logo matching Figma */}
+          <Link to="/" className="flex items-center">
+            <ZTennisLogo className="w-8 h-8" textClassName="text-xl sm:text-2xl font-black" />
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-7">
-            {isDashboard ? <DashboardNav /> : <PublicNav />}
-          </div>
+          {/* Desktop Navigation matching Figma Screenshot 1 */}
+          <nav className="hidden md:flex items-center gap-8 lg:gap-10">
+            <button
+              onClick={() => scrollToSection('coach')}
+              className="text-xs lg:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection('sessions')}
+              className="text-xs lg:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              Sessions
+            </button>
+            <button
+              onClick={() => scrollToSection('availability')}
+              className="text-xs lg:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              Availability
+            </button>
 
-          {/* Mobile Right Controls: Theme Toggle + Hamburger */}
-          <div className="flex items-center gap-1.5 md:hidden">
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/dashboard"
+                  className="text-xs lg:text-sm font-bold text-[#337357] dark:text-emerald-400 hover:underline"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-xs font-semibold text-rose-500 hover:text-rose-600 cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="text-xs lg:text-sm font-bold text-[#337357] dark:text-emerald-400 hover:text-[#244c3a] dark:hover:text-emerald-300 transition-colors"
+              >
+                Coach login
+              </Link>
+            )}
+
+            {/* Book a lesson pill button */}
+            <button
+              onClick={() => scrollToSection('availability')}
+              className="bg-[#E27396] hover:bg-[#cf5479] text-white text-xs lg:text-sm font-bold px-5 py-2.5 rounded-xl shadow-soft-xs hover:shadow-soft-sm transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Book a lesson</span>
+              <span className="text-base leading-none">→</span>
+            </button>
+
+            <ThemeToggle />
+          </nav>
+
+          {/* Mobile Right Controls */}
+          <div className="flex items-center gap-2 md:hidden">
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+              className="p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="Toggle menu"
             >
               {mobileOpen ? (
-                <svg className="w-5 h-5 animate-scale-up" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -77,280 +128,65 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu dropdown */}
+      {/* Mobile Menu Dropdown */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md animate-fade-in-up">
-          <div className="px-5 py-4 space-y-2">
-            {isDashboard ? (
-              <DashboardNavMobile onClose={() => setMobileOpen(false)} />
-            ) : (
-              <PublicNavMobile onClose={() => setMobileOpen(false)} />
-            )}
-          </div>
+        <div className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-5 space-y-4 shadow-lg animate-fade-in-up">
+          <button
+            onClick={() => {
+              scrollToSection('coach');
+              setMobileOpen(false);
+            }}
+            className="block w-full text-left font-bold text-sm text-slate-800 dark:text-slate-200 py-2 cursor-pointer"
+          >
+            About
+          </button>
+          <button
+            onClick={() => {
+              scrollToSection('sessions');
+              setMobileOpen(false);
+            }}
+            className="block w-full text-left font-bold text-sm text-slate-800 dark:text-slate-200 py-2 cursor-pointer"
+          >
+            Sessions
+          </button>
+          <button
+            onClick={() => {
+              scrollToSection('availability');
+              setMobileOpen(false);
+            }}
+            className="block w-full text-left font-bold text-sm text-slate-800 dark:text-slate-200 py-2 cursor-pointer"
+          >
+            Availability
+          </button>
+
+          {isAuthenticated ? (
+            <Link
+              to="/dashboard"
+              className="block font-bold text-sm text-[#337357] dark:text-emerald-400 py-2"
+            >
+              Coach Dashboard →
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="block font-bold text-sm text-[#337357] dark:text-emerald-400 py-2"
+            >
+              Coach login
+            </Link>
+          )}
+
+          <button
+            onClick={() => {
+              scrollToSection('availability');
+              setMobileOpen(false);
+            }}
+            className="w-full bg-[#E27396] hover:bg-[#cf5479] text-white font-bold text-sm py-3 rounded-xl shadow-soft-xs text-center flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span>Book a lesson</span>
+            <span>→</span>
+          </button>
         </div>
       )}
     </header>
-  );
-}
-
-function PublicNav() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  const handleNav = (id) => {
-    if (location.pathname !== '/') {
-      navigate(`/#${id}`);
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <>
-      <Link
-        to="/coach"
-        className={`relative text-sm font-semibold transition-all py-1 ${
-          location.pathname === '/coach'
-            ? 'text-primary-600 dark:text-primary-400 font-bold'
-            : 'text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400'
-        }`}
-      >
-        Coach Profile
-        {location.pathname === '/coach' && (
-          <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-500 rounded-full animate-fade-in" />
-        )}
-      </Link>
-
-      <button
-        onClick={() => handleNav('schedule')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
-      >
-        Schedule
-      </button>
-
-      <button
-        onClick={() => handleNav('rates')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
-      >
-        Rates
-      </button>
-
-      <button
-        onClick={() => handleNav('profile')}
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
-      >
-        About
-      </button>
-
-      {/* Dominant Rose Pompadour CTA */}
-      <button
-        onClick={() => handleNav('schedule')}
-        className="btn-hover-pink bg-[#E27396] hover:bg-[#cf5479] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-soft-xs transition-all cursor-pointer"
-      >
-        Book a Session
-      </button>
-
-      {/* Dark Mode Toggle */}
-      <ThemeToggle />
-
-      {isAuthenticated ? (
-        <Link
-          to="/dashboard/bookings"
-          className="text-xs bg-[#FFDBE5] hover:bg-[#fcc5d7] dark:bg-[#20101a] dark:hover:bg-[#2e1725] text-[#92334f] dark:text-[#FFDBE5] px-4 py-2 rounded-xl font-bold transition-all shadow-soft-xs"
-        >
-          Dashboard
-        </Link>
-      ) : (
-        <Link
-          to="/login"
-          className="text-xs text-slate-400 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-semibold transition-colors"
-        >
-          Coach Login
-        </Link>
-      )}
-    </>
-  );
-}
-
-function PublicNavMobile({ onClose }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
-
-  const handleNav = (id) => {
-    onClose();
-    if (location.pathname !== '/') {
-      navigate(`/#${id}`);
-      setTimeout(() => {
-        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <>
-      <Link
-        to="/coach"
-        onClick={onClose}
-        className={`block w-full text-left px-4 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-          location.pathname === '/coach'
-            ? 'bg-primary-50 dark:bg-primary-950/60 text-primary-700 dark:text-primary-400 font-bold'
-            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
-        }`}
-      >
-        Coach Profile
-      </Link>
-      <button
-        onClick={() => handleNav('schedule')}
-        className="block w-full text-left px-4 py-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-sm cursor-pointer"
-      >
-        Schedule (Mon–Sun)
-      </button>
-      <button
-        onClick={() => handleNav('rates')}
-        className="block w-full text-left px-4 py-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-sm cursor-pointer"
-      >
-        Session Rates
-      </button>
-      <button
-        onClick={() => handleNav('profile')}
-        className="block w-full text-left px-4 py-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-sm cursor-pointer"
-      >
-        About Coaching
-      </button>
-      <button
-        onClick={() => handleNav('schedule')}
-        className="block w-full text-center px-4 py-3 rounded-xl bg-[#E27396] hover:bg-[#cf5479] text-white font-bold text-sm shadow-soft-xs cursor-pointer transition-colors"
-      >
-        Book a Session Now
-      </button>
-
-      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-2">
-        <ThemeToggle showLabel={true} />
-
-        {isAuthenticated ? (
-          <Link
-            to="/dashboard/bookings"
-            onClick={onClose}
-            className="text-xs font-bold text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-950/80 px-3 py-1.5 rounded-lg border border-primary-200/50 dark:border-primary-800/50"
-          >
-            Coach Dashboard
-          </Link>
-        ) : (
-          <Link
-            to="/login"
-            onClick={onClose}
-            className="text-xs text-slate-400 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-medium"
-          >
-            Coach Login
-          </Link>
-        )}
-      </div>
-    </>
-  );
-}
-
-function DashboardNav() {
-  const { logout } = useAuth();
-  const location = useLocation();
-
-  const links = [
-    { to: '/dashboard/bookings', label: 'Bookings' },
-    { to: '/dashboard/trainees', label: 'Trainees' },
-    { to: '/dashboard/availability', label: 'Availability' },
-    { to: '/dashboard/rates', label: 'Rates' },
-    { to: '/dashboard/profile', label: 'Profile' },
-  ];
-
-  return (
-    <>
-      <Link to="/" className="text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 text-xs font-bold flex items-center gap-1">
-        <span>←</span> View Site
-      </Link>
-      <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
-      {links.map(({ to, label }) => (
-        <Link
-          key={to}
-          to={to}
-          className={`text-sm font-semibold transition-all py-1 relative ${
-            location.pathname === to
-              ? 'text-primary-600 dark:text-primary-400 font-bold'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          {label}
-          {location.pathname === to && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E27396] rounded-full" />
-          )}
-        </Link>
-      ))}
-
-      {/* Dark Mode Toggle */}
-      <ThemeToggle />
-
-      <button
-        onClick={logout}
-        className="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-bold px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors cursor-pointer"
-      >
-        Logout
-      </button>
-    </>
-  );
-}
-
-function DashboardNavMobile({ onClose }) {
-  const { logout } = useAuth();
-  const location = useLocation();
-
-  const links = [
-    { to: '/dashboard/bookings', label: 'Bookings' },
-    { to: '/dashboard/trainees', label: 'Trainees' },
-    { to: '/dashboard/availability', label: 'Availability' },
-    { to: '/dashboard/rates', label: 'Rates' },
-    { to: '/dashboard/profile', label: 'Profile' },
-  ];
-
-  return (
-    <>
-      <div className="flex items-center justify-between px-2 pb-2 mb-2 border-b border-slate-100 dark:border-slate-800">
-        <Link
-          to="/"
-          onClick={onClose}
-          className="text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-        >
-          ← View Public Site
-        </Link>
-        <ThemeToggle showLabel={true} />
-      </div>
-      {links.map(({ to, label }) => (
-        <Link
-          key={to}
-          to={to}
-          onClick={onClose}
-          className={`block px-4 py-2.5 rounded-xl font-semibold text-sm ${
-            location.pathname === to
-              ? 'bg-primary-50 dark:bg-primary-950/60 text-primary-700 dark:text-primary-400 font-bold'
-              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
-          }`}
-        >
-          {label}
-        </Link>
-      ))}
-      <button
-        onClick={() => {
-          logout();
-          onClose();
-        }}
-        className="block w-full text-left px-4 py-2.5 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 font-bold text-sm cursor-pointer"
-      >
-        Logout
-      </button>
-    </>
   );
 }

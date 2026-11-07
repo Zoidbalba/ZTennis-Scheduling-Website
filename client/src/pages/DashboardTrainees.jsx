@@ -95,37 +95,22 @@ export default function DashboardTrainees() {
   });
 
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Top Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Coach Management Hub
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Trainees & Player Roster
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-              Manage players, view lesson histories, contact trainees, and record coaching notes
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            <Link
-              to="/dashboard/bookings"
-              className="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl transition-all shadow-soft-xs"
-            >
-              View Booking Requests →
-            </Link>
-          </div>
-        </div>
-
+    <DashboardLayout
+      title="Trainees & Player Roster"
+      subtitle="Manage players, view lesson histories, contact trainees, and record coaching notes."
+      headerAction={
+        <Link
+          to="/dashboard/bookings"
+          className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-5 py-3 rounded-2xl text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors shadow-soft-xs flex items-center gap-2"
+        >
+          <span>View Booking Requests</span>
+          <span>→</span>
+        </Link>
+      }
+    >
+      <div className="space-y-6">
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-soft-sm">
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Trainees</p>
             <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">{trainees.length}</p>

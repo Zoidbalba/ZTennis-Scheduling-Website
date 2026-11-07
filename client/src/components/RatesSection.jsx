@@ -1,142 +1,165 @@
 import React from 'react';
 
-function formatPrice(price) {
-  return `₱${Number(price).toLocaleString('en-PH')}`;
-}
+export default function RatesSection({ rates = [], onSelectRate }) {
+  const handleBookRate = (sessionType) => {
+    if (onSelectRate) {
+      onSelectRate(sessionType);
+    } else {
+      document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-export default function RatesSection({ rates = [] }) {
-  if (rates.length === 0) return null;
+  const individualRate = rates.find(
+    (r) => !r.session_type.toLowerCase().includes('group') && Number(r.price) >= 300
+  ) || {
+    id: 1,
+    session_type: 'Individual Session',
+    price: 300,
+    duration_minutes: 120,
+    description: '1-on-1 focused coaching',
+  };
 
-  const scrollToSchedule = () => {
-    document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
+  const groupRate = rates.find(
+    (r) => r.session_type.toLowerCase().includes('group') || Number(r.price) === 250
+  ) || {
+    id: 2,
+    session_type: 'Group Session',
+    price: 250,
+    duration_minutes: 120,
+    description: '2–4 players per session',
   };
 
   return (
-    <section id="rates" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-20">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#92334f] dark:text-[#FFDBE5] bg-[#FFDBE5] dark:bg-[#20101a] px-4 py-1.5 rounded-full shadow-soft-xs inline-block">
-          Transparent Pricing
-        </span>
-        <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3 mb-2 tracking-tight">
-          Session Rates & Pricing
-        </h2>
-        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-base leading-relaxed">
-          Affordable, straightforward rates per person. No hidden membership fees.
-        </p>
-
-        {/* Public Court & Duration Highlights — Solid Card */}
-        <div className="mt-5 p-5 rounded-3xl bg-white dark:bg-slate-900 text-left max-w-xl mx-auto text-xs sm:text-sm text-slate-800 dark:text-slate-200 shadow-soft-sm">
-          <p className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#6D9F71]"></span>
-            <span>Flexible Court Playtime Notice:</span>
-          </p>
-          <p className="text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">
-            Sessions run for about <strong>1 hr 30 min to 2 hours</strong>. Because training takes place on a <strong>public court</strong>, sessions can comfortably extend depending on open queue and court availability.
-          </p>
+    <section id="sessions" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-12">
+      {/* Header matching Figma Screenshot 2 */}
+      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-10 sm:mb-14 gap-4">
+        <div>
+          <span className="text-xs font-black tracking-widest text-[#E27396] uppercase mb-2 block">
+            CHOOSE YOUR SESSION
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            Coaching that fits your game.
+          </h2>
         </div>
+        <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-md lg:text-right leading-relaxed">
+          Every session includes court-side feedback and a simple practice plan to keep you progressing.
+        </p>
       </div>
 
-      {/* Rates Cards Grid — Solid Smooth Cards (No Outlines) */}
-      <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
-        {rates.map((rate) => {
-          const isGroup = rate.session_type.toLowerCase().includes('group') || Number(rate.price) === 250;
-
-          const highlights = isGroup
-            ? [
-                'Live-ball rallies, partner drills & point simulation',
-                'Doubles positioning, court awareness & tactical play',
-                'Fun, competitive mini-games with training partners',
-                'Motivating team atmosphere — train & improve together',
-              ]
-            : [
-                '1-on-1 dedicated coach focus & instant stroke feedback',
-                'Racquet grip, swing path & stroke mechanics correction',
-                'Custom footwork patterns, recovery steps & basket drills',
-                'Personalized session plan tailored to your tennis goals',
-              ];
-
-          return (
-            <div
-              key={rate.id}
-              className="card-hover-lift relative bg-white dark:bg-slate-900 rounded-3xl shadow-soft-md hover:shadow-soft-xl p-6 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300"
-            >
-              {/* Solid Corner Tag */}
-              <div className="absolute top-0 right-0">
-                {isGroup ? (
-                  <span className="inline-block bg-[#E27396] text-white text-[10px] sm:text-[11px] font-black px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
-                    Group (2+ Players)
-                  </span>
-                ) : (
-                  <span className="inline-block bg-[#6D9F71] text-white text-[10px] sm:text-[11px] font-bold px-4 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-soft-xs">
-                    Private 1-on-1
-                  </span>
-                )}
+      {/* 2-Column Rates Cards Grid matching Figma Screenshot 2 */}
+      <div className="grid gap-8 md:grid-cols-2">
+        {/* Card 1: Individual Session */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-7 sm:p-9 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div>
+            {/* Top row: Icon on left, Price on right */}
+            <div className="flex items-start justify-between">
+              <div className="w-12 h-12 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E27396] flex items-center justify-center">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
               </div>
-
-              <div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">{rate.session_type}</h3>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5 block">
-                    {isGroup ? 'Learn, Rally & Compete with Friends' : 'Dedicated Private Tennis Coaching'}
-                  </span>
-                </div>
-
-                <div className="mt-5 mb-3 flex items-baseline">
-                  <span className={`text-3xl sm:text-5xl font-black tracking-tight ${
-                    isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-slate-900 dark:text-white'
-                  }`}>
-                    {formatPrice(rate.price)}
-                  </span>
-                  <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm ml-2 font-semibold">/ person</span>
-                </div>
-
-                {/* Solid Duration Pill */}
-                <div className={`inline-flex items-center text-[11px] sm:text-xs font-bold px-3 py-1.5 rounded-xl mb-4 sm:mb-5 ${
-                  isGroup
-                    ? 'bg-[#FFDBE5] text-[#92334f] dark:bg-[#20101a] dark:text-[#FFDBE5]'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                }`}>
-                  Duration: 1.5 – 2 Hours (court extendable)
-                </div>
-
-                {rate.description && (
-                  <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed mb-5 font-normal">
-                    {rate.description}
-                  </p>
-                )}
-
-                {/* What's Included bullets */}
-                <div className="space-y-2.5 pt-3 mb-5 text-xs text-slate-600 dark:text-slate-400">
-                  <p className={`text-[10px] font-bold uppercase tracking-wider mb-1.5 ${
-                    isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-[#6D9F71] dark:text-[#9ec4b1]'
-                  }`}>
-                    {isGroup ? "Group Training Highlights:" : "Personalized Focus:"}
-                  </p>
-                  {highlights.map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5">
-                      <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
-                        isGroup ? 'bg-[#E27396]' : 'bg-[#6D9F71]'
-                      }`}></span>
-                      <span className="leading-snug">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-5 flex items-center justify-between border-t border-slate-100/70 dark:border-slate-800/70">
-                <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Public Court</span>
-                <button
-                  onClick={scrollToSchedule}
-                  className="btn-hover-pink px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-xs cursor-pointer flex items-center gap-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white"
-                >
-                  <span>Book Slot</span>
-                  <span>→</span>
-                </button>
+              <div className="text-right">
+                <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight block">
+                  ₱{individualRate.price}
+                </span>
+                <span className="text-slate-400 text-xs font-semibold block mt-0.5">
+                  / {individualRate.duration_minutes || 120} min
+                </span>
               </div>
             </div>
-          );
-        })}
+
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-6">
+              {individualRate.session_type}
+            </h3>
+            <p className="text-slate-400 text-xs font-medium mt-1">
+              {individualRate.description || '1-on-1 focused coaching'}
+            </p>
+
+            <div className="my-6 border-t border-slate-100 dark:border-slate-800" />
+
+            <ul className="space-y-3.5 mb-8">
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#E27396] font-bold text-sm">✓</span>
+                <span>Personal technique assessment</span>
+              </li>
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#E27396] font-bold text-sm">✓</span>
+                <span>Custom drills for your goals</span>
+              </li>
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#E27396] font-bold text-sm">✓</span>
+                <span>Post-session practice notes</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            onClick={() => handleBookRate('Individual Session')}
+            className="w-full bg-white dark:bg-slate-900 border border-[#E27396] text-[#E27396] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-xs sm:text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <span>Book individual</span>
+            <span>→</span>
+          </button>
+        </div>
+
+        {/* Card 2: Group Session */}
+        <div className="relative bg-white dark:bg-slate-900 rounded-3xl p-7 sm:p-9 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="absolute -top-3 right-6 sm:right-8">
+            <span className="bg-[#2D5A43] text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full shadow-soft-xs">
+              BEST WITH FRIENDS
+            </span>
+          </div>
+
+          <div>
+            <div className="flex items-start justify-between">
+              <div className="w-12 h-12 rounded-2xl bg-[#E8F3ED] dark:bg-[#11291f] text-[#337357] dark:text-emerald-400 flex items-center justify-center">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="text-right">
+                <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight block">
+                  ₱{groupRate.price}
+                </span>
+                <span className="text-slate-400 text-xs font-semibold block mt-0.5">
+                  / player
+                </span>
+              </div>
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-6">
+              {groupRate.session_type}
+            </h3>
+            <p className="text-slate-400 text-xs font-medium mt-1">
+              {groupRate.description || '2–4 players per session'}
+            </p>
+
+            <div className="my-6 border-t border-slate-100 dark:border-slate-800" />
+
+            <ul className="space-y-3.5 mb-8">
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#337357] dark:text-emerald-400 font-bold text-sm">✓</span>
+                <span>Matchplay and live-ball drills</span>
+              </li>
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#337357] dark:text-emerald-400 font-bold text-sm">✓</span>
+                <span>Friendly, social atmosphere</span>
+              </li>
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+                <span className="text-[#337357] dark:text-emerald-400 font-bold text-sm">✓</span>
+                <span>120 minutes on court</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            onClick={() => handleBookRate('Group Session')}
+            className="w-full bg-[#2D5A43] hover:bg-[#224533] text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-soft-xs cursor-pointer"
+          >
+            <span>Book as a group</span>
+            <span>→</span>
+          </button>
+        </div>
       </div>
     </section>
   );

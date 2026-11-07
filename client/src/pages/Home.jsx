@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProfileSection from '../components/ProfileSection';
 import CalendarSection from '../components/CalendarSection';
 import RatesSection from '../components/RatesSection';
 import BookingForm from '../components/BookingForm';
+import ZTennisLogo from '../components/ZTennisLogo';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,19 +15,7 @@ export default function Home() {
   const [rates, setRates] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const checkScroll = () => {
-      setShowScrollTop(window.scrollY > 450);
-    };
-    window.addEventListener('scroll', checkScroll, { passive: true });
-    return () => window.removeEventListener('scroll', checkScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const [bookingToast, setBookingToast] = useState(null);
 
   const fetchSlots = useCallback(async () => {
     try {
@@ -60,219 +48,181 @@ export default function Home() {
     fetchData();
   }, [fetchSlots]);
 
-  const scrollToSchedule = () => {
-    document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToAvailability = () => {
+    document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSelectRate = () => {
+    scrollToAvailability();
+  };
+
+  const handleSlotSelect = (slotData) => {
+    setSelectedSlot(slotData);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">
         <div className="text-center animate-fade-in">
-          <div className="w-14 h-14 rounded-2xl bg-[#E27396] text-white font-black text-2xl flex items-center justify-center mx-auto mb-4 shadow-soft-md">
-            Z
-          </div>
-          <p className="text-primary-600 dark:text-primary-400 font-semibold text-xs tracking-wider uppercase">Loading...</p>
+          <ZTennisLogo className="w-12 h-12 mx-auto mb-4" showText={false} />
+          <p className="text-[#E27396] font-bold text-xs tracking-wider uppercase">Loading ZTennis...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-[#E27396] selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-[#E27396] selection:text-white transition-colors duration-200">
       <div>
         <Navbar />
 
-        {/* HERO SECTION — Solid, Smooth, Borderless Editorial Style */}
-        <section className="relative bg-[#14060f] dark:bg-[#0d0309] text-white overflow-hidden py-16 sm:py-24 lg:py-32">
-          {/* Ambient Radial Depth Glows */}
-          <div className="absolute inset-0 pointer-events-none opacity-40">
-            <div className="absolute -top-10 right-1/4 w-[380px] sm:w-[550px] h-[380px] sm:h-[550px] rounded-full bg-[#E27396]/30 blur-[110px] sm:blur-[140px]"></div>
-            <div className="absolute bottom-0 left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-[#EA9AB2]/20 blur-[110px] sm:blur-[130px]"></div>
-            <div className="absolute top-1/2 left-10 w-[250px] h-[250px] rounded-full bg-[#337357]/20 blur-[100px]"></div>
-          </div>
+        {/* HERO SECTION matching Figma Screenshot 1 */}
+        <section id="coach" className="relative pt-6 pb-12 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-24 overflow-hidden">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+              {/* Left Column: Headline & CTA */}
+              <div className="lg:col-span-7 space-y-6">
+                {/* Sparkle pill badge */}
+                <div className="inline-flex items-center gap-2 bg-[#FFF0F5] dark:bg-[#20101a] text-[#E27396] px-4 py-1.5 rounded-full text-xs font-bold shadow-soft-xs">
+                  <span className="text-sm leading-none">✦</span>
+                  <span>Personal coaching in Bukidnon</span>
+                </div>
 
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-fade-in-up">
-            {/* Solid Pill Badge (No Outline) */}
-            <div className="inline-flex items-center gap-2 bg-[#FFDBE5] px-4 py-1.5 rounded-full text-[11px] sm:text-xs font-bold mb-6 text-[#92334f] shadow-soft-sm max-w-full">
-              <span className="w-2 h-2 rounded-full bg-[#E27396] flex-shrink-0"></span>
-              <span className="truncate sm:overflow-visible">Private & Group Tennis Coaching • Malaybalay City</span>
-            </div>
+                {/* Big Two-Tone Headline */}
+                <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.06]">
+                  Play smarter.{' '}
+                  <span className="text-[#E27396] block sm:inline">
+                    Feel stronger.
+                  </span>
+                </h1>
 
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 leading-tight tracking-tight text-white">
-              Elevate Your Game on the Court
-            </h1>
+                {/* Subtitle */}
+                <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-normal">
+                  Private tennis coaching built around your game, your goals, and your pace.
+                </p>
 
-            {/* Sub-headline */}
-            <p className="text-sm sm:text-lg text-[#FFDBE5]/90 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
-              Structured 1-on-1 and group tennis sessions focused on stroke consistency, footwork, and live rally strategy.
-            </p>
+                {/* Action CTA Button */}
+                <div className="pt-2">
+                  <button
+                    onClick={scrollToAvailability}
+                    className="bg-[#E27396] hover:bg-[#cf5479] text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-2xl shadow-soft-sm hover:shadow-soft-md transition-all flex items-center gap-2.5 cursor-pointer"
+                  >
+                    <span>Find your court time</span>
+                    <span className="text-lg leading-none">→</span>
+                  </button>
+                </div>
 
-            {/* Action Buttons — Solid & Smooth */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-md sm:max-w-none mx-auto">
-              <button
-                onClick={scrollToSchedule}
-                className="btn-hover-pink w-full sm:w-auto bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3.5 sm:px-9 sm:py-4 rounded-2xl font-black text-sm shadow-soft-md transition-all cursor-pointer flex items-center justify-center gap-2 group min-h-[48px]"
-              >
-                <span>Book a Morning Session</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </button>
-
-              <Link
-                to="/coach"
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white px-8 py-3.5 sm:px-9 sm:py-4 rounded-2xl font-bold text-sm shadow-soft-xs transition-all flex items-center justify-center min-h-[48px]"
-              >
-                Meet Your Coach
-              </Link>
-            </div>
-
-            {/* Key Quick Stats Bar — Solid Tonal Tiles */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-12 sm:mt-16 max-w-3xl mx-auto text-left">
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
-                <span className="text-[10px] sm:text-[11px] text-[#FFDBE5] uppercase tracking-wider font-bold">Rates</span>
-                <p className="text-base sm:text-xl font-extrabold text-[#EA9AB2] mt-0.5 sm:mt-1">₱250 – ₱300</p>
-                <span className="text-[10px] sm:text-[11px] text-[#FFDBE5]/75">Per person</span>
+                {/* Social Proof */}
+                <div className="flex items-center gap-3.5 pt-4">
+                  <div className="flex -space-x-2">
+                    <span className="w-8 h-8 rounded-full bg-[#E27396] text-white font-bold text-[10px] flex items-center justify-center ring-2 ring-white dark:ring-slate-950">
+                      JM
+                    </span>
+                    <span className="w-8 h-8 rounded-full bg-[#337357] text-white font-bold text-[10px] flex items-center justify-center ring-2 ring-white dark:ring-slate-950">
+                      KA
+                    </span>
+                    <span className="w-8 h-8 rounded-full bg-[#E09F3E] text-white font-bold text-[10px] flex items-center justify-center ring-2 ring-white dark:ring-slate-950">
+                      RB
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">
+                      Trusted by 40+ local players
+                    </p>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                      Beginner-friendly · All ages welcome
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
-                <span className="text-[10px] sm:text-[11px] text-[#FFDBE5] uppercase tracking-wider font-bold">Session Length</span>
-                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">1.5 – 2 Hours</p>
-                <span className="text-[10px] sm:text-[11px] text-[#6D9F71] font-semibold">Court extendable</span>
-              </div>
-
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
-                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Morning Hours</span>
-                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">6:00 – 9:00 AM</p>
-                <span className="text-[10px] sm:text-[11px] text-slate-400">M · T · TH · F · SAT</span>
-              </div>
-
-              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-soft-xs">
-                <span className="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-bold">Venue</span>
-                <p className="text-base sm:text-xl font-extrabold text-white mt-0.5 sm:mt-1">Public Court</p>
-                <span className="text-[10px] sm:text-[11px] text-[#6D9F71] font-semibold">Malaybalay City</span>
+              {/* Right Column: Coach Profile Card matching Figma Screenshot 1 */}
+              <div className="lg:col-span-5">
+                <ProfileSection profile={profile} />
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION 1: MEET YOUR COACH */}
-        <ProfileSection profile={profile} />
+        {/* HIGH-RES EDITORIAL TENNIS COURT IMAGE BANNER matching the green & pink aesthetic */}
+        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
+          <div className="relative rounded-3xl overflow-hidden shadow-soft-md group">
+            <img
+              src="/tennis-court.jpg"
+              alt="Outdoor tennis court in Malaybalay City"
+              className="w-full h-56 sm:h-72 lg:h-96 object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+            />
+            {/* Subtle Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-6 sm:p-10">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between w-full gap-4 text-white">
+                <div>
+                  <span className="inline-flex items-center gap-1.5 bg-[#E27396] text-white px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+                    Malaybalay City Public Court
+                  </span>
+                  <h3 className="text-lg sm:text-2xl font-black tracking-tight">
+                    Dedicated Morning Training Sessions
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-200 max-w-lg mt-1 font-medium">
+                    Sessions last 1.5 to 2 hours and can extend based on court queue and playtime availability.
+                  </p>
+                </div>
 
-        {/* SECTION 2: INTERACTIVE SCHEDULE (MON–SUN) WITH CRUD */}
+                <button
+                  onClick={scrollToAvailability}
+                  className="bg-white/90 hover:bg-white text-slate-900 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm self-start sm:self-auto cursor-pointer"
+                >
+                  View Open Mornings →
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CHOOSE YOUR SESSION matching Figma Screenshot 2 */}
+        <RatesSection rates={rates} onSelectRate={handleSelectRate} />
+
+        {/* WEEKLY AVAILABILITY matching Figma Screenshot 3 */}
         <CalendarSection
           slots={slots}
-          onSlotSelect={setSelectedSlot}
+          onSlotSelect={handleSlotSelect}
           onSlotsChange={fetchSlots}
         />
-
-        {/* SECTION 3: RATES & SESSIONS */}
-        <RatesSection rates={rates} />
-
-        {/* BOOKING MODAL */}
-        <div id="book">
-          {selectedSlot && (
-            <BookingForm
-              selectedSlot={selectedSlot}
-              onClose={() => setSelectedSlot(null)}
-              onSuccess={() => {
-                fetchSlots();
-              }}
-            />
-          )}
-        </div>
       </div>
 
-      {/* FLOATING BACK TO TOP BUTTON */}
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-40 bg-[#E27396] hover:bg-[#cf5479] text-white p-3 rounded-2xl shadow-soft-lg transition-all duration-300 hover:scale-105 active:scale-95 animate-scale-up cursor-pointer backdrop-blur-md"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </button>
+      {/* Trainee Booking Modal */}
+      {selectedSlot && (
+        <BookingForm
+          selectedSlot={selectedSlot}
+          onClose={() => setSelectedSlot(null)}
+          onSuccess={() => {
+            setSelectedSlot(null);
+            fetchSlots();
+            setBookingToast('Booking submitted! Coach Zoid will confirm your session shortly.');
+            setTimeout(() => setBookingToast(null), 6000);
+          }}
+        />
       )}
 
-      {/* FOOTER */}
-      <footer className="bg-[#14060f] dark:bg-[#0d0309] text-slate-400 py-12 sm:py-16 mt-14 sm:mt-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 md:grid-cols-3">
-            <div>
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="w-7 h-7 rounded-lg bg-[#E27396] text-white font-black text-sm flex items-center justify-center">
-                  Z
-                </span>
-                <span className="text-white font-extrabold text-base">Z Tennis Coach</span>
-              </div>
-              <p className="text-sm leading-relaxed text-slate-400">
-                Personalized tennis coaching in Malaybalay City. Sessions are held at a public court for players looking to refine technique and develop consistency.
-              </p>
-              <div className="mt-4 text-xs text-[#EA9AB2] font-semibold">
-                Morning Sessions: 6:00 AM – 9:00 AM
-              </div>
-            </div>
+      {/* Confirmation Toast */}
+      {bookingToast && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm bg-emerald-600 text-white px-5 py-4 rounded-2xl shadow-soft-xl flex items-center gap-3 animate-fade-in-up">
+          <span className="text-xl">🎾</span>
+          <p className="text-xs font-bold leading-snug">{bookingToast}</p>
+        </div>
+      )}
 
-            <div>
-              <h4 className="text-white font-bold text-xs tracking-wider uppercase mb-3.5">
-                Navigation
-              </h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link to="/coach" className="hover:text-[#EA9AB2] transition-colors">
-                    Meet Your Coach
-                  </Link>
-                </li>
-                <li>
-                  <a href="#schedule" className="hover:text-[#EA9AB2] transition-colors">
-                    Weekly Schedule (Mon – Sun)
-                  </a>
-                </li>
-                <li>
-                  <a href="#rates" className="hover:text-[#EA9AB2] transition-colors">
-                    Session Rates (₱250 – ₱300)
-                  </a>
-                </li>
-                <li>
-                  <Link to="/login" className="text-slate-500 hover:text-[#EA9AB2] transition-colors">
-                    Coach Portal
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-white font-bold text-xs tracking-wider uppercase mb-3.5">
-                Contact & Location
-              </h4>
-              <ul className="space-y-2 text-sm">
-                {profile?.phone && (
-                  <li>
-                    <a href={`tel:${profile.phone}`} className="hover:text-[#EA9AB2] transition-colors">
-                      Phone: {profile.phone}
-                    </a>
-                  </li>
-                )}
-                {profile?.email && (
-                  <li>
-                    <a href={`mailto:${profile.email}`} className="hover:text-[#EA9AB2] transition-colors">
-                      Email: {profile.email}
-                    </a>
-                  </li>
-                )}
-                {profile?.location && <li>Location: {profile.location}</li>}
-                <li className="text-xs text-[#6D9F71] pt-1 font-semibold">
-                  Venue: Public Tennis Court
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-800/80 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-            <p>&copy; {new Date().getFullYear()} Z Tennis Coach. All rights reserved.</p>
-            <p>Single-coach training portal</p>
-          </div>
+      {/* Minimal Clean Footer */}
+      <footer className="border-t border-slate-100 dark:border-slate-800/80 py-8 px-4 text-center text-xs text-slate-400">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <ZTennisLogo className="w-6 h-6" textClassName="text-base" />
+          <p>© {new Date().getFullYear()} ZTennis • Coach Zoid • Malaybalay City, Bukidnon</p>
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+          >
+            Back to top ↑
+          </button>
         </div>
       </footer>
     </div>

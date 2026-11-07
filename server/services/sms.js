@@ -100,15 +100,33 @@ export async function sendSms({ to, message }) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        data = null;
+      }
 
-      if (!res.ok || (data && data.error)) {
-        console.error('Semaphore SMS Error:', data);
+      if (!res.ok || (data && data.error) || (data && Array.isArray(data) && data[0]?.status === 'Failed') || !data) {
+        let errorMsg =
+          (data && (data.error || (Array.isArray(data) && data[0]?.status_message))) ||
+          rawText.trim() ||
+          `HTTP ${res.status}`;
+
+        // Friendly error messages for common Semaphore account states
+        if (errorMsg.toLowerCase().includes('account') && errorMsg.toLowerCase().includes('credit')) {
+          errorMsg = 'Semaphore SMS: Your account has insufficient credits. Please top up your balance at semaphore.co.';
+        } else if (errorMsg.toLowerCase().includes('sendername') || errorMsg.toLowerCase().includes('sender')) {
+          errorMsg = 'Semaphore SMS: Sender name is not approved. Remove SEMAPHORE_SENDER_NAME to use default SEMAPHORE.';
+        }
+
+        console.error('Semaphore SMS Error:', errorMsg);
         return {
           sent: false,
           provider: 'semaphore',
-          error: data.error || `HTTP ${res.status}`,
-          raw: data,
+          error: errorMsg,
+          raw: data || rawText,
         };
       }
 
@@ -156,15 +174,22 @@ export async function sendSms({ to, message }) {
         body: bodyParams.toString(),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        data = null;
+      }
 
       if (!res.ok) {
-        console.error('Twilio SMS Error:', data);
+        const errorMsg = (data && data.message) || rawText.trim() || `HTTP ${res.status}`;
+        console.error('Twilio SMS Error:', errorMsg);
         return {
           sent: false,
           provider: 'twilio',
-          error: data.message || `HTTP ${res.status}`,
-          raw: data,
+          error: errorMsg,
+          raw: data || rawText,
         };
       }
 

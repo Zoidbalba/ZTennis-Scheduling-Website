@@ -24,8 +24,10 @@ export default function DashboardAvailability() {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showConfig, setShowConfig] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSlot, setEditingSlot] = useState(null);
+  const [saveToast, setSaveToast] = useState(null);
   const [formData, setFormData] = useState({
     day_of_week: 1,
     start_time: '06:00',
@@ -84,6 +86,7 @@ export default function DashboardAvailability() {
       }
       setIsModalOpen(false);
       await fetchSlots();
+      triggerToast('Availability schedule saved!');
     } catch (err) {
       alert(err.message || 'Failed to save slot');
     } finally {
@@ -96,6 +99,7 @@ export default function DashboardAvailability() {
     try {
       await api.deleteSlot(id);
       await fetchSlots();
+      triggerToast('Time slot removed.');
     } catch (err) {
       alert(err.message || 'Failed to delete slot');
     }
@@ -107,9 +111,15 @@ export default function DashboardAvailability() {
         is_blocked: !slot.is_blocked,
       });
       await fetchSlots();
+      triggerToast(slot.is_blocked ? 'Slot unblocked for booking' : 'Slot blocked off');
     } catch (err) {
       alert(err.message || 'Failed to toggle slot availability');
     }
+  };
+
+  const triggerToast = (msg) => {
+    setSaveToast(msg);
+    setTimeout(() => setSaveToast(null), 3500);
   };
 
   // Group slots by day
@@ -120,24 +130,34 @@ export default function DashboardAvailability() {
     return acc;
   }, {});
 
+  const totalSlotsCount = slots.filter((s) => !s.is_blocked).length;
+
   return (
-    <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Weekly Schedule & Availability</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-              Manage your regular Monday to Sunday schedule. Morning sessions: 6:00 AM – 9:00 AM (M, T, TH, F, SAT).
-            </p>
+    <DashboardLayout
+      title="Availability"
+      subtitle="Manage your coaching business settings."
+      headerAction={
+        <button
+          onClick={() => {
+            setShowConfig(true);
+            triggerToast('Availability settings up to date!');
+          }}
+          className="bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2"
+        >
+          <span>Save changes</span>
+        </button>
+      }
+    >
+      <div className="space-y-8">
+        {saveToast && (
+          <div className="bg-emerald-600 text-white px-5 py-3.5 rounded-2xl text-xs font-bold shadow-soft-md flex items-center justify-between animate-fade-in-up">
+            <div className="flex items-center gap-2.5">
+              <span>✓</span>
+              <span>{saveToast}</span>
+            </div>
+            <button onClick={() => setSaveToast(null)} className="text-white/80 hover:text-white">✕</button>
           </div>
-          <button
-            onClick={() => openAddModal(1)}
-            className="btn-hover-pink inline-flex items-center gap-2 bg-[#E27396] hover:bg-[#cf5479] text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all cursor-pointer"
-          >
-            <span>+</span> Add Time Slot
-          </button>
-        </div>
+        )}
 
         {error && (
           <div className="bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-200 p-4 rounded-2xl text-xs font-semibold shadow-soft-xs">
@@ -145,106 +165,144 @@ export default function DashboardAvailability() {
           </div>
         )}
 
-        {loading ? (
-          <div className="text-center py-16 bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm">
-            <p className="text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-wider">Loading schedule...</p>
+        {/* Big White Card matching Figma Screenshot 5 */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 sm:p-14 shadow-sm border border-slate-100 dark:border-slate-800/80 text-center">
+          <div className="max-w-md mx-auto space-y-4">
+            {/* Pink Clock Icon Box */}
+            <div className="w-16 h-16 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E27396] flex items-center justify-center mx-auto shadow-soft-xs">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Availability management
+            </h2>
+
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-normal leading-relaxed">
+              This workspace is ready for Coach Zoid to update availability. {totalSlotsCount} open morning slots currently active for trainees.
+            </p>
+
+            <div className="pt-2">
+              <button
+                onClick={() => setShowConfig(!showConfig)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-[#E27396] text-[#E27396] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+              >
+                <span>{showConfig ? 'Hide schedule list' : 'Configure availability'}</span>
+                <span>{showConfig ? '↑' : '↓'}</span>
+              </button>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-6">
-            {DAYS.map((day) => {
-              const daySlots = slotsByDay[day.value] || [];
-              const isRestDay = day.value === 3 || day.value === 0;
+        </div>
 
-              return (
-                <div key={day.value} className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-sm p-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-extrabold text-slate-900 dark:text-white">{day.name}</span>
-                      <span className={`text-xs px-3 py-1 rounded-full font-bold ${
-                        daySlots.length > 0 ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300' : 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500'
-                      }`}>
-                        {daySlots.length} slot{daySlots.length !== 1 ? 's' : ''}
-                      </span>
-                      {isRestDay && daySlots.length === 0 && (
-                        <span className="text-xs text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800/50 px-2.5 py-0.5 rounded-full font-medium">
-                          (Rest Day)
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => openAddModal(day.value)}
-                      className="text-xs text-[#E27396] hover:text-[#cf5479] font-bold transition-colors cursor-pointer"
+        {/* Regular Schedule Breakdown (shown or toggled) */}
+        {showConfig && (
+          <div className="space-y-6 animate-fade-in-up">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/80 shadow-sm">
+              <div>
+                <h3 className="text-base font-black text-slate-900 dark:text-white">
+                  Weekly Morning Hours
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Regular tennis lessons are scheduled between 6:00 AM – 9:00 AM.
+                </p>
+              </div>
+              <button
+                onClick={() => openAddModal(1)}
+                className="bg-[#2D5A43] hover:bg-[#224533] text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-colors self-start sm:self-auto cursor-pointer"
+              >
+                + Add Time Slot
+              </button>
+            </div>
+
+            {loading ? (
+              <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-3xl shadow-sm">
+                <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Loading slots...</p>
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {DAYS.map((day) => {
+                  const daySlots = slotsByDay[day.value] || [];
+                  const isRestDay = day.value === 3 || day.value === 0;
+
+                  return (
+                    <div
+                      key={day.value}
+                      className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-5 flex flex-col justify-between"
                     >
-                      + Add slot
-                    </button>
-                  </div>
-
-                  {daySlots.length === 0 ? (
-                    <p className="text-slate-400 dark:text-slate-500 text-xs italic py-2">
-                      No coaching slots scheduled for {day.name} {isRestDay ? '(Rest Day)' : ''}
-                    </p>
-                  ) : (
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {daySlots.map((slot) => (
-                        <div
-                          key={slot.id}
-                          className={`p-4 rounded-2xl transition-all flex flex-col justify-between ${
-                            slot.is_blocked
-                              ? 'bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400'
-                              : 'bg-slate-50/80 dark:bg-slate-800 text-slate-900 dark:text-white shadow-soft-xs hover:shadow-soft-sm'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <div className="font-bold text-sm">
-                                {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
-                              </div>
-                              <div className="mt-1">
-                                {slot.is_blocked ? (
-                                  <span className="inline-flex items-center text-[10px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-950/70 px-2.5 py-0.5 rounded-full">
-                                    Blocked
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/70 px-2.5 py-0.5 rounded-full">
-                                    Open
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-700 pt-3 mt-3 text-xs">
-                            <button
-                              onClick={() => handleToggleBlock(slot)}
-                              className={`font-semibold hover:underline cursor-pointer ${
-                                slot.is_blocked ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'
-                              }`}
-                            >
-                              {slot.is_blocked ? 'Unblock' : 'Block'}
-                            </button>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => openEditModal(slot)}
-                                className="text-slate-900 dark:text-primary-400 hover:underline font-bold cursor-pointer"
-                              >
-                                Edit
-                              </button>
-                              <span className="text-slate-300 dark:text-slate-600">|</span>
-                              <button
-                                onClick={() => handleDelete(slot.id)}
-                                className="text-rose-600 dark:text-rose-400 hover:underline font-semibold cursor-pointer"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
+                      <div>
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+                          <span className="font-black text-sm text-slate-900 dark:text-white">
+                            {day.name}
+                          </span>
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            {daySlots.length} {daySlots.length === 1 ? 'slot' : 'slots'}
+                          </span>
                         </div>
-                      ))}
+
+                        {daySlots.length === 0 ? (
+                          <p className="text-slate-400 text-xs italic py-4">
+                            {isRestDay ? 'Rest Day' : 'No slots set'}
+                          </p>
+                        ) : (
+                          <div className="space-y-2">
+                            {daySlots.map((slot) => (
+                              <div
+                                key={slot.id}
+                                className={`p-3 rounded-2xl border text-xs flex items-center justify-between ${
+                                  slot.is_blocked
+                                    ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 text-slate-400'
+                                    : 'bg-white dark:bg-slate-850 border-pink-100 dark:border-pink-900/40 text-slate-900 dark:text-white shadow-soft-xs'
+                                }`}
+                              >
+                                <div>
+                                  <p className="font-bold">
+                                    {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                                  </p>
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${slot.is_blocked ? 'text-rose-500' : 'text-[#E27396]'}`}>
+                                    {slot.is_blocked ? 'Blocked' : 'Open'}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleToggleBlock(slot)}
+                                    className="text-[11px] font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                                  >
+                                    {slot.is_blocked ? 'Unblock' : 'Block'}
+                                  </button>
+                                  <button
+                                    onClick={() => openEditModal(slot)}
+                                    className="text-[11px] font-bold text-[#E27396] hover:underline cursor-pointer"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(slot.id)}
+                                    className="text-[11px] font-bold text-rose-500 hover:underline cursor-pointer"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                        <button
+                          onClick={() => openAddModal(day.value)}
+                          className="text-[11px] font-bold text-[#E27396] hover:text-[#cf5479] cursor-pointer"
+                        >
+                          + Add slot
+                        </button>
+                      </div>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
@@ -252,16 +310,16 @@ export default function DashboardAvailability() {
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm animate-fade-in">
             <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up">
-              <div className="bg-[#180a13] text-white p-6 flex items-center justify-between">
+              <div className="bg-[#163829] text-white p-6 flex items-center justify-between">
                 <div>
                   <h3 className="font-extrabold text-lg text-white">
                     {editingSlot ? 'Edit Time Slot' : 'Add Availability Slot'}
                   </h3>
-                  <p className="text-xs text-[#FFDBE5]/80 mt-0.5">Configure regular coaching availability</p>
+                  <p className="text-xs text-emerald-200/80 mt-0.5">Configure regular coaching availability</p>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-white cursor-pointer font-bold text-lg"
+                  className="text-slate-300 hover:text-white cursor-pointer font-bold text-lg"
                 >
                   ✕
                 </button>
@@ -270,7 +328,7 @@ export default function DashboardAvailability() {
               <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-                    Day of the Week (Monday to Sunday)
+                    Day of the Week
                   </label>
                   <select
                     value={formData.day_of_week}
@@ -346,7 +404,7 @@ export default function DashboardAvailability() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="btn-hover-pink flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Add Slot'}
                   </button>
