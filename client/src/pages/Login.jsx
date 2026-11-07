@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ZTennisLogo from '../components/ZTennisLogo';
@@ -24,7 +24,6 @@ export default function Login() {
   const [googlePromptOpen, setGooglePromptOpen] = useState(false);
   const [googleEmail, setGoogleEmail] = useState('');
   const [googleName, setGoogleName] = useState('');
-  const [rememberedAccount, setRememberedAccount] = useState(null);
 
   // UI status
   const [loading, setLoading] = useState(false);
@@ -34,17 +33,14 @@ export default function Login() {
   const [notRegisteredError, setNotRegisteredError] = useState(false);
   const [alreadyRegisteredError, setAlreadyRegisteredError] = useState(false);
 
-  // Load any previously remembered Google account
+  // Google Identity Services (GIS) integration
+  const googleBtnRef = useRef(null);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  // Clear any legacy cached Google accounts from localStorage
   useEffect(() => {
     try {
-      const cached = localStorage.getItem('last_google_account') || localStorage.getItem('trainee_user');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (parsed?.email) {
-          setRememberedAccount(parsed);
-          setGoogleEmail(parsed.email);
-        }
-      }
+      localStorage.removeItem('last_google_account');
     } catch (e) {}
   }, []);
 
@@ -61,6 +57,43 @@ export default function Login() {
       }
     }
   }, [isAuthenticated, isTraineeAuthenticated, navigate]);
+
+  // Initialize native Google Identity Services if a Client ID is provided
+  useEffect(() => {
+    if (window.google?.accounts?.id && googleClientId) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: async (response) => {
+            if (response.credential) {
+              setGoogleLoading(true);
+              try {
+                await loginWithGoogle({ credential: response.credential, mode });
+                handleSuccessRedirect();
+              } catch (err) {
+                setError(err.message || 'Google sign-in failed');
+              } finally {
+                setGoogleLoading(false);
+              }
+            }
+          },
+        });
+
+        if (googleBtnRef.current) {
+          googleBtnRef.current.innerHTML = '';
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            theme: 'outline',
+            size: 'large',
+            text: mode === 'signup' ? 'signup_with' : 'signin_with',
+            shape: 'pill',
+            width: 380,
+          });
+        }
+      } catch (err) {
+        console.warn('Google Identity Services init error:', err);
+      }
+    }
+  }, [mode, googleClientId]);
 
   const handleSuccessRedirect = () => {
     const pending = sessionStorage.getItem('pending_booking_slot');
@@ -139,18 +172,11 @@ export default function Login() {
       setGoogleLoading(true);
       setGoogleError('');
 
-      const res = await loginWithGoogle({
+      await loginWithGoogle({
         email: emailToUse,
         name: nameToUse,
         mode: currentMode, // 'signin' or 'signup'
       });
-
-      // Remember Google account in localStorage for seamless 1-click return
-      localStorage.setItem('last_google_account', JSON.stringify({
-        email: emailToUse,
-        name: res.trainee?.name || nameToUse,
-        picture: res.trainee?.picture || '',
-      }));
 
       setGooglePromptOpen(false);
       handleSuccessRedirect();
@@ -279,7 +305,14 @@ export default function Login() {
             </div>
           )}
 
-          {/* 1-Click Google Sign In / Sign Up Button (Prominently at Top!) */}
+          {/* Native Google Identity Services Button Container (if configured) */}
+          {googleClientId && (
+            <div className="flex justify-center mb-2">
+              <div ref={googleBtnRef} />
+            </div>
+          )}
+
+          {/* Custom Google Sign In / Sign Up Button */}
           <button
             type="button"
             onClick={handleOpenGoogleAuth}
@@ -424,7 +457,7 @@ export default function Login() {
         ZTennis Coaching Portal • Coach Zoid • Malaybalay City
       </div>
 
-      {/* DEDICATED GOOGLE ACCOUNT SELECTOR MODAL (AUTOMATICALLY ASKS FOR GOOGLE ACCOUNT) */}
+      {/* GOOGLE ACCOUNT PROMPT MODAL */}
       {googlePromptOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/75 dark:bg-black/85 backdrop-blur-sm animate-fade-in"
@@ -457,7 +490,7 @@ export default function Login() {
                 {mode === 'signup' ? 'Sign up with Google' : 'Sign in with Google'}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Choose an account to continue to <strong>ZTennis</strong>
+                Enter your Google Account to connect to <strong>ZTennis</strong>
               </p>
             </div>
 
@@ -484,69 +517,18 @@ export default function Login() {
                 </div>
               )}
 
-              {/* 1-Tap Quick Select from Remembered Google Account */}
-              {rememberedAccount && rememberedAccount.email && (
-                <div className="space-y-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Recently Used Account
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleExecuteGoogle(rememberedAccount.email, rememberedAccount.name)}
-                    disabled={googleLoading}
-                    className="w-full p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-[#E0749A] dark:hover:border-[#E0749A] bg-white dark:bg-slate-800 flex items-center justify-between text-left transition-all cursor-pointer group shadow-soft-xs"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {rememberedAccount.picture ? (
-                        <img
-                          src={rememberedAccount.picture}
-                          alt=""
-                          className="w-10 h-10 rounded-full object-cover ring-2 ring-pink-100"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#E0749A] to-[#1F7A5A] text-white font-black text-sm flex items-center justify-center">
-                          {(rememberedAccount.name || rememberedAccount.email)[0].toUpperCase()}
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <div className="font-extrabold text-xs text-slate-900 dark:text-white truncate">
-                          {rememberedAccount.name || 'Google Account'}
-                        </div>
-                        <div className="text-[11px] text-slate-400 dark:text-slate-400 font-mono truncate">
-                          {rememberedAccount.email}
-                        </div>
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-[#E0749A] group-hover:translate-x-0.5 transition-transform shrink-0">
-                      {googleLoading ? 'Connecting...' : 'Continue →'}
-                    </span>
-                  </button>
-                </div>
-              )}
-
-              {/* Enter or Confirm Google Account */}
-              <div className="space-y-3 pt-1">
-                {rememberedAccount && (
-                  <div className="relative text-center my-3">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-200 dark:border-slate-800"></div>
-                    </div>
-                    <span className="relative bg-white dark:bg-slate-900 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                      or use another Google account
-                    </span>
-                  </div>
-                )}
-
+              {/* Enter Google Account */}
+              <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                    Google / Gmail Account:
+                    Your Google / Gmail Account:
                   </label>
                   <input
                     type="email"
                     value={googleEmail}
                     onChange={(e) => setGoogleEmail(e.target.value)}
                     placeholder="yourname@gmail.com"
-                    autoFocus={!rememberedAccount}
+                    autoFocus
                     className="w-full px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0 transition-all placeholder:text-slate-400"
                   />
                 </div>
@@ -561,15 +543,15 @@ export default function Login() {
                     {googleLoading
                       ? 'Connecting Google Account...'
                       : mode === 'signup'
-                      ? 'Sign Up with this Google Account →'
-                      : 'Sign In with this Google Account →'}
+                      ? 'Sign Up with Google Account →'
+                      : 'Sign In with Google Account →'}
                   </span>
                 </button>
               </div>
 
               <div className="pt-2 text-center">
                 <p className="text-[11px] text-slate-400 leading-relaxed">
-                  To continue, Google will share your name, email address, and profile picture with ZTennis.
+                  Your tennis coaching confirmations and schedule notifications will be delivered to this Google account.
                 </p>
               </div>
             </div>
