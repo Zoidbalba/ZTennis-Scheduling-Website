@@ -74,47 +74,56 @@ export default function Navbar() {
               Availability
             </button>
 
+            {/* When logged in as Trainee: Clean, simple navigation link matching About/Sessions/Availability */}
+            {isTraineeAuthenticated && (
+              <Link
+                to="/my-bookings"
+                className={`text-xs lg:text-sm font-semibold transition-colors cursor-pointer ${
+                  location.pathname === '/my-bookings'
+                    ? 'text-[#E0749A] font-bold'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
+                }`}
+              >
+                My Bookings
+              </Link>
+            )}
+
+            {/* When logged in as Coach */}
+            {isAuthenticated && (
+              <Link
+                to="/dashboard"
+                className={`text-xs lg:text-sm font-semibold transition-colors cursor-pointer ${
+                  location.pathname.startsWith('/dashboard')
+                    ? 'text-[#E0749A] font-bold'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
+                }`}
+              >
+                Dashboard
+              </Link>
+            )}
+
             {/* Trainee / Coach Auth Status */}
             {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/dashboard"
-                  className="text-xs lg:text-sm font-bold text-[#1F7A5A] dark:text-emerald-400 hover:underline"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={logout}
-                  className="text-xs font-semibold text-rose-500 hover:text-rose-600 cursor-pointer"
-                >
-                  Logout
-                </button>
-              </div>
+              <button
+                onClick={logout}
+                className="text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+              >
+                Logout
+              </button>
             ) : isTraineeAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/my-bookings"
-                  className="inline-flex items-center gap-1.5 text-xs lg:text-sm font-bold text-[#1F7A5A] dark:text-emerald-400 hover:underline"
-                >
-                  <span>🎾</span>
-                  <span>My Bookings</span>
-                </Link>
-                <button
-                  onClick={logoutTrainee}
-                  className="text-xs font-semibold text-slate-400 hover:text-rose-500 cursor-pointer"
-                >
-                  Sign Out
-                </button>
-              </div>
+              <button
+                onClick={logoutTrainee}
+                className="text-xs font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+              >
+                Sign Out
+              </button>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-[#E0749A] dark:hover:text-[#E0749A] px-3 py-2 rounded-xl transition-colors cursor-pointer"
-                >
-                  Sign In
-                </Link>
-              </div>
+              <Link
+                to="/login"
+                className="text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-[#E0749A] dark:hover:text-[#E0749A] transition-colors cursor-pointer"
+              >
+                Sign In
+              </Link>
             )}
 
             {/* Book a lesson button */}
@@ -209,16 +218,20 @@ export default function Navbar() {
             <Link
               to="/my-bookings"
               onClick={() => setMobileOpen(false)}
-              className="block w-full text-left font-bold text-sm text-[#1F7A5A] dark:text-emerald-400 py-2 cursor-pointer"
+              className={`block w-full text-left font-bold text-sm py-2 cursor-pointer ${
+                location.pathname === '/my-bookings'
+                  ? 'text-[#E0749A]'
+                  : 'text-slate-800 dark:text-slate-200'
+              }`}
             >
-              🎾 My Bookings & Schedule
+              My Bookings
             </Link>
           )}
 
           {isAuthenticated ? (
             <Link
               to="/dashboard"
-              className="block font-bold text-sm text-[#1F7A5A] dark:text-emerald-400 py-2"
+              className="block font-bold text-sm text-[#E0749A] py-2"
             >
               Coach Dashboard →
             </Link>
@@ -232,7 +245,7 @@ export default function Navbar() {
                   logoutTrainee();
                   setMobileOpen(false);
                 }}
-                className="font-bold text-rose-500 hover:underline cursor-pointer"
+                className="font-bold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer"
               >
                 Sign Out
               </button>

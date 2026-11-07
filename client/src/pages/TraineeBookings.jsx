@@ -121,7 +121,7 @@ export default function TraineeBookings() {
                       <span className="text-[11px] text-slate-300">Gmail Connected</span>
                       <button
                         onClick={logoutTrainee}
-                        className="text-rose-300 hover:text-rose-200 font-bold hover:underline cursor-pointer"
+                        className="text-rose-300 hover:text-rose-200 font-bold transition-colors cursor-pointer"
                       >
                         Sign Out
                       </button>
@@ -177,7 +177,7 @@ export default function TraineeBookings() {
               <div className="pt-2">
                 <Link
                   to="/login"
-                  className="text-xs text-[#E0749A] font-bold hover:underline cursor-pointer"
+                  className="text-xs text-[#E0749A] font-bold hover:text-[#cf5479] transition-colors cursor-pointer"
                 >
                   Or sign in to your trainee account →
                 </Link>
