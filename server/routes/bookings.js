@@ -51,9 +51,9 @@ router.post('/', async (req, res) => {
 
     const db = await getDb();
 
-    // Check if date already has a confirmed booking (meaning someone already availed a schedule on that date)
+    // Check if date already has an accepted/confirmed booking (meaning someone already availed a schedule on that date)
     const existingConfirmed = await db.get(
-      "SELECT id, player_name FROM bookings WHERE booking_date = ? AND status = 'confirmed' LIMIT 1",
+      "SELECT id, player_name FROM bookings WHERE booking_date = ? AND LOWER(status) IN ('confirmed', 'completed', 'accepted') LIMIT 1",
       [booking_date]
     );
     if (existingConfirmed) {
@@ -103,9 +103,28 @@ router.get('/booked-dates', async (req, res) => {
   try {
     const db = await getDb();
     const rows = await db.query(
-      "SELECT DISTINCT booking_date, start_time, end_time, session_type FROM bookings WHERE status = 'confirmed'"
+      `SELECT DISTINCT booking_date, start_time, end_time, session_type, status
+       FROM bookings
+       WHERE LOWER(status) IN ('confirmed', 'completed', 'accepted')`
     );
-    res.json(rows);
+
+    // Normalize date strings into clean YYYY-MM-DD
+    const formatted = (rows || []).map((r) => {
+      let bDate = r.booking_date;
+      if (bDate) {
+        const str = String(bDate).trim();
+        const m = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (m) {
+          bDate = `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+        }
+      }
+      return {
+        ...r,
+        booking_date: bDate,
+      };
+    });
+
+    res.json(formatted);
   } catch (err) {
     console.error('Get booked dates error:', err);
     res.status(500).json({ error: err.message });

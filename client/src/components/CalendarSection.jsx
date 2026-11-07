@@ -25,19 +25,43 @@ export default function CalendarSection({
   // Helper to get standard 'YYYY-MM-DD' key for date comparisons
   const formatDateKey = (d) => {
     if (!d) return '';
-    const dateObj = d instanceof Date ? d : new Date(d);
-    const y = dateObj.getFullYear();
-    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+    if (typeof d === 'string') {
+      const trimmed = d.trim();
+      const m = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (m) {
+        return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+      }
+    }
+    if (d instanceof Date) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+    const dObj = new Date(d);
+    if (!isNaN(dObj.getTime())) {
+      const y = dObj.getFullYear();
+      const m = String(dObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+    return String(d).split('T')[0];
   };
 
   // Set of dates (YYYY-MM-DD) that already have an accepted/confirmed booking
   const bookedDateSet = useMemo(() => {
     const set = new Set();
-    for (const b of bookedDates) {
-      if (b.booking_date) {
-        const key = String(b.booking_date).split('T')[0];
+    const list = Array.isArray(bookedDates)
+      ? bookedDates
+      : (bookedDates && Array.isArray(bookedDates.booked_dates))
+      ? bookedDates.booked_dates
+      : [];
+
+    for (const b of list) {
+      const raw = typeof b === 'string' ? b : (b?.booking_date || b?.date || b?.day);
+      if (!raw) continue;
+      const key = formatDateKey(raw);
+      if (key) {
         set.add(key);
       }
     }
@@ -424,7 +448,7 @@ export default function CalendarSection({
 
                   const daySlots = slotsByDay[dayOfWeek] || [];
                   const openSlots = daySlots.filter((s) => !s.is_blocked);
-                  const dayKey = formatDateKey(dayDate);
+                  const dayKey = `${calendarData.year}-${String(calendarData.month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
                   const isDayBooked = bookedDateSet.has(dayKey);
                   const hasOpen = !isPast && !isDayBooked && openSlots.length > 0;
                   const isRest = (dayOfWeek === 3 || dayOfWeek === 0 || daySlots.length === 0) && !isPast && !isDayBooked;
@@ -561,7 +585,7 @@ export default function CalendarSection({
                     Jump to Today →
                   </button>
                 </div>
-              ) : isSelectedDateBooked && !isAuthenticated ? (
+              ) : isSelectedDateBooked ? (
                 <div className="py-8 px-6 text-center bg-rose-50/70 dark:bg-rose-950/25 border border-rose-200/80 dark:border-rose-900/50 rounded-3xl space-y-3.5 animate-fade-in shadow-soft-xs">
                   <div className="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 flex items-center justify-center mx-auto text-2xl font-bold shadow-soft-xs">
                     🔒
@@ -574,16 +598,25 @@ export default function CalendarSection({
                       Schedule Confirmed & Closed
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto mt-1">
-                      A coaching session on <strong>{selectedDateFormatted}</strong> has already been booked and accepted by Coach Zoid. This morning date is no longer open for new reservations.
+                      A coaching session on <strong>{selectedDateFormatted}</strong> is already booked and scheduled. This morning date is closed for new reservations.
                     </p>
                   </div>
-                  <div className="pt-2">
-                    <button
-                      onClick={handleJumpNextAvailable}
-                      className="w-full py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
-                    >
-                      <span>Jump to Next Open Morning →</span>
-                    </button>
+                  <div className="pt-2 flex flex-col gap-2">
+                    {isAuthenticated ? (
+                      <a
+                        href="/dashboard/bookings"
+                        className="w-full py-3 bg-[#1F7A5A] hover:bg-[#165a42] text-white rounded-xl font-bold text-xs shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                      >
+                        <span>View Confirmed Session in Dashboard →</span>
+                      </a>
+                    ) : (
+                      <button
+                        onClick={handleJumpNextAvailable}
+                        className="w-full py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                      >
+                        <span>Jump to Next Open Morning →</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               ) : selectedDaySlots.length > 0 ? (

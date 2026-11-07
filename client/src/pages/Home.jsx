@@ -21,10 +21,31 @@ export default function Home() {
 
   const fetchSlots = useCallback(async () => {
     try {
-      const [avail, booked] = await Promise.all([
+      const [availRes, bookedRes] = await Promise.allSettled([
         isAuthenticated ? api.getAllAvailability() : api.getAvailability(),
-        api.getBookedDates().catch(() => []),
+        api.getBookedDates(),
       ]);
+
+      const avail = availRes.status === 'fulfilled' ? availRes.value : [];
+      let booked = bookedRes.status === 'fulfilled' ? bookedRes.value : [];
+
+      // If user is logged in as coach, also query api.getBookings() to guarantee synchronization with admin dashboard
+      if (isAuthenticated) {
+        try {
+          const allBookings = await api.getBookings();
+          if (Array.isArray(allBookings)) {
+            const accepted = allBookings.filter((b) =>
+              ['confirmed', 'completed', 'accepted'].includes((b.status || '').toLowerCase())
+            );
+            if (accepted.length > 0) {
+              booked = accepted;
+            }
+          }
+        } catch (e) {
+          console.warn('Could not fetch coach bookings:', e);
+        }
+      }
+
       setSlots(Array.isArray(avail) ? avail : avail.slots || []);
       setBookedDates(Array.isArray(booked) ? booked : []);
     } catch (err) {
