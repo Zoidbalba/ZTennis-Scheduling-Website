@@ -452,3 +452,55 @@ export async function sendFollowUpNotificationToCoach({ booking, followUpMessage
     html,
   });
 }
+
+/**
+ * 4. Custom Direct Email from Coach to Trainee
+ * Sent when Coach writes a personal update/note to a trainee from the Admin Dashboard.
+ */
+export async function sendCustomCoachEmail({ booking, coachProfile, subject, message }) {
+  if (!booking?.player_email) {
+    return { sent: false, error: 'Trainee has no registered email address' };
+  }
+
+  const coachName = coachProfile?.name ? `Coach ${coachProfile.name}` : 'Coach Zoid';
+  const coachPhone = formatLocalPhone(coachProfile?.phone || '09350034792');
+  const formattedDate = formatHumanDate(booking.booking_date);
+  const formattedStart = formatHumanTime(booking.start_time);
+  const emailSubject = subject || `🎾 Note from ${coachName} — ZTennis (${formattedDate})`;
+
+  const content = `
+    <div style="text-align: center; margin-bottom: 24px;">
+      <span style="display: inline-block; background-color: #E0749A; color: #ffffff; font-size: 11px; font-weight: 900; letter-spacing: 1px; padding: 6px 16px; border-radius: 999px; text-transform: uppercase;">
+        COACH UPDATE
+      </span>
+      <h2 style="font-size: 24px; font-weight: 900; color: #1A1118; margin: 14px 0 6px 0;">Message from ${coachName}</h2>
+      <p style="font-size: 14px; color: #64748B; margin: 0;">
+        Regarding your session on <strong>${formattedDate} at ${formattedStart}</strong>
+      </p>
+    </div>
+
+    <div style="background-color: #F8FAFC; border-left: 4px solid #E0749A; border-radius: 14px; padding: 20px 22px; margin: 24px 0;">
+      <p style="font-size: 15px; color: #0F172A; margin: 0; line-height: 1.6; white-space: pre-wrap;">
+${message}
+      </p>
+    </div>
+
+    <div style="margin-top: 24px; text-align: center; font-size: 13px; color: #64748B;">
+      Have questions or need to reply? You can reach ${coachName} at <strong style="color: #0F172A;">${coachPhone}</strong> or visit your trainee portal.
+    </div>
+  `;
+
+  const html = wrapHtmlEmail({
+    preheader: `${coachName}: "${message.substring(0, 60)}..."`,
+    title: emailSubject,
+    content,
+    ctaText: 'View My Booking Portal →',
+  });
+
+  return sendEmail({
+    to: booking.player_email,
+    subject: emailSubject,
+    html,
+    text: `Message from ${coachName}:\n\n${message}\n\nSession: ${formattedDate} at ${formattedStart}`,
+  });
+}

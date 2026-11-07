@@ -50,7 +50,8 @@ export const api = {
   sendFollowUpMessage: (id, message) => request(`/bookings/${id}/follow-up`, { method: 'POST', body: JSON.stringify({ message }) }),
   getTrainees: () => request('/bookings/trainees'),
   updateBookingStatus: (id, status, extra = {}) => request(`/bookings/${id}/status`, { method: 'PUT', body: JSON.stringify({ status, ...extra }) }),
-  sendBookingSms: (id, data = {}) => request(`/bookings/${id}/send-sms`, { method: 'POST', body: JSON.stringify(data) }),
+  sendBookingEmail: (id, data = {}) => request(`/bookings/${id}/send-email`, { method: 'POST', body: JSON.stringify(data) }),
+  sendBookingSms: (id, data = {}) => request(`/bookings/${id}/send-email`, { method: 'POST', body: JSON.stringify(data) }),
   updateBooking: (id, data) => request(`/bookings/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteBooking: (id) => request(`/bookings/${id}`, { method: 'DELETE' }),
 };

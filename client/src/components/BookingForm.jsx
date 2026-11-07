@@ -379,7 +379,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-                Phone Number (for SMS confirmation) *
+                Mobile / Contact Number *
               </label>
               <input
                 type="tel"

@@ -53,7 +53,7 @@ export default function DashboardBookings() {
   const [filter, setFilter] = useState('all');
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
   const [actionLoading, setActionLoading] = useState(null);
-  const [smsToast, setSmsToast] = useState(null);
+  const [emailToast, setEmailToast] = useState(null);
 
   // Month Calendar Navigation State
   const [calendarMonth, setCalendarMonth] = useState(() => {
@@ -82,8 +82,8 @@ export default function DashboardBookings() {
     message: '',
   });
 
-  const [smsModalBooking, setSmsModalBooking] = useState(null);
-  const [smsCustomText, setSmsCustomText] = useState('');
+  const [emailModalBooking, setEmailModalBooking] = useState(null);
+  const [emailCustomText, setEmailCustomText] = useState('');
 
   const fetchBookings = async () => {
     try {
@@ -108,44 +108,30 @@ export default function DashboardBookings() {
 
       if (res.email) {
         if (res.email.sent && !res.email.simulated) {
-          setSmsToast({
+          setEmailToast({
             type: 'success',
             title: `Email Sent to ${res.booking.player_name}!`,
             message: `Official schedule confirmation delivered to ${res.booking.player_email || res.booking.player_contact}.`,
           });
         } else if (res.email.simulated) {
-          setSmsToast({
+          setEmailToast({
             type: 'info',
             title: `Status: ${status === 'confirmed' ? 'Accepted' : 'Declined'}`,
-            message: `Schedule updated! Trainee email notification simulated for ${res.booking.player_email || res.booking.player_name}.`,
+            message: `Schedule updated! Email confirmation prepared for ${res.booking.player_email || res.booking.player_name}.`,
           });
-        }
-      } else if (res.sms) {
-        if (res.sms.sent && !res.sms.simulated) {
-          setSmsToast({
-            type: 'success',
-            title: `SMS Sent to ${res.booking.player_name}!`,
-            message: `Automated confirmation sent to ${res.booking.player_contact}.`,
-          });
-        } else if (res.sms.simulated) {
-          setSmsToast({
-            type: 'info',
-            title: `Status: ${status === 'confirmed' ? 'Accepted' : 'Declined'} (Simulated SMS)`,
-            message: `SMS simulated. Trainee: ${res.booking.player_contact}.`,
-          });
-        } else if (res.sms.error) {
-          let errText = res.sms.error;
-          if (errText.includes('Unexpected token') || errText.includes('not valid JSON')) {
-            errText = 'Semaphore SMS: Your account requires credits or verification at semaphore.co.';
-          }
-          setSmsToast({
+        } else if (res.email.error) {
+          setEmailToast({
             type: 'warning',
-            title: `Appointment updated, but SMS delivery failed`,
-            message: `${errText}. You can still tap SMS to message manually from your phone.`,
-            phone: res.booking?.player_contact,
-            smsText: res.sms?.sms_text,
+            title: `Schedule updated, but email delivery issue`,
+            message: res.email.error,
           });
         }
+      } else {
+        setEmailToast({
+          type: 'success',
+          title: `Status Updated to ${status}`,
+          message: `Booking has been marked as ${status}.`,
+        });
       }
 
       await fetchBookings();
@@ -153,7 +139,7 @@ export default function DashboardBookings() {
       alert(err.message || 'Failed to update booking status');
     } finally {
       setActionLoading(null);
-      setTimeout(() => setSmsToast(null), 6000);
+      setTimeout(() => setEmailToast(null), 6000);
     }
   };
 
@@ -246,31 +232,31 @@ export default function DashboardBookings() {
         message: '',
       });
       await fetchBookings();
-      setSmsToast({
+      setEmailToast({
         type: 'success',
         title: 'Booking Created',
         message: 'New lesson booking added to schedule.',
       });
-      setTimeout(() => setSmsToast(null), 4000);
+      setTimeout(() => setEmailToast(null), 4000);
     } catch (err) {
       alert(err.message || 'Failed to create booking');
     }
   };
 
-  const handleSendCustomSms = async () => {
-    if (!smsModalBooking) return;
+  const handleSendCustomEmail = async () => {
+    if (!emailModalBooking) return;
     try {
-      const res = await api.sendBookingSms(smsModalBooking.id, { message: smsCustomText });
-      setSmsModalBooking(null);
-      setSmsToast({
+      const res = await api.sendBookingEmail(emailModalBooking.id, { message: emailCustomText });
+      setEmailModalBooking(null);
+      setEmailToast({
         type: 'success',
-        title: 'SMS Sent',
-        message: res.message || 'Message sent to trainee.',
+        title: 'Email Sent to Trainee',
+        message: res.message || 'Message sent to trainee email.',
       });
-      setTimeout(() => setSmsToast(null), 4000);
+      setTimeout(() => setEmailToast(null), 4000);
       await fetchBookings();
     } catch (err) {
-      alert(err.message || 'Failed to send SMS');
+      alert(err.message || 'Failed to send email');
     }
   };
 
@@ -913,23 +899,14 @@ export default function DashboardBookings() {
                           </span>
                           <button
                             onClick={() => {
-                              setSmsModalBooking(b);
-                              setSmsCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson.`);
+                              setEmailModalBooking(b);
+                              setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
                             }}
-                            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xs font-bold cursor-pointer"
-                            title="Send custom SMS"
+                            className="p-2 rounded-xl text-slate-400 hover:text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 text-xs font-bold transition-colors cursor-pointer"
+                            title="Send email note to trainee"
                           >
-                            💬
+                            ✉️ Send Email
                           </button>
-                          {b.player_email && (
-                            <a
-                              href={`mailto:${b.player_email}?subject=ZTennis%20Session%20Update%20-%20Coach%20Zoid&body=Hi%20${encodeURIComponent(b.player_name)},%0A%0A`}
-                              className="p-2 rounded-xl text-slate-400 hover:text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 text-xs font-bold transition-colors cursor-pointer"
-                              title={`Email ${b.player_email}`}
-                            >
-                              ✉️
-                            </a>
-                          )}
                         </div>
                       )}
                     </div>
@@ -941,36 +918,25 @@ export default function DashboardBookings() {
         </div>
       )}
 
-      {/* Confirmation / SMS Result Toast matching screenshot and branding */}
-      {smsToast && (
+      {/* Confirmation / Email Result Toast */}
+      {emailToast && (
         <div className={`fixed bottom-6 right-6 z-50 max-w-md p-4 rounded-2xl shadow-soft-xl flex items-start gap-3 animate-fade-in-up text-white ${
-          smsToast.type === 'success'
+          emailToast.type === 'success'
             ? 'bg-emerald-600'
-            : smsToast.type === 'warning'
+            : emailToast.type === 'warning'
             ? 'bg-[#1A1118] border border-amber-500/50'
             : 'bg-slate-800'
         }`}>
           <span className="text-xl shrink-0">
-            {smsToast.type === 'success' ? '✓' : smsToast.type === 'warning' ? '⚠️' : 'ℹ️'}
+            {emailToast.type === 'success' ? '✓' : emailToast.type === 'warning' ? '⚠️' : '✉️'}
           </span>
           <div className="flex-1 text-xs">
-            <p className={`font-black uppercase tracking-wider ${smsToast.type === 'warning' ? 'text-amber-400' : 'text-white'}`}>
-              {smsToast.title}
+            <p className={`font-black uppercase tracking-wider ${emailToast.type === 'warning' ? 'text-amber-400' : 'text-white'}`}>
+              {emailToast.title}
             </p>
-            <p className="mt-1 opacity-90 leading-relaxed text-slate-200">{smsToast.message}</p>
-            {smsToast.phone && (
-              <div className="mt-2.5 flex items-center gap-2">
-                <a
-                  href={`sms:${smsToast.phone}${smsToast.smsText ? `?body=${encodeURIComponent(smsToast.smsText)}` : ''}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-[11px] shadow-sm transition-colors cursor-pointer"
-                >
-                  <span>📱</span>
-                  <span>Tap to Send SMS Manually</span>
-                </a>
-              </div>
-            )}
+            <p className="mt-1 opacity-90 leading-relaxed text-slate-200">{emailToast.message}</p>
           </div>
-          <button onClick={() => setSmsToast(null)} className="opacity-70 hover:opacity-100 cursor-pointer text-sm font-bold">✕</button>
+          <button onClick={() => setEmailToast(null)} className="opacity-70 hover:opacity-100 cursor-pointer text-sm font-bold">✕</button>
         </div>
       )}
 
@@ -1188,19 +1154,19 @@ export default function DashboardBookings() {
         </div>
       )}
 
-      {/* Custom SMS Composer Modal */}
-      {smsModalBooking && (
+      {/* Custom Email Composer Modal */}
+      {emailModalBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
           <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-md overflow-hidden animate-scale-up">
-            <div className="bg-[#163829] text-white p-6 flex items-center justify-between">
+            <div className="bg-[#1A1118] text-white p-6 flex items-center justify-between border-b border-white/10">
               <div>
-                <h3 className="font-extrabold text-lg text-white">Send SMS to Trainee</h3>
-                <p className="text-xs text-emerald-200/80 mt-0.5">
-                  Direct message to {smsModalBooking.player_name} ({smsModalBooking.player_contact})
+                <h3 className="font-extrabold text-lg text-white">Send Email to Trainee</h3>
+                <p className="text-xs text-rose-200/80 mt-0.5">
+                  To: {emailModalBooking.player_name} ({emailModalBooking.player_email || emailModalBooking.player_contact})
                 </p>
               </div>
               <button
-                onClick={() => setSmsModalBooking(null)}
+                onClick={() => setEmailModalBooking(null)}
                 className="text-slate-300 hover:text-white cursor-pointer font-bold text-lg"
               >
                 ✕
@@ -1210,12 +1176,13 @@ export default function DashboardBookings() {
             <div className="p-6 sm:p-7 space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
-                  SMS Message Body
+                  Email Message Body
                 </label>
                 <textarea
                   rows={4}
-                  value={smsCustomText}
-                  onChange={(e) => setSmsCustomText(e.target.value)}
+                  value={emailCustomText}
+                  onChange={(e) => setEmailCustomText(e.target.value)}
+                  placeholder="Write a message to the trainee..."
                   className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl p-4 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                 />
               </div>
@@ -1223,17 +1190,17 @@ export default function DashboardBookings() {
               <div className="flex gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setSmsModalBooking(null)}
+                  onClick={() => setEmailModalBooking(null)}
                   className="flex-1 py-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  onClick={handleSendCustomSms}
-                  className="flex-1 py-3 rounded-xl text-xs font-bold text-white bg-[#1F7A5A] hover:bg-[#165a42] shadow-soft-xs transition-colors cursor-pointer"
+                  onClick={handleSendCustomEmail}
+                  className="flex-1 py-3 rounded-xl text-xs font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] shadow-soft-xs transition-colors cursor-pointer"
                 >
-                  Send SMS Now →
+                  Send Email Now →
                 </button>
               </div>
             </div>

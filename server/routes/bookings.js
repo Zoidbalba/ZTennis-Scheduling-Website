@@ -19,6 +19,7 @@ import {
   sendBookingConfirmationEmail,
   sendBookingSubmittedEmail,
   sendFollowUpNotificationToCoach,
+  sendCustomCoachEmail,
 } from '../services/email.js';
 
 const router = Router();
@@ -312,33 +313,12 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       }
     }
 
-    // 2. Send automated SMS if accepted or rejected (secondary channel)
-    let smsResult = null;
-    let smsStatusVal = booking.sms_status || '';
-    let smsSentAtVal = booking.sms_sent_at || '';
-
-    if (send_notification && (status === 'confirmed' || status === 'declined' || status === 'completed')) {
-      try {
-        smsResult = await sendBookingStatusSms(booking, status, coachProfile);
-        if (smsResult.sent) {
-          smsStatusVal = smsResult.simulated ? 'simulated' : 'sent';
-          smsSentAtVal = new Date().toISOString();
-        } else {
-          smsStatusVal = `failed: ${smsResult.error || 'unknown'}`;
-        }
-      } catch (smsErr) {
-        console.error('Error dispatching automated SMS:', smsErr);
-        smsResult = { sent: false, error: smsErr.message };
-        smsStatusVal = `failed: ${smsErr.message}`;
-      }
-    }
-
-    // Update status, email, and SMS tracking in database
+    // Update status and email tracking in database
     await db.run(
       `UPDATE bookings
-       SET status = ?, sms_status = ?, sms_sent_at = ?, email_status = ?, email_sent_at = ?
+       SET status = ?, email_status = ?, email_sent_at = ?
        WHERE id = ?`,
-      [status, smsStatusVal, smsSentAtVal, emailStatusVal, emailSentAtVal, Number(id)]
+      [status, emailStatusVal, emailSentAtVal, Number(id)]
     );
     saveDb(db);
 
@@ -348,7 +328,6 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       message: `Booking status updated to ${status}`,
       booking: updatedBooking,
       email: emailResult,
-      sms: smsResult,
     });
   } catch (err) {
     console.error('Update booking status error:', err);
@@ -357,16 +336,16 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
 });
 
 /**
- * POST /api/bookings/:id/send-sms
+ * POST /api/bookings/:id/send-email
  *
- * Explicitly sends/resends an SMS notification to the trainee.
- * Body: { message?: string }
+ * Sends or resends an official email to the trainee (either a custom note or schedule confirmation).
+ * Body: { message?: string, subject?: string }
  * Requires authentication.
  */
-router.post('/:id/send-sms', authMiddleware, async (req, res) => {
+router.post('/:id/send-email', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { message } = req.body;
+    const { message, subject } = req.body;
 
     const db = await getDb();
     const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
@@ -374,40 +353,74 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    if (!booking.player_contact) {
-      return res.status(400).json({ error: 'No phone number for this booking' });
+    if (!booking.player_email) {
+      return res.status(400).json({ error: 'No email address registered for this booking' });
     }
 
     let coachProfile = null;
     try {
-      coachProfile = await db.get('SELECT name, phone FROM coach_profile LIMIT 1');
+      coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
     } catch (e) {}
 
-    let smsResult;
+    let emailResult;
     if (message && message.trim()) {
-      smsResult = await sendSms({
-        to: booking.player_contact,
+      emailResult = await sendCustomCoachEmail({
+        booking,
+        coachProfile,
+        subject,
         message: message.trim(),
       });
     } else {
-      smsResult = await sendBookingStatusSms(booking, booking.status || 'confirmed', coachProfile);
+      emailResult = await sendBookingConfirmationEmail({
+        booking,
+        coachProfile,
+        status: booking.status || 'confirmed',
+      });
     }
 
-    const smsStatusVal = smsResult.sent ? (smsResult.simulated ? 'simulated' : 'sent') : `failed: ${smsResult.error || 'error'}`;
-    const smsSentAtVal = smsResult.sent ? new Date().toISOString() : booking.sms_sent_at;
+    const emailStatusVal = emailResult.sent
+      ? (emailResult.simulated ? 'sent (simulated)' : 'sent')
+      : `failed: ${emailResult.error || 'error'}`;
+    const emailSentAtVal = emailResult.sent ? new Date().toISOString() : booking.email_sent_at;
 
     await db.run(
-      'UPDATE bookings SET sms_status = ?, sms_sent_at = ? WHERE id = ?',
-      [smsStatusVal, smsSentAtVal, Number(id)]
+      'UPDATE bookings SET email_status = ?, email_sent_at = ? WHERE id = ?',
+      [emailStatusVal, emailSentAtVal, Number(id)]
     );
     saveDb(db);
 
     res.json({
-      message: smsResult.sent ? 'SMS sent successfully' : 'Failed to send SMS',
-      sms: smsResult,
+      message: emailResult.sent ? 'Email sent successfully' : 'Failed to send email',
+      email: emailResult,
     });
   } catch (err) {
-    console.error('Manual send SMS error:', err);
+    console.error('Manual send email error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/bookings/:id/send-sms (Backward-compatible alias for send-email)
+ */
+router.post('/:id/send-sms', authMiddleware, async (req, res) => {
+  // Delegate directly to send-email handler logic
+  try {
+    const { id } = req.params;
+    const { message, subject } = req.body;
+    const db = await getDb();
+    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+
+    if (booking.player_email) {
+      const coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
+      const emailResult = message
+        ? await sendCustomCoachEmail({ booking, coachProfile, subject, message })
+        : await sendBookingConfirmationEmail({ booking, coachProfile, status: booking.status || 'confirmed' });
+      return res.json({ message: 'Email dispatched', email: emailResult });
+    }
+
+    res.json({ message: 'No email found for this booking' });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

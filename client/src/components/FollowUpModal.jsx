@@ -36,7 +36,9 @@ export default function FollowUpModal({ booking, isOpen, onClose, onSuccess }) {
   };
 
   const coachPhone = '09350034792';
-  const prefilledSms = encodeURIComponent(
+  const coachEmail = 'zoidbalba2@gmail.com';
+  const prefilledEmailSubject = encodeURIComponent(`🎾 Trainee Follow-Up — ${booking.booking_date}`);
+  const prefilledEmailBody = encodeURIComponent(
     message.trim() || `Hi Coach Zoid! Following up on my tennis booking for ${booking.booking_date} (${booking.start_time}).`
   );
 
@@ -79,10 +81,10 @@ export default function FollowUpModal({ booking, isOpen, onClose, onSuccess }) {
 
             <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
               <a
-                href={`sms:${coachPhone}?body=${prefilledSms}`}
+                href={`mailto:${coachEmail}?subject=${prefilledEmailSubject}&body=${prefilledEmailBody}`}
                 className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors"
               >
-                <span>📱 Also Send via Phone SMS</span>
+                <span>✉️ Open in Gmail / Mail App</span>
               </a>
               <button
                 onClick={onClose}
@@ -147,10 +149,10 @@ export default function FollowUpModal({ booking, isOpen, onClose, onSuccess }) {
               <div className="flex items-center justify-center gap-3 pt-1 text-[11px] text-slate-500">
                 <span>Or message directly:</span>
                 <a
-                  href={`sms:${coachPhone}?body=${prefilledSms}`}
+                  href={`mailto:${coachEmail}?subject=${prefilledEmailSubject}&body=${prefilledEmailBody}`}
                   className="font-bold text-[#E0749A] hover:underline"
                 >
-                  📱 Phone SMS
+                  ✉️ Email Coach
                 </a>
                 <span>•</span>
                 <a
