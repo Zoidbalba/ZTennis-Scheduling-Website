@@ -267,9 +267,8 @@ export default function Home() {
           selectedSlot={selectedSlot}
           onClose={() => setSelectedSlot(null)}
           onSuccess={() => {
-            setSelectedSlot(null);
             fetchSlots();
-            setBookingToast('Booking submitted! Coach Zoid will confirm your session shortly.');
+            setBookingToast('Booking submitted! Coach Zoid will review and confirm your session.');
             setTimeout(() => setBookingToast(null), 6000);
           }}
         />

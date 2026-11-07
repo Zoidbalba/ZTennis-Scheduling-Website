@@ -31,14 +31,20 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (selectedSlot?.session_type) {
+    setSuccess(false);
+    setError('');
+    setSubmitting(false);
+    if (selectedSlot) {
       setForm((prev) => ({
         ...prev,
-        session_type: selectedSlot.session_type,
+        session_type: selectedSlot.session_type || 'Individual Session',
         member_count: selectedSlot.member_count || (selectedSlot.session_type === 'Group Session' ? 2 : 1),
+        player_name: trainee?.name || prev.player_name || '',
+        contact_number: trainee?.phone || prev.contact_number || '',
+        email: trainee?.email || prev.email || '',
       }));
     }
-  }, [selectedSlot]);
+  }, [selectedSlot, trainee]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -113,75 +119,92 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] overflow-y-auto animate-scale-up"
+        className="bg-white dark:bg-slate-900 rounded-3xl shadow-soft-xl w-full max-w-lg max-h-[92vh] flex flex-col relative overflow-hidden animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="bg-[#180a13] dark:bg-[#0d0309] text-white p-6 sm:p-7 rounded-t-3xl relative">
-          <div className="flex items-center justify-between">
+        {/* ALWAYS-VISIBLE TOP-CORNER EXIT BUTTON (Easily accessible at all times) */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Exit booking"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-50 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white hover:text-white flex items-center justify-center text-sm font-black shadow-soft-md backdrop-blur-md transition-all cursor-pointer ring-2 ring-white/20 hover:scale-105"
+        >
+          ✕
+        </button>
+
+        {/* Scrollable Container */}
+        <div className="overflow-y-auto w-full flex-1">
+          {/* Header */}
+          <div className="bg-[#180a13] dark:bg-[#0d0309] text-white p-6 sm:p-7 relative pr-14">
             <div>
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#FFDBE5] bg-white/10 px-3 py-1 rounded-full">
                 Lesson Reservation
               </span>
               <h3 className="text-xl sm:text-2xl font-extrabold mt-2">Book a Session</h3>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer"
-            >
-              ✕
-            </button>
-          </div>
 
-          <div className="mt-4 p-4 bg-white/10 backdrop-blur-md rounded-2xl text-xs sm:text-sm text-slate-200">
-            <p className="font-bold text-[#FFDBE5] text-sm">
-              {bookingDate}
-            </p>
-            <p className="mt-0.5 text-slate-300">
-              {formatTime(selectedSlot.start_time)} – {formatTime(selectedSlot.end_time)} (Public Court)
-            </p>
-          </div>
-        </div>
-
-        {/* Content */}
-        {success ? (
-          <div className="p-6 sm:p-10 text-center animate-fade-in space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#E0749A] text-white font-black text-2xl flex items-center justify-center mx-auto shadow-soft-sm">
-              Z
-            </div>
-            <div>
-              <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Booking Request Sent</h4>
-              <p className="text-xs text-slate-400 mt-0.5">We've received your morning session request!</p>
-            </div>
-
-            <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A]">
-              {form.session_type === 'Group Session'
-                ? `👥 Group Session · ${form.member_count || 2} players · ₱${250 * (form.member_count || 2)} total`
-                : '👤 Individual Session · ₱300'}
-            </div>
-
-            <div className="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-2xl border border-emerald-200/60 dark:border-emerald-800/60 text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
-              <span className="font-extrabold text-[#1F7A5A] dark:text-emerald-400 block mb-1">
-                ✉️ Email Confirmation Notice
-              </span>
-              Confirmation updates will be delivered to <strong className="text-slate-900 dark:text-white">{form.email || form.contact_number}</strong>. You can also view your live schedule status anytime on your Trainee Portal!
-            </div>
-
-            <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
-              <Link
-                to="/my-bookings"
-                className="py-3 px-6 bg-[#1F7A5A] hover:bg-[#165a42] text-white rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center justify-center gap-1.5"
-              >
-                <span>Track in My Bookings →</span>
-              </Link>
-              <button
-                onClick={onClose}
-                className="py-3 px-6 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer"
-              >
-                Done
-              </button>
+            <div className="mt-4 p-4 bg-white/10 backdrop-blur-md rounded-2xl text-xs sm:text-sm text-slate-200">
+              <p className="font-bold text-[#FFDBE5] text-sm">
+                {bookingDate}
+              </p>
+              <p className="mt-0.5 text-slate-300">
+                {formatTime(selectedSlot.start_time)} – {formatTime(selectedSlot.end_time)} (Public Court)
+              </p>
             </div>
           </div>
+
+          {/* Content */}
+          {success ? (
+            <div className="p-6 sm:p-10 text-center animate-fade-in space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#E0749A] text-white font-black text-2xl flex items-center justify-center mx-auto shadow-soft-sm">
+                ✓
+              </div>
+              <div>
+                <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Booking Request Sent!</h4>
+                <p className="text-xs text-slate-400 mt-0.5">We've received your morning session request for {bookingDate}.</p>
+              </div>
+
+              <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A]">
+                {form.session_type === 'Group Session'
+                  ? `👥 Group Session · ${form.member_count || 2} players · ₱${250 * (form.member_count || 2)} total`
+                  : '👤 Individual Session · ₱300'}
+              </div>
+
+              <div className="bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-2xl border border-emerald-200/60 dark:border-emerald-800/60 text-xs text-slate-700 dark:text-slate-300 leading-relaxed max-w-sm mx-auto">
+                <span className="font-extrabold text-[#1F7A5A] dark:text-emerald-400 block mb-1">
+                  ✉️ Confirmation Notice
+                </span>
+                Details delivered to <strong className="text-slate-900 dark:text-white">{form.email || form.contact_number}</strong>. You can book more dates now or track acceptance in your Trainee Portal!
+              </div>
+
+              <div className="pt-3 flex flex-col sm:flex-row gap-2 justify-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    setTimeout(() => {
+                      document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+                    }, 200);
+                  }}
+                  className="py-3 px-5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>+ Book Another Session</span>
+                </button>
+                <Link
+                  to="/my-bookings"
+                  className="py-3 px-5 bg-[#1F7A5A] hover:bg-[#165a42] text-white rounded-xl font-bold text-xs shadow-soft-xs transition-colors flex items-center justify-center gap-1.5"
+                >
+                  <span>View in My Bookings →</span>
+                </Link>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="py-3 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
         ) : !isTraineeAuthenticated && !isAuthenticated ? (
           <div className="p-6 sm:p-8 text-center space-y-4 animate-fade-in">
             <div className="w-12 h-12 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] font-black text-2xl flex items-center justify-center mx-auto">
@@ -440,17 +463,25 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               />
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={onClose}
+                className="py-3.5 px-5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-hover-pink w-full bg-[#E0749A] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
+                className="flex-1 btn-hover-pink bg-[#E0749A] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-xs sm:text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
               >
                 {submitting ? 'Submitting Request...' : 'Confirm Booking Request →'}
               </button>
             </div>
           </form>
         )}
+        </div>
       </div>
     </div>
   );

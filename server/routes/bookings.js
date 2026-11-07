@@ -122,20 +122,31 @@ router.post('/', async (req, res) => {
 
     saveDb(db);
 
-    const booking = await db.get('SELECT * FROM bookings WHERE id = ?', [runRes.lastInsertRowid]);
-
-    // Send confirmation receipt email to trainee if email was provided
-    let emailResult = null;
-    if (booking && booking.player_email && booking.player_email.includes('@')) {
-      try {
-        const coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
-        emailResult = await sendBookingSubmittedEmail({ booking, coachProfile });
-      } catch (emailErr) {
-        console.warn('Booking submission email notice:', emailErr.message);
-      }
+    let booking = null;
+    const insertedId = runRes?.lastInsertRowid || runRes?.id;
+    if (insertedId) {
+      booking = await db.get('SELECT * FROM bookings WHERE id = ?', [insertedId]);
+    }
+    if (!booking) {
+      booking = await db.get(
+        'SELECT * FROM bookings WHERE LOWER(player_email) = LOWER(?) AND booking_date = ? ORDER BY id DESC LIMIT 1',
+        [emailToCheck, booking_date]
+      );
     }
 
-    res.status(201).json({ message: 'Booking request submitted', booking, email: emailResult });
+    // Send confirmation receipt email asynchronously in the background so user booking responds INSTANTLY without hanging
+    if (booking && booking.player_email && booking.player_email.includes('@')) {
+      (async () => {
+        try {
+          const coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
+          await sendBookingSubmittedEmail({ booking, coachProfile });
+        } catch (emailErr) {
+          console.warn('Booking submission email background notice:', emailErr.message);
+        }
+      })();
+    }
+
+    res.status(201).json({ message: 'Booking request submitted', booking });
   } catch (err) {
     console.error('Create booking error:', err);
     res.status(500).json({ error: err.message });
