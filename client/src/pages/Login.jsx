@@ -69,7 +69,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                 placeholder="coach@tennisph.com"
               />
             </div>
@@ -83,7 +83,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                 placeholder="••••••••"
               />
             </div>
@@ -91,14 +91,14 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-hover-pink w-full bg-[#E27396] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
+              className="btn-hover-pink w-full bg-[#E0749A] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-xs transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer mt-2"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-[#E27396] dark:hover:text-[#EA9AB2] font-semibold transition-colors">
+            <Link to="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-[#E0749A] dark:hover:text-[#EA9AB2] font-semibold transition-colors">
               ← Return to Public Site
             </Link>
           </div>

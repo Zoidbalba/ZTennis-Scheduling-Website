@@ -47,19 +47,19 @@ export default function RatesSection({ rates = [], onSelectRate }) {
       </div>
 
       {/* 2-Column Rates Cards Grid matching Figma Screenshot 2 */}
-      <div className="grid gap-8 lg:gap-10 md:grid-cols-2">
+      <div className="grid gap-6 sm:gap-8 lg:gap-10 md:grid-cols-2">
         {/* Card 1: Individual Session */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
           <div>
             {/* Top row: Icon on left, Price on right */}
             <div className="flex items-start justify-between">
-              <div className="w-14 h-14 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] flex items-center justify-center">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] flex items-center justify-center shrink-0">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
               <div className="text-right">
-                <span className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight block">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight block">
                   ₱{individualRate.price}
                 </span>
                 <span className="text-slate-400 text-xs font-semibold block mt-1">
@@ -68,25 +68,25 @@ export default function RatesSection({ rates = [], onSelectRate }) {
               </div>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-8">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mt-6 sm:mt-8">
               {individualRate.session_type}
             </h3>
             <p className="text-slate-400 text-xs sm:text-sm font-medium mt-1">
               {individualRate.description || '1-on-1 focused coaching'}
             </p>
 
-            <div className="my-7 border-t border-slate-100 dark:border-slate-800" />
+            <div className="my-6 sm:my-7 border-t border-slate-100 dark:border-slate-800" />
 
-            <ul className="space-y-4 mb-10">
-              <li className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <ul className="space-y-3.5 sm:space-y-4 mb-8 sm:mb-10">
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                 <span className="text-[#E0749A] font-bold text-base">✓</span>
                 <span>Personal technique assessment</span>
               </li>
-              <li className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                 <span className="text-[#E0749A] font-bold text-base">✓</span>
                 <span>Custom drills for your goals</span>
               </li>
-              <li className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+              <li className="flex items-center gap-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                 <span className="text-[#E0749A] font-bold text-base">✓</span>
                 <span>Post-session practice notes</span>
               </li>
@@ -95,7 +95,7 @@ export default function RatesSection({ rates = [], onSelectRate }) {
 
           <button
             onClick={() => handleBookRate('Individual Session')}
-            className="w-full bg-white dark:bg-slate-900 border-2 border-[#E0749A] text-[#E0749A] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-sm py-4 rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-soft-xs"
+            className="w-full bg-white dark:bg-slate-900 border-2 border-[#E0749A] text-[#E0749A] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-xs sm:text-sm py-3.5 sm:py-4 rounded-2xl transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-soft-xs"
           >
             <span>Book individual</span>
             <span>→</span>
@@ -103,22 +103,22 @@ export default function RatesSection({ rates = [], onSelectRate }) {
         </div>
 
         {/* Card 2: Group Session */}
-        <div className="relative bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="absolute -top-3.5 right-8 sm:right-10">
-            <span className="bg-[#1F7A5A] text-white text-[10px] font-black uppercase tracking-wider px-4 py-1.5 rounded-full shadow-soft-xs">
+        <div className="relative bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm border border-slate-100 dark:border-slate-800/80 flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div className="absolute top-4 right-5 sm:-top-3.5 sm:right-10">
+            <span className="bg-[#1F7A5A] text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-soft-xs">
               BEST WITH FRIENDS
             </span>
           </div>
 
           <div>
             <div className="flex items-start justify-between">
-              <div className="w-14 h-14 rounded-2xl bg-[#E8F3ED] dark:bg-[#11291f] text-[#1F7A5A] flex items-center justify-center">
-                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E8F3ED] dark:bg-[#11291f] text-[#1F7A5A] flex items-center justify-center shrink-0">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <div className="text-right">
-                <span className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight block">
+                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight block">
                   ₱{groupRate.price}
                 </span>
                 <span className="text-slate-400 text-xs font-semibold block mt-1">
@@ -127,7 +127,7 @@ export default function RatesSection({ rates = [], onSelectRate }) {
               </div>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-8">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mt-6 sm:mt-8">
               {groupRate.session_type}
             </h3>
             <p className="text-slate-400 text-xs sm:text-sm font-medium mt-1">

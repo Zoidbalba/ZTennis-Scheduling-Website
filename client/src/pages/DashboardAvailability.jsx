@@ -142,7 +142,7 @@ export default function DashboardAvailability() {
             setShowConfig(true);
             triggerToast('Availability settings up to date!');
           }}
-          className="bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2"
+          className="bg-[#E0749A] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2"
         >
           <span>Save changes</span>
         </button>
@@ -166,10 +166,10 @@ export default function DashboardAvailability() {
         )}
 
         {/* Big White Card matching Figma Screenshot 5 */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 sm:p-14 shadow-sm border border-slate-100 dark:border-slate-800/80 text-center">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-12 lg:p-14 shadow-sm border border-slate-100 dark:border-slate-800/80 text-center">
           <div className="max-w-md mx-auto space-y-4">
             {/* Pink Clock Icon Box */}
-            <div className="w-16 h-16 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E27396] flex items-center justify-center mx-auto shadow-soft-xs">
+            <div className="w-16 h-16 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] flex items-center justify-center mx-auto shadow-soft-xs">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -186,7 +186,7 @@ export default function DashboardAvailability() {
             <div className="pt-2">
               <button
                 onClick={() => setShowConfig(!showConfig)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-[#E27396] text-[#E27396] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-xs sm:text-sm transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-[#E0749A] text-[#E0749A] hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] font-bold text-xs sm:text-sm transition-colors cursor-pointer"
               >
                 <span>{showConfig ? 'Hide schedule list' : 'Configure availability'}</span>
                 <span>{showConfig ? '↑' : '↓'}</span>
@@ -259,7 +259,7 @@ export default function DashboardAvailability() {
                                   <p className="font-bold">
                                     {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
                                   </p>
-                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${slot.is_blocked ? 'text-rose-500' : 'text-[#E27396]'}`}>
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${slot.is_blocked ? 'text-rose-500' : 'text-[#E0749A]'}`}>
                                     {slot.is_blocked ? 'Blocked' : 'Open'}
                                   </span>
                                 </div>
@@ -273,7 +273,7 @@ export default function DashboardAvailability() {
                                   </button>
                                   <button
                                     onClick={() => openEditModal(slot)}
-                                    className="text-[11px] font-bold text-[#E27396] hover:underline cursor-pointer"
+                                    className="text-[11px] font-bold text-[#E0749A] hover:underline cursor-pointer"
                                   >
                                     Edit
                                   </button>
@@ -293,7 +293,7 @@ export default function DashboardAvailability() {
                       <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                         <button
                           onClick={() => openAddModal(day.value)}
-                          className="text-[11px] font-bold text-[#E27396] hover:text-[#cf5479] cursor-pointer"
+                          className="text-[11px] font-bold text-[#E0749A] hover:text-[#cf5479] cursor-pointer"
                         >
                           + Add slot
                         </button>
@@ -335,7 +335,7 @@ export default function DashboardAvailability() {
                     onChange={(e) =>
                       setFormData({ ...formData, day_of_week: Number(e.target.value) })
                     }
-                    className="w-full rounded-xl px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                    className="w-full rounded-xl px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                   >
                     {DAYS.map((d) => (
                       <option key={d.value} value={d.value} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
@@ -357,7 +357,7 @@ export default function DashboardAvailability() {
                         setFormData({ ...formData, start_time: e.target.value })
                       }
                       required
-                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                     />
                   </div>
 
@@ -372,7 +372,7 @@ export default function DashboardAvailability() {
                         setFormData({ ...formData, end_time: e.target.value })
                       }
                       required
-                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                     />
                   </div>
                 </div>
@@ -385,7 +385,7 @@ export default function DashboardAvailability() {
                       onChange={(e) =>
                         setFormData({ ...formData, is_blocked: e.target.checked })
                       }
-                      className="w-4 h-4 text-[#E27396] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E27396]"
+                      className="w-4 h-4 text-[#E0749A] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E0749A]"
                     />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Block off this slot (unavailable for bookings)
@@ -404,7 +404,7 @@ export default function DashboardAvailability() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-3 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Add Slot'}
                   </button>

@@ -304,29 +304,31 @@ export default function CalendarSection({
           </div>
 
           {/* Quick Controls: View Mode & Jump to Today */}
-          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-start">
             <div className="inline-flex rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-1 text-xs font-semibold shadow-soft-xs">
               <button
                 onClick={() => setViewMode('calendar')}
-                className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                   viewMode === 'calendar'
                     ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>📅</span>
-                <span>Month Calendar</span>
+                <span className="hidden sm:inline">Month Calendar</span>
+                <span className="sm:hidden">Month</span>
               </button>
               <button
                 onClick={() => setViewMode('week')}
-                className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                   viewMode === 'week'
                     ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <span>📋</span>
-                <span>Week Overview</span>
+                <span className="hidden sm:inline">Week Overview</span>
+                <span className="sm:hidden">Week</span>
               </button>
             </div>
 
@@ -384,31 +386,31 @@ export default function CalendarSection({
         {viewMode === 'calendar' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 xl:gap-10 items-start animate-fade-in">
             {/* LEFT: THE INTERACTIVE MONTHLY CALENDAR GRID (7 Cols) */}
-            <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 sm:p-8">
+            <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-4 sm:p-7 lg:p-8">
               {/* Calendar Month Navigation Header */}
-              <div className="flex items-center justify-between pb-4 sm:pb-5 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-4 sm:pb-5 mb-3 sm:mb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  <h3 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                     {monthTitle}
                   </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">
+                  <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-0.5">
                     Tap any day to view morning coaching slots
                   </p>
                 </div>
 
                 {/* Prev / Next Month Arrow Buttons */}
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1 sm:gap-1.5">
                   <button
                     onClick={handlePrevMonth}
                     aria-label="Previous month"
-                    className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E27396] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
                   >
                     ‹
                   </button>
                   <button
                     onClick={handleNextMonth}
                     aria-label="Next month"
-                    className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E27396] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
                   >
                     ›
                   </button>
@@ -420,8 +422,8 @@ export default function CalendarSection({
                 {DAY_SHORT.map((d, i) => (
                   <div
                     key={d}
-                    className={`text-[10px] sm:text-xs font-black uppercase tracking-wider py-1 ${
-                      i === 0 || i === 3 ? 'text-slate-400 dark:text-slate-600' : 'text-[#E27396]'
+                    className={`text-[9.5px] sm:text-xs font-black uppercase tracking-wider py-1 ${
+                      i === 0 || i === 3 ? 'text-slate-400 dark:text-slate-600' : 'text-[#E0749A]'
                     }`}
                   >
                     {d}
@@ -433,7 +435,7 @@ export default function CalendarSection({
               <div className="grid grid-cols-7 gap-1 sm:gap-2">
                 {/* Preceding Blank Days */}
                 {calendarData.blankDays.map((i) => (
-                  <div key={`blank-${i}`} className="min-h-[50px] sm:min-h-[68px] rounded-2xl opacity-20" />
+                  <div key={`blank-${i}`} className="min-h-[48px] sm:min-h-[68px] rounded-xl sm:rounded-2xl opacity-20" />
                 ))}
 
                 {/* Active Month Days */}
@@ -458,9 +460,9 @@ export default function CalendarSection({
                       key={dayNum}
                       onClick={() => setSelectedDate(dayDate)}
                       disabled={isPast}
-                      className={`relative min-h-[52px] sm:min-h-[72px] p-1.5 sm:p-2 rounded-2xl flex flex-col justify-between items-center transition-all duration-200 cursor-pointer ${
+                      className={`relative min-h-[48px] sm:min-h-[72px] p-1 sm:p-2 rounded-xl sm:rounded-2xl flex flex-col justify-between items-center transition-all duration-200 cursor-pointer ${
                         isSelectedDay
-                          ? 'bg-[#E27396] text-white shadow-soft-md scale-[1.03] z-10 font-black'
+                          ? 'bg-[#E0749A] text-white shadow-soft-md scale-[1.02] sm:scale-[1.03] z-10 font-black'
                           : isPast
                           ? 'bg-slate-50/50 dark:bg-slate-900/30 text-slate-300 dark:text-slate-700 cursor-not-allowed'
                           : isDayBooked
@@ -474,16 +476,17 @@ export default function CalendarSection({
                     >
                       {/* Top Row: Date Number + Today Pill */}
                       <div className="w-full flex items-center justify-between">
-                        <span className={`text-xs sm:text-sm font-bold ${isSelectedDay ? 'text-white' : ''}`}>
+                        <span className={`text-[11px] sm:text-sm font-bold ${isSelectedDay ? 'text-white' : ''}`}>
                           {dayNum}
                         </span>
                         {isTodayDate && (
                           <span
-                            className={`text-[8px] sm:text-[9px] px-1.5 py-0.2 rounded-full font-black uppercase ${
-                              isSelectedDay ? 'bg-white text-[#E27396]' : 'bg-[#E27396] text-white'
+                            className={`text-[7px] sm:text-[9px] px-1 sm:px-1.5 py-0.2 rounded-full font-black uppercase ${
+                              isSelectedDay ? 'bg-white text-[#E0749A]' : 'bg-[#E0749A] text-white'
                             }`}
                           >
-                            Today
+                            <span className="hidden sm:inline">Today</span>
+                            <span className="sm:hidden font-black">●</span>
                           </span>
                         )}
                       </div>
@@ -491,28 +494,29 @@ export default function CalendarSection({
                       {/* Bottom Status Indicator Pill */}
                       <div className="w-full mt-1 flex justify-center">
                         {isSelectedDay ? (
-                          <span className="text-[9px] sm:text-[10px] font-bold text-white/95">
-                            Selected
+                          <span className="text-[7.5px] sm:text-[10px] font-bold text-white/95">
+                            <span className="hidden sm:inline">Selected</span>
+                            <span className="sm:hidden">✓</span>
                           </span>
                         ) : isPast ? (
-                          <span className="text-[9px] text-slate-300 dark:text-slate-700 font-normal">Passed</span>
+                          <span className="text-[7.5px] sm:text-[9px] text-slate-300 dark:text-slate-700 font-normal">Passed</span>
                         ) : isDayBooked ? (
-                          <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950/70 px-1.5 py-0.5 rounded-full border border-rose-200/70 shadow-soft-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                          <span className="inline-flex items-center gap-1 text-[7px] sm:text-[9px] font-black text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950/70 px-1 sm:px-1.5 py-0.5 rounded-full border border-rose-200/70 shadow-soft-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
                             <span className="hidden sm:inline">Booked</span>
-                            <span className="sm:hidden">Closed</span>
+                            <span className="sm:hidden font-black">Full</span>
                           </span>
                         ) : hasOpen ? (
-                          <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-[#2D5A43] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/60">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span className="hidden sm:inline">Open</span>
+                          <span className="inline-flex items-center gap-1 text-[7px] sm:text-[9px] font-black text-[#1F7A5A] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-1 sm:px-2 py-0.5 rounded-full border border-emerald-200/60">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                            <span>Open</span>
                           </span>
                         ) : isRest ? (
-                          <span className="text-[8px] sm:text-[9px] text-slate-400 dark:text-slate-500 font-medium">
+                          <span className="text-[7.5px] sm:text-[9px] text-slate-400 dark:text-slate-500 font-medium">
                             Rest
                           </span>
                         ) : (
-                          <span className="text-[8px] sm:text-[9px] text-slate-400 font-medium">Off</span>
+                          <span className="text-[7.5px] sm:text-[9px] text-slate-400 font-medium">Off</span>
                         )}
                       </div>
                     </button>
@@ -520,29 +524,29 @@ export default function CalendarSection({
                 })}
               </div>
 
-              {/* Calendar Legend Bar */}
-              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 gap-2">
+              {/* Calendar Legend Bar - 2x2 grid on mobile, row on tablet/desktop */}
+              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 gap-2 sm:gap-2.5">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">Open Morning Slot</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Open Slot</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
                   <span className="font-semibold text-slate-700 dark:text-slate-300">Booked (Closed)</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#E27396]"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#E0749A] shrink-0"></span>
                   <span className="font-semibold text-slate-700 dark:text-slate-300">Selected Date</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700"></span>
-                  <span>Rest Day (Wed & Sun)</span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0"></span>
+                  <span>Rest (Wed/Sun)</span>
                 </div>
               </div>
             </div>
 
             {/* RIGHT: SELECTED DATE'S OPEN SESSIONS & RESERVATION CARD */}
-            <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 sm:p-8 space-y-5">
+            <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-5 sm:p-7 lg:p-8 space-y-5">
               {/* Selected Date Header */}
               <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div className="flex items-center justify-between gap-2 mb-2">
@@ -580,7 +584,7 @@ export default function CalendarSection({
                   </p>
                   <button
                     onClick={handleJumpToday}
-                    className="mt-4 px-4 py-2 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors cursor-pointer"
+                    className="mt-4 px-4 py-2 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors cursor-pointer"
                   >
                     Jump to Today →
                   </button>
@@ -627,7 +631,7 @@ export default function CalendarSection({
                       className={`p-5 rounded-2xl transition-all duration-200 border ${
                         slot.is_blocked
                           ? 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 text-slate-400'
-                          : 'bg-white dark:bg-slate-850 border-pink-200/80 dark:border-pink-900/50 hover:border-[#E27396] text-slate-900 dark:text-white shadow-soft-xs'
+                          : 'bg-white dark:bg-slate-850 border-pink-200/80 dark:border-pink-900/50 hover:border-[#E0749A] text-slate-900 dark:text-white shadow-soft-xs'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-2">
@@ -700,7 +704,7 @@ export default function CalendarSection({
                           className={`w-full mt-2 py-3.5 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 transition-all ${
                             isSelectedDateBooked
                               ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700'
-                              : 'bg-[#E27396] hover:bg-[#cf5479] text-white cursor-pointer disabled:opacity-50'
+                              : 'bg-[#E0749A] hover:bg-[#cf5479] text-white cursor-pointer disabled:opacity-50'
                           }`}
                         >
                           {isSelectedDateBooked ? (
@@ -731,7 +735,7 @@ export default function CalendarSection({
                   <div className="pt-2">
                     <button
                       onClick={handleJumpNextAvailable}
-                      className="px-5 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors cursor-pointer"
+                      className="px-5 py-2.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors cursor-pointer"
                     >
                       View Next Open Day →
                     </button>
@@ -741,7 +745,7 @@ export default function CalendarSection({
                     <div className="pt-2">
                       <button
                         onClick={() => handleOpenAdd(selectedDayOfWeek)}
-                        className="text-xs text-[#E27396] font-bold hover:underline cursor-pointer"
+                        className="text-xs text-[#E0749A] font-bold hover:underline cursor-pointer"
                       >
                         + Add a slot for {DAY_NAMES[selectedDayOfWeek]}
                       </button>
@@ -765,7 +769,7 @@ export default function CalendarSection({
                   <div
                     key={day}
                     className={`bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 flex flex-col justify-between transition-all duration-200 min-h-[240px] ${
-                      isTodayDay ? 'ring-2 ring-[#E27396]' : ''
+                      isTodayDay ? 'ring-2 ring-[#E0749A]' : ''
                     }`}
                   >
                     <div>
@@ -774,7 +778,7 @@ export default function CalendarSection({
                         <div className="flex items-center gap-2">
                           <span className="font-extrabold text-base text-slate-900 dark:text-white">{DAY_NAMES[day]}</span>
                           {isTodayDay && (
-                            <span className="text-[10px] bg-[#E27396] text-white px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider shadow-soft-xs">
+                            <span className="text-[10px] bg-[#E0749A] text-white px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider shadow-soft-xs">
                               Today
                             </span>
                           )}
@@ -812,7 +816,7 @@ export default function CalendarSection({
                                     ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 text-slate-400 cursor-not-allowed'
                                     : isTargetBooked
                                     ? 'bg-rose-50/70 dark:bg-rose-950/25 border-rose-200/80 dark:border-rose-900/50 text-slate-500 cursor-not-allowed'
-                                    : 'bg-white dark:bg-slate-850 hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] border-pink-200/80 hover:border-[#E27396] text-slate-900 dark:text-white cursor-pointer shadow-soft-xs'
+                                    : 'bg-white dark:bg-slate-850 hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] border-pink-200/80 hover:border-[#E0749A] text-slate-900 dark:text-white cursor-pointer shadow-soft-xs'
                                 }`}
                               >
                                 <div className="font-extrabold text-base text-slate-900 dark:text-white flex items-center justify-between">
@@ -836,7 +840,7 @@ export default function CalendarSection({
                                     {slot.is_blocked ? 'Blocked' : isTargetBooked ? 'Booked (Closed)' : 'Available'}
                                   </span>
                                   {!isAuthenticated && !slot.is_blocked && !isTargetBooked && (
-                                    <span className="text-[#E27396] font-bold hover:underline">Book →</span>
+                                    <span className="text-[#E0749A] font-bold hover:underline">Book →</span>
                                   )}
                                 </div>
                               </div>
@@ -849,7 +853,7 @@ export default function CalendarSection({
                     {isAuthenticated && (
                       <button
                         onClick={() => handleOpenAdd(day)}
-                        className="mt-4 text-xs text-[#E27396] font-bold text-center w-full py-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 transition-colors cursor-pointer"
+                        className="mt-4 text-xs text-[#E0749A] font-bold text-center w-full py-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 transition-colors cursor-pointer"
                       >
                         + Add slot
                       </button>
@@ -905,7 +909,7 @@ export default function CalendarSection({
                     onChange={(e) =>
                       setFormData({ ...formData, day_of_week: Number(e.target.value) })
                     }
-                    className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                    className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                   >
                     {MON_TO_SUN.map((d) => (
                       <option key={d} value={d}>
@@ -928,7 +932,7 @@ export default function CalendarSection({
                         setFormData({ ...formData, start_time: e.target.value })
                       }
                       required
-                      className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                      className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                     />
                   </div>
 
@@ -943,7 +947,7 @@ export default function CalendarSection({
                         setFormData({ ...formData, end_time: e.target.value })
                       }
                       required
-                      className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                      className="w-full rounded-xl p-3 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                     />
                   </div>
                 </div>
@@ -961,7 +965,7 @@ export default function CalendarSection({
                       onChange={(e) =>
                         setFormData({ ...formData, is_blocked: e.target.checked })
                       }
-                      className="w-4 h-4 text-[#E27396] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E27396]"
+                      className="w-4 h-4 text-[#E0749A] rounded border-0 bg-slate-200 dark:bg-slate-700 focus:ring-[#E0749A]"
                     />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Block this slot (make unavailable to players)
@@ -981,7 +985,7 @@ export default function CalendarSection({
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-[#E27396] hover:bg-[#cf5479] shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingSlot ? 'Update Slot' : 'Add Slot'}
                   </button>

@@ -106,7 +106,7 @@ export default function DashboardRates() {
       headerAction={
         <button
           onClick={openAddModal}
-          className="bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2"
+          className="bg-[#E0749A] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2"
         >
           <span>+ Add new rate</span>
         </button>
@@ -136,7 +136,7 @@ export default function DashboardRates() {
                 className="relative bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-7 flex flex-col justify-between hover:shadow-md transition-shadow"
               >
                 {rate.is_package ? (
-                  <div className="absolute top-0 right-0 bg-[#FFF0F5] text-[#E27396] dark:bg-[#20101a] text-[10px] font-black px-3.5 py-1 rounded-bl-2xl uppercase tracking-wider">
+                  <div className="absolute top-0 right-0 bg-[#FFF0F5] text-[#E0749A] dark:bg-[#20101a] text-[10px] font-black px-3.5 py-1 rounded-bl-2xl uppercase tracking-wider">
                     Package
                   </div>
                 ) : null}
@@ -207,7 +207,7 @@ export default function DashboardRates() {
                     onChange={(e) => setFormData({ ...formData, session_type: e.target.value })}
                     required
                     placeholder="e.g. Individual Session"
-                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                   />
                 </div>
 
@@ -223,7 +223,7 @@ export default function DashboardRates() {
                       required
                       placeholder="300"
                       min="0"
-                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                     />
                   </div>
                   <div>
@@ -238,7 +238,7 @@ export default function DashboardRates() {
                       placeholder="120"
                       min="15"
                       step="15"
-                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                      className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                     />
                   </div>
                 </div>
@@ -252,7 +252,7 @@ export default function DashboardRates() {
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
                     placeholder="1-on-1 focused coaching with technique breakdown"
-                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-xs font-semibold focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                   />
                 </div>
 
@@ -267,7 +267,7 @@ export default function DashboardRates() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="flex-1 py-3 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-3 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl text-xs font-bold shadow-soft-xs transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {submitting ? 'Saving...' : editingRate ? 'Update Rate' : 'Add Rate'}
                   </button>

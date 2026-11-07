@@ -142,7 +142,7 @@ export default function DashboardTrainees() {
         <div className="flex items-center gap-2">
           <Link
             to="/dashboard/trainees"
-            className="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#E27396] text-white shadow-soft-xs"
+            className="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#E0749A] text-white shadow-soft-xs"
           >
             Trainees Directory ({trainees.length})
           </Link>
@@ -164,7 +164,7 @@ export default function DashboardTrainees() {
                 onClick={() => setSkillFilter(lvl)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-bold capitalize transition-all cursor-pointer ${
                   skillFilter === lvl
-                    ? 'bg-[#E27396] text-white shadow-soft-xs'
+                    ? 'bg-[#E0749A] text-white shadow-soft-xs'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
@@ -180,7 +180,7 @@ export default function DashboardTrainees() {
               placeholder="Search by name, phone, or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0 transition-all"
+              className="w-full px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0 transition-all"
             />
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function DashboardTrainees() {
                   {/* Top Bar of Card: Initials + Name + Skill */}
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-2xl bg-[#E27396] text-white font-extrabold text-sm flex items-center justify-center shadow-soft-xs">
+                      <div className="w-11 h-11 rounded-2xl bg-[#E0749A] text-white font-extrabold text-sm flex items-center justify-center shadow-soft-xs">
                         {getInitials(trainee.name)}
                       </div>
                       <div>
@@ -295,7 +295,7 @@ export default function DashboardTrainees() {
                       href={`sms:${trainee.contact}?body=Hi ${encodeURIComponent(
                         trainee.name
                       )}, Coach Zoid here from Z Tennis Malaybalay City. Regarding your scheduled training...`}
-                      className="btn-hover-pink px-3.5 py-1.5 bg-[#E27396] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors"
+                      className="btn-hover-pink px-3.5 py-1.5 bg-[#E0749A] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors"
                       title="SMS Trainee"
                     >
                       SMS
@@ -310,7 +310,7 @@ export default function DashboardTrainees() {
 
                   <button
                     onClick={() => setSelectedTrainee(trainee)}
-                    className="text-xs font-bold text-[#E27396] dark:text-[#EA9AB2] hover:underline cursor-pointer"
+                    className="text-xs font-bold text-[#E0749A] dark:text-[#EA9AB2] hover:underline cursor-pointer"
                   >
                     View History ({trainee.sessions?.length || 0}) →
                   </button>
@@ -390,7 +390,7 @@ export default function DashboardTrainees() {
               <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
                 <button
                   onClick={() => setSelectedTrainee(null)}
-                  className="btn-hover-pink px-6 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors cursor-pointer"
+                  className="btn-hover-pink px-6 py-2.5 bg-[#E0749A] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -415,7 +415,7 @@ export default function DashboardTrainees() {
                 onChange={(e) => setTraineeNote(e.target.value)}
                 placeholder="E.g., Baseline topspin drill focus; recommended 52lbs string tension; preparing for upcoming regional tournament..."
                 rows={4}
-                className="w-full p-3.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E27396] outline-none font-medium mb-4 border-0"
+                className="w-full p-3.5 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl text-xs focus:ring-2 focus:ring-[#E0749A] outline-none font-medium mb-4 border-0"
               />
 
               <div className="flex items-center justify-end gap-2.5">
@@ -428,7 +428,7 @@ export default function DashboardTrainees() {
                 <button
                   onClick={handleSaveNote}
                   disabled={savingNote}
-                  className="btn-hover-pink px-5 py-2.5 bg-[#E27396] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors cursor-pointer disabled:opacity-50"
+                  className="btn-hover-pink px-5 py-2.5 bg-[#E0749A] hover:bg-[#cf5479] text-white text-xs font-bold rounded-xl shadow-soft-xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {savingNote ? 'Saving...' : 'Save Note'}
                 </button>

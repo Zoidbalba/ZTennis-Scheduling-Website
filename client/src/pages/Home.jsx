@@ -105,7 +105,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-[#E27396] selection:text-white transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-[#E0749A] selection:text-white transition-colors duration-200">
       <div>
         <Navbar />
 
@@ -122,7 +122,7 @@ export default function Home() {
                 </div>
 
                 {/* Big Two-Tone Headline */}
-                <h1 className="text-4xl sm:text-6xl lg:text-7xl xl:text-[82px] font-black text-slate-900 dark:text-white tracking-tight leading-[1.04]">
+                <h1 className="text-3xl sm:text-6xl lg:text-7xl xl:text-[82px] font-black text-slate-900 dark:text-white tracking-tight leading-[1.06]">
                   Play smarter.{' '}
                   <span className="text-[#E0749A] block sm:inline">
                     Feel stronger.
@@ -130,7 +130,7 @@ export default function Home() {
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-base sm:text-lg lg:text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed font-normal">
+                <p className="text-sm sm:text-lg lg:text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed font-normal">
                   Private tennis coaching built around your game, your goals, and your pace.
                 </p>
 
@@ -138,7 +138,7 @@ export default function Home() {
                 <div className="pt-2">
                   <button
                     onClick={scrollToAvailability}
-                    className="bg-[#E0749A] hover:bg-[#cf5479] text-white text-sm sm:text-base font-bold px-8 py-4 rounded-2xl shadow-soft-sm hover:shadow-soft-md transition-all flex items-center gap-2.5 cursor-pointer"
+                    className="w-full sm:w-auto justify-center bg-[#E0749A] hover:bg-[#cf5479] text-white text-sm sm:text-base font-bold px-8 py-4 rounded-2xl shadow-soft-sm hover:shadow-soft-md transition-all flex items-center gap-2.5 cursor-pointer"
                   >
                     <span>Find your court time</span>
                     <span className="text-lg leading-none">→</span>
@@ -186,7 +186,7 @@ export default function Home() {
               className="w-full h-64 sm:h-80 lg:h-[420px] object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out"
             />
             {/* Subtle Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-transparent flex items-end p-6 sm:p-12">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-transparent flex items-end p-5 sm:p-12">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between w-full gap-4 text-white">
                 <div>
                   <span className="inline-flex items-center gap-1.5 bg-[#E0749A] text-white px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-2">
@@ -203,7 +203,7 @@ export default function Home() {
 
                 <button
                   onClick={scrollToAvailability}
-                  className="bg-white hover:bg-slate-100 text-slate-900 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm self-start sm:self-auto cursor-pointer"
+                  className="w-full sm:w-auto justify-center bg-white hover:bg-slate-100 text-slate-900 px-6 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm self-stretch sm:self-auto cursor-pointer"
                 >
                   View Open Mornings →
                 </button>

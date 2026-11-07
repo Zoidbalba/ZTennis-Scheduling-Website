@@ -14,7 +14,7 @@ export default function ProfileSection({ profile }) {
   return (
     <div className="relative">
       {/* Soft Ambient Pink Background Glow matching Figma Screenshot 1 */}
-      <div className="absolute -top-12 -right-10 w-80 h-80 sm:w-96 sm:h-96 rounded-full bg-[#FFDBE5]/60 dark:bg-[#E27396]/15 blur-3xl pointer-events-none -z-10" />
+      <div className="absolute -top-12 -right-10 w-80 h-80 sm:w-96 sm:h-96 rounded-full bg-[#FFDBE5]/60 dark:bg-[#E0749A]/15 blur-3xl pointer-events-none -z-10" />
 
       {/* Coach Card matching Figma Screenshot 1 */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800/80 max-w-md mx-auto lg:max-w-none">
@@ -57,7 +57,7 @@ export default function ProfileSection({ profile }) {
           {specialties.slice(0, 4).map((s, i) => (
             <span
               key={i}
-              className="bg-[#FFF0F5] dark:bg-[#20101a] text-[#E27396] px-3.5 py-1 rounded-full text-xs font-bold shadow-soft-xs"
+              className="bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] px-3.5 py-1 rounded-full text-xs font-bold shadow-soft-xs"
             >
               {s.trim()}
             </span>
@@ -91,7 +91,7 @@ export default function ProfileSection({ profile }) {
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-xl py-2.5 px-3 text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors shadow-soft-xs"
           >
-            <svg className="w-3.5 h-3.5 text-[#E27396]" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 text-[#E0749A]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.84 7.08V22l3.69-2.03C10.28 20.25 11.13 20.4 12 20.4c5.52 0 10-4.03 10-9.4S17.52 2 12 2zm1.09 12.63l-2.6-2.77-5.08 2.77 5.58-5.93 2.67 2.77 5.01-2.77-5.58 5.93z" />
             </svg>
             <span>Messenger</span>

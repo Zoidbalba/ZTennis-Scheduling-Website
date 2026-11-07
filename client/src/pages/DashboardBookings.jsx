@@ -283,10 +283,10 @@ export default function DashboardBookings() {
       }
     >
       {/* 3 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center shrink-0">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -300,9 +300,9 @@ export default function DashboardBookings() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center shrink-0">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -316,9 +316,9 @@ export default function DashboardBookings() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center shrink-0">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
@@ -334,33 +334,35 @@ export default function DashboardBookings() {
       </div>
 
       {/* View Switcher Bar (Calendar vs List) & Filter */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+        <div className="flex items-center gap-2">
           {/* Calendar / List Toggle Pills */}
           <div className="inline-flex rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 text-xs font-semibold shadow-soft-xs">
             <button
               onClick={() => setViewMode('calendar')}
-              className={`px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 ${
                 viewMode === 'calendar'
                   ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <span>📅</span>
-              <span>Calendar View</span>
+              <span className="hidden sm:inline">Calendar View</span>
+              <span className="sm:hidden">Calendar</span>
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              className={`px-3 sm:px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 sm:gap-2 ${
                 viewMode === 'list'
                   ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <span>📋</span>
-              <span>All Requests (List)</span>
+              <span className="hidden sm:inline">All Requests (List)</span>
+              <span className="sm:hidden">Requests</span>
               {metrics.pending > 0 && (
-                <span className={`w-5 h-5 rounded-full text-[10px] font-black flex items-center justify-center ${
+                <span className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full text-[9px] sm:text-[10px] font-black flex items-center justify-center ${
                   viewMode === 'list' ? 'bg-white text-[#E0749A]' : 'bg-[#E0749A] text-white'
                 }`}>
                   {metrics.pending}
@@ -371,12 +373,12 @@ export default function DashboardBookings() {
         </div>
 
         {/* Filter Dropdown */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-stretch sm:self-auto justify-between sm:justify-start">
           <span className="text-xs font-bold text-slate-400">Filter:</span>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2.5 pr-8 shadow-soft-xs outline-none cursor-pointer"
+            className="flex-1 sm:flex-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 rounded-xl px-4 py-2.5 pr-8 shadow-soft-xs outline-none cursor-pointer"
           >
             <option value="all">All requests & sessions</option>
             <option value="pending">Pending only</option>
@@ -391,36 +393,36 @@ export default function DashboardBookings() {
       {viewMode === 'calendar' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 xl:gap-10 items-start animate-fade-in">
           {/* LEFT: MONTHLY CALENDAR GRID SHOWING SCHEDULED DATES */}
-          <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+          <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-7 lg:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
             {/* Calendar Navigation Header */}
-            <div className="flex items-center justify-between pb-5 mb-5 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between pb-4 sm:pb-5 mb-3 sm:mb-5 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                <h3 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                   {calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </h3>
-                <p className="text-xs text-slate-400 font-medium mt-0.5">
+                <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-0.5">
                   Dates with scheduled coaching lessons are highlighted with session badges
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={handleJumpToday}
-                  className="text-xs font-bold text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 border border-pink-200 dark:border-pink-900/40 px-3.5 py-1.5 rounded-xl transition-colors cursor-pointer"
+                  className="text-xs font-bold text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 border border-pink-200 dark:border-pink-900/40 px-2.5 sm:px-3.5 py-1.5 rounded-xl transition-colors cursor-pointer"
                 >
                   Today
                 </button>
                 <button
                   onClick={handlePrevMonth}
                   aria-label="Previous month"
-                  className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
                 >
                   ‹
                 </button>
                 <button
                   onClick={handleNextMonth}
                   aria-label="Next month"
-                  className="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] flex items-center justify-center font-bold text-base transition-colors shadow-soft-xs cursor-pointer border border-slate-100 dark:border-slate-800"
                 >
                   ›
                 </button>
@@ -432,7 +434,7 @@ export default function DashboardBookings() {
               {CALENDAR_DAY_NAMES.map((d, i) => (
                 <div
                   key={d}
-                  className={`text-[10px] sm:text-xs font-black uppercase tracking-wider py-1 ${
+                  className={`text-[9.5px] sm:text-xs font-black uppercase tracking-wider py-1 ${
                     i === 0 || i === 3 ? 'text-slate-400' : 'text-[#E0749A]'
                   }`}
                 >
@@ -445,7 +447,7 @@ export default function DashboardBookings() {
             <div className="grid grid-cols-7 gap-1 sm:gap-2">
               {/* Preceding Blank Days */}
               {calendarData.blankDays.map((i) => (
-                <div key={`blank-${i}`} className="min-h-[64px] sm:min-h-[82px] rounded-2xl opacity-15" />
+                <div key={`blank-${i}`} className="min-h-[52px] sm:min-h-[82px] rounded-xl sm:rounded-2xl opacity-15" />
               ))}
 
               {/* Month Days */}
@@ -471,7 +473,7 @@ export default function DashboardBookings() {
                   <button
                     key={dayNum}
                     onClick={() => setSelectedDate(dayDate)}
-                    className={`relative min-h-[68px] sm:min-h-[86px] p-2 rounded-2xl flex flex-col justify-between text-left transition-all duration-200 cursor-pointer border ${
+                    className={`relative min-h-[54px] sm:min-h-[86px] p-1 sm:p-2 rounded-xl sm:rounded-2xl flex flex-col justify-between text-left transition-all duration-200 cursor-pointer border ${
                       isSelected
                         ? 'border-[#E0749A] ring-2 ring-[#E0749A] bg-pink-50/50 dark:bg-pink-950/30'
                         : dayBookings.length > 0
@@ -481,42 +483,47 @@ export default function DashboardBookings() {
                   >
                     {/* Top Row: Date Number and Today Tag */}
                     <div className="w-full flex items-center justify-between">
-                      <span className={`text-xs sm:text-sm font-black ${
+                      <span className={`text-[11px] sm:text-sm font-black ${
                         isSelected ? 'text-[#E0749A]' : 'text-slate-800 dark:text-slate-200'
                       }`}>
                         {dayNum}
                       </span>
                       {isToday && (
-                        <span className="text-[8px] bg-[#E0749A] text-white px-1.5 py-0.5 rounded-full font-black uppercase tracking-wider">
-                          Today
+                        <span className="text-[7.5px] sm:text-[8px] bg-[#E0749A] text-white px-1 sm:px-1.5 py-0.2 rounded-full font-black uppercase tracking-wider">
+                          <span className="hidden sm:inline">Today</span>
+                          <span className="sm:hidden">●</span>
                         </span>
                       )}
                     </div>
 
                     {/* Bottom Scheduled Badges */}
-                    <div className="w-full mt-1.5 space-y-1">
+                    <div className="w-full mt-1 space-y-0.5 sm:space-y-1">
                       {dayBookings.length > 0 ? (
                         <>
                           {confirmedCount > 0 && (
-                            <div className="flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md truncate">
+                            <div className="flex items-center justify-center sm:justify-start gap-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[8px] sm:text-[9px] font-extrabold px-1 sm:px-1.5 py-0.5 rounded-md truncate">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                              <span className="truncate">{confirmedCount} confirmed</span>
+                              <span className="hidden sm:inline truncate">{confirmedCount} confirmed</span>
+                              <span className="sm:hidden font-black">{confirmedCount}</span>
                             </div>
                           )}
                           {pendingCount > 0 && (
-                            <div className="flex items-center gap-1 bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md truncate">
+                            <div className="flex items-center justify-center sm:justify-start gap-1 bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 text-[8px] sm:text-[9px] font-extrabold px-1 sm:px-1.5 py-0.5 rounded-md truncate">
                               <span className="w-1.5 h-1.5 rounded-full bg-[#E0749A] shrink-0"></span>
-                              <span className="truncate">{pendingCount} pending</span>
+                              <span className="hidden sm:inline truncate">{pendingCount} pending</span>
+                              <span className="sm:hidden font-black">{pendingCount}</span>
                             </div>
                           )}
                           {completedCount > 0 && confirmedCount === 0 && pendingCount === 0 && (
-                            <div className="text-[9px] font-bold text-slate-400 px-1 truncate">
-                              {completedCount} completed
+                            <div className="flex items-center justify-center sm:justify-start gap-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[8px] sm:text-[9px] font-bold px-1 py-0.5 rounded-md truncate">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
+                              <span className="hidden sm:inline truncate">{completedCount} completed</span>
+                              <span className="sm:hidden font-black">{completedCount}</span>
                             </div>
                           )}
                         </>
                       ) : (
-                        <span className="text-[9px] text-slate-300 dark:text-slate-600 font-medium block">
+                        <span className="text-[8px] sm:text-[9px] text-slate-300 dark:text-slate-600 font-medium block text-center sm:text-left">
                           —
                         </span>
                       )}
@@ -526,25 +533,29 @@ export default function DashboardBookings() {
               })}
             </div>
 
-            {/* Calendar Legend Bar */}
-            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between text-[11px] text-slate-500 gap-3">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span>Confirmed Session</span>
+            {/* Calendar Legend Bar - 2x2 grid on mobile, row on tablet/desktop */}
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-between text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 gap-2 sm:gap-2.5">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                <span>Confirmed</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#E0749A]"></span>
-                <span>Pending Request</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#E0749A] shrink-0"></span>
+                <span>Pending</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#E0749A] bg-transparent"></span>
-                <span>Selected Date</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0"></span>
+                <span>Completed</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full ring-2 ring-[#E0749A] bg-transparent shrink-0"></span>
+                <span>Selected</span>
               </div>
             </div>
           </div>
 
           {/* RIGHT: SELECTED DATE SESSIONS DRAWER / INSPECTOR */}
-          <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
+          <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-7 lg:p-8 shadow-sm border border-slate-100 dark:border-slate-800 space-y-5 sm:space-y-6">
             <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
               <span className="text-[10px] font-black uppercase tracking-wider text-[#E0749A] bg-[#FFF0F5] dark:bg-[#20101a] px-3 py-1 rounded-full">
                 Scheduled for Date
@@ -599,11 +610,11 @@ export default function DashboardBookings() {
                       </div>
 
                       {/* Time and Session Type */}
-                      <div className="flex items-center justify-between text-xs bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 text-xs bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
                         <span className="font-black text-slate-900 dark:text-white">
                           ⏰ {formatTime(b.start_time)} – {formatTime(b.end_time)}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md self-start sm:self-auto ${
                           (b.session_type || '').toLowerCase().includes('group')
                             ? 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
                             : 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
@@ -622,7 +633,7 @@ export default function DashboardBookings() {
                       )}
 
                       {/* Quick Action Buttons */}
-                      <div className="flex items-center gap-2 pt-1">
+                      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pt-1">
                         {b.status === 'pending' && (
                           <>
                             <button

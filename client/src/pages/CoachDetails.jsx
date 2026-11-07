@@ -88,7 +88,7 @@ export default function CoachDetails() {
                       className="w-28 h-28 sm:w-44 sm:h-44 rounded-full object-cover shadow-soft-xl bg-white dark:bg-slate-800 ring-4 ring-[#FFDBE5] dark:ring-[#20101a]"
                     />
                   ) : (
-                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-[#E27396] flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
+                    <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-[#E0749A] flex items-center justify-center shadow-soft-xl text-4xl sm:text-5xl text-white font-black ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
                       Z
                     </div>
                   )}
@@ -103,7 +103,7 @@ export default function CoachDetails() {
                 <div className="sm:pb-2">
                   <Link
                     to="/#schedule"
-                    className="btn-hover-pink w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#E27396] hover:bg-[#cf5479] text-white px-7 py-3 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer min-h-[44px]"
+                    className="btn-hover-pink w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#E0749A] hover:bg-[#cf5479] text-white px-7 py-3 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all cursor-pointer min-h-[44px]"
                   >
                     Book a Session
                   </Link>
@@ -217,7 +217,7 @@ export default function CoachDetails() {
                         <div className="flex items-center gap-2">
                           <h3 className="font-extrabold text-slate-900 dark:text-white text-lg">{rate.session_type}</h3>
                           {isGroup && (
-                            <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#E27396] text-white shadow-soft-xs">
+                            <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#E0749A] text-white shadow-soft-xs">
                               2+ Players
                             </span>
                           )}
@@ -228,7 +228,7 @@ export default function CoachDetails() {
                       </div>
 
                       <div className="my-4">
-                        <span className={`text-4xl font-black ${isGroup ? 'text-[#E27396] dark:text-[#EA9AB2]' : 'text-slate-900 dark:text-white'}`}>₱{rate.price}</span>
+                        <span className={`text-4xl font-black ${isGroup ? 'text-[#E0749A] dark:text-[#EA9AB2]' : 'text-slate-900 dark:text-white'}`}>₱{rate.price}</span>
                         <span className="text-slate-500 dark:text-slate-400 text-sm ml-1.5 font-semibold">/ person</span>
                       </div>
 
@@ -290,7 +290,7 @@ export default function CoachDetails() {
             <div className="mt-8 text-center">
               <Link
                 to="/#schedule"
-                className="inline-flex items-center gap-1.5 text-slate-900 dark:text-white hover:text-[#E27396] dark:hover:text-[#EA9AB2] font-bold text-sm transition-colors"
+                className="inline-flex items-center gap-1.5 text-slate-900 dark:text-white hover:text-[#E0749A] dark:hover:text-[#EA9AB2] font-bold text-sm transition-colors"
               >
                 <span>View Full Interactive Schedule & Book Available Slot →</span>
               </Link>
@@ -308,7 +308,7 @@ export default function CoachDetails() {
               <div className="flex flex-col sm:flex-row flex-wrap gap-2.5">
                 <Link
                   to="/#schedule"
-                  className="btn-hover-pink w-full sm:w-auto text-center bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer min-h-[44px] flex items-center justify-center"
+                  className="btn-hover-pink w-full sm:w-auto text-center bg-[#E0749A] hover:bg-[#cf5479] text-white px-6 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer min-h-[44px] flex items-center justify-center"
                 >
                   Book a Session
                 </Link>

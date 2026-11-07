@@ -105,7 +105,7 @@ export default function DashboardProfile() {
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="bg-[#E27396] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
+          className="bg-[#E0749A] hover:bg-[#cf5479] text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-soft-xs hover:shadow-soft-sm transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50"
         >
           <span>{saving ? 'Saving...' : 'Save profile changes'}</span>
         </button>
@@ -135,7 +135,7 @@ export default function DashboardProfile() {
                   }}
                 />
               ) : (
-                <div className="w-20 h-20 rounded-full bg-[#E27396] text-white flex items-center justify-center font-black text-2xl shadow-soft-md ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
+                <div className="w-20 h-20 rounded-full bg-[#E0749A] text-white flex items-center justify-center font-black text-2xl shadow-soft-md ring-4 ring-[#FFDBE5] dark:ring-[#20101a]">
                   Z
                 </div>
               )}
@@ -161,7 +161,7 @@ export default function DashboardProfile() {
                     onChange={handleChange}
                     rows={field.rows || 3}
                     placeholder={field.placeholder}
-                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none resize-none border-0"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E0749A] outline-none resize-none border-0"
                   />
                 ) : (
                   <input
@@ -170,7 +170,7 @@ export default function DashboardProfile() {
                     value={formData[field.name]}
                     onChange={handleChange}
                     placeholder={field.placeholder}
-                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                    className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                   />
                 )}
               </div>
@@ -194,7 +194,7 @@ export default function DashboardProfile() {
                   value={formData[field.name]}
                   onChange={handleChange}
                   placeholder={field.placeholder}
-                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
                 />
               </div>
             ))}
@@ -216,7 +216,7 @@ export default function DashboardProfile() {
                 value={formData.password || ''}
                 onChange={handleChange}
                 placeholder="Enter at least 6 characters to update password"
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E27396] outline-none border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-[#E0749A] outline-none border-0"
               />
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function DashboardProfile() {
             <button
               type="submit"
               disabled={saving}
-              className="btn-hover-pink bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="btn-hover-pink bg-[#E0749A] hover:bg-[#cf5479] text-white px-8 py-3.5 rounded-xl font-bold text-xs shadow-soft-xs transition-all disabled:opacity-50 cursor-pointer"
             >
               {saving ? 'Saving...' : 'Save Profile Changes →'}
             </button>

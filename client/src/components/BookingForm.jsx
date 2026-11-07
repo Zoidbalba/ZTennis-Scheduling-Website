@@ -176,7 +176,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
                 Session Type *
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setForm((prev) => ({ ...prev, session_type: 'Individual Session' }))}
@@ -310,7 +310,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.player_name}
                 onChange={handleChange}
                 required
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                 placeholder="Full Name"
               />
             </div>
@@ -325,7 +325,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.contact_number}
                 onChange={handleChange}
                 required
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                 placeholder="0917 123 4567"
               />
             </div>
@@ -339,7 +339,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
                 placeholder="email@example.com"
               />
             </div>
@@ -352,7 +352,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 name="skill_level"
                 value={form.skill_level}
                 onChange={handleChange}
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all font-medium border-0"
               >
                 {SKILL_LEVELS.map((level) => (
                   <option key={level} value={level} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white">
@@ -371,7 +371,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 value={form.message}
                 onChange={handleChange}
                 rows={2}
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E27396] outline-none transition-all resize-none font-medium border-0"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#E0749A] outline-none transition-all resize-none font-medium border-0"
                 placeholder="Individual or group session, technique focus, etc."
               />
             </div>
@@ -380,7 +380,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-hover-pink w-full bg-[#E27396] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
+                className="btn-hover-pink w-full bg-[#E0749A] hover:bg-[#cf5479] text-white py-3.5 rounded-xl font-black text-sm shadow-soft-sm hover:shadow-soft-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2 min-h-[48px]"
               >
                 {submitting ? 'Submitting Request...' : 'Confirm Booking Request →'}
               </button>

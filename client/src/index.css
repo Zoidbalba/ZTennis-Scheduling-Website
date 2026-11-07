@@ -20,7 +20,7 @@
   }
 
   ::selection {
-    background: #E27396;
+    background: #E0749A;
     color: #ffffff;
   }
 }
@@ -60,11 +60,11 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E27396;
+  background: #E0749A;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #E27396;
+  background: #E0749A;
 }
 
 /* Seamless Borderless Glass Navigation */

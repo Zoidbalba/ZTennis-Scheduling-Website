@@ -101,7 +101,7 @@ export default function Navbar() {
             {/* Book a lesson pill button */}
             <button
               onClick={() => scrollToSection('availability')}
-              className="bg-[#E27396] hover:bg-[#cf5479] text-white text-xs lg:text-sm font-bold px-5 py-2.5 rounded-xl shadow-soft-xs hover:shadow-soft-sm transition-all flex items-center gap-1.5 cursor-pointer"
+              className="bg-[#E0749A] hover:bg-[#cf5479] text-white text-xs lg:text-sm font-bold px-5 py-2.5 rounded-xl shadow-soft-xs hover:shadow-soft-sm transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span>Book a lesson</span>
               <span className="text-base leading-none">→</span>
@@ -184,7 +184,7 @@ export default function Navbar() {
               scrollToSection('availability');
               setMobileOpen(false);
             }}
-            className="w-full bg-[#E27396] hover:bg-[#cf5479] text-white font-bold text-sm py-3 rounded-xl shadow-soft-xs text-center flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full bg-[#E0749A] hover:bg-[#cf5479] text-white font-bold text-sm py-3 rounded-xl shadow-soft-xs text-center flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span>Book a lesson</span>
             <span>→</span>

@@ -118,7 +118,7 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className="w-5 h-5 rounded-full bg-[#E27396] text-white text-[10px] font-black flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-[#E0749A] text-white text-[10px] font-black flex items-center justify-center">
                   {item.badge}
                 </span>
               )}
@@ -185,7 +185,7 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="w-5 h-5 rounded-full bg-[#E27396] text-white text-[10px] font-black flex items-center justify-center shadow-soft-xs">
+                    <span className="w-5 h-5 rounded-full bg-[#E0749A] text-white text-[10px] font-black flex items-center justify-center shadow-soft-xs">
                       {item.badge}
                     </span>
                   )}
@@ -218,8 +218,8 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
-        <div className="max-w-[1500px] mx-auto space-y-8">
+      <main className="flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto">
+        <div className="max-w-[1500px] mx-auto space-y-6 sm:space-y-8">
           {(title || headerAction) && (
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
