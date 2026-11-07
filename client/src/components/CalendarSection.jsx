@@ -16,10 +16,33 @@ function formatTime(timeStr) {
 
 export default function CalendarSection({
   slots = [],
+  bookedDates = [],
   onSlotSelect,
   onSlotsChange,
 }) {
   const { isAuthenticated } = useAuth();
+
+  // Helper to get standard 'YYYY-MM-DD' key for date comparisons
+  const formatDateKey = (d) => {
+    if (!d) return '';
+    const dateObj = d instanceof Date ? d : new Date(d);
+    const y = dateObj.getFullYear();
+    const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
+  // Set of dates (YYYY-MM-DD) that already have an accepted/confirmed booking
+  const bookedDateSet = useMemo(() => {
+    const set = new Set();
+    for (const b of bookedDates) {
+      if (b.booking_date) {
+        const key = String(b.booking_date).split('T')[0];
+        set.add(key);
+      }
+    }
+    return set;
+  }, [bookedDates]);
 
   // Active view: 'calendar' (interactive monthly calendar) or 'week' (7-day overview)
   const [viewMode, setViewMode] = useState('calendar');
@@ -115,14 +138,15 @@ export default function CalendarSection({
     setSelectedDate(now);
   };
 
-  // Find next upcoming day with open morning slots
+  // Find next upcoming day with open morning slots that is NOT booked
   const handleJumpNextAvailable = () => {
     const candidate = new Date(selectedDate);
-    for (let i = 1; i <= 14; i++) {
+    for (let i = 1; i <= 30; i++) {
       candidate.setDate(candidate.getDate() + 1);
       const dayOfWeek = candidate.getDay();
       const openSlots = (slotsByDay[dayOfWeek] || []).filter((s) => !s.is_blocked);
-      if (openSlots.length > 0) {
+      const candKey = formatDateKey(candidate);
+      if (openSlots.length > 0 && !bookedDateSet.has(candKey)) {
         setSelectedDate(new Date(candidate));
         setCurrentMonthDate(new Date(candidate.getFullYear(), candidate.getMonth(), 1));
         return;
@@ -133,6 +157,11 @@ export default function CalendarSection({
   // When a user books a slot
   const handleSlotBooking = (slot, date = selectedDate) => {
     if (slot.is_blocked) return;
+    const dateKey = formatDateKey(date);
+    if (bookedDateSet.has(dateKey)) {
+      alert('This date has already been booked and confirmed for another session. Please select an open date.');
+      return;
+    }
     onSlotSelect?.({ ...slot, booking_date: date });
   };
 
@@ -218,7 +247,9 @@ export default function CalendarSection({
   const selectedAvailableSlots = selectedDaySlots.filter((s) => !s.is_blocked);
   const isSelectedPast = selectedDate < today;
   const isSelectedToday = selectedDate.getTime() === today.getTime();
-  const isSelectedRestDay = (selectedDayOfWeek === 3 || selectedDayOfWeek === 0 || selectedDaySlots.length === 0) && !isSelectedPast;
+  const selectedDateKey = formatDateKey(selectedDate);
+  const isSelectedDateBooked = bookedDateSet.has(selectedDateKey);
+  const isSelectedRestDay = (selectedDayOfWeek === 3 || selectedDayOfWeek === 0 || selectedDaySlots.length === 0) && !isSelectedPast && !isSelectedDateBooked;
 
   const monthTitle = currentMonthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   const selectedDateFormatted = selectedDate.toLocaleDateString('en-US', {
@@ -393,8 +424,10 @@ export default function CalendarSection({
 
                   const daySlots = slotsByDay[dayOfWeek] || [];
                   const openSlots = daySlots.filter((s) => !s.is_blocked);
-                  const hasOpen = !isPast && openSlots.length > 0;
-                  const isRest = (dayOfWeek === 3 || dayOfWeek === 0 || daySlots.length === 0) && !isPast;
+                  const dayKey = formatDateKey(dayDate);
+                  const isDayBooked = bookedDateSet.has(dayKey);
+                  const hasOpen = !isPast && !isDayBooked && openSlots.length > 0;
+                  const isRest = (dayOfWeek === 3 || dayOfWeek === 0 || daySlots.length === 0) && !isPast && !isDayBooked;
 
                   return (
                     <button
@@ -406,6 +439,8 @@ export default function CalendarSection({
                           ? 'bg-[#E27396] text-white shadow-soft-md scale-[1.03] z-10 font-black'
                           : isPast
                           ? 'bg-slate-50/50 dark:bg-slate-900/30 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                          : isDayBooked
+                          ? 'bg-rose-50/70 dark:bg-rose-950/20 text-slate-700 dark:text-slate-300 border border-rose-200/70 dark:border-rose-900/40 hover:border-rose-400'
                           : hasOpen
                           ? 'bg-[#FFF0F5] dark:bg-[#20101a] hover:bg-[#FCE0EB] text-slate-900 dark:text-white border border-pink-200/80 dark:border-pink-900/50 shadow-soft-xs hover:scale-[1.02]'
                           : isRest
@@ -437,6 +472,12 @@ export default function CalendarSection({
                           </span>
                         ) : isPast ? (
                           <span className="text-[9px] text-slate-300 dark:text-slate-700 font-normal">Passed</span>
+                        ) : isDayBooked ? (
+                          <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-950/70 px-1.5 py-0.5 rounded-full border border-rose-200/70 shadow-soft-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                            <span className="hidden sm:inline">Booked</span>
+                            <span className="sm:hidden">Closed</span>
+                          </span>
                         ) : hasOpen ? (
                           <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-[#2D5A43] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/60">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -462,6 +503,10 @@ export default function CalendarSection({
                   <span className="font-semibold text-slate-700 dark:text-slate-300">Open Morning Slot</span>
                 </div>
                 <div className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Booked (Closed)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#E27396]"></span>
                   <span className="font-semibold text-slate-700 dark:text-slate-300">Selected Date</span>
                 </div>
@@ -481,12 +526,17 @@ export default function CalendarSection({
                     {isSelectedToday ? "Today's Schedule" : 'Selected Date'}
                   </span>
 
-                  {selectedAvailableSlots.length > 0 && !isSelectedPast && (
+                  {isSelectedDateBooked && !isSelectedPast ? (
+                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 px-3 py-1 rounded-full border border-rose-200/60 shadow-soft-xs">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                      <span>Schedule Already Availed</span>
+                    </span>
+                  ) : selectedAvailableSlots.length > 0 && !isSelectedPast ? (
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1F7A5A] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-200/60 shadow-soft-xs">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       <span>Morning Session Open</span>
                     </span>
-                  )}
+                  ) : null}
                 </div>
 
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -510,6 +560,31 @@ export default function CalendarSection({
                   >
                     Jump to Today →
                   </button>
+                </div>
+              ) : isSelectedDateBooked && !isAuthenticated ? (
+                <div className="py-8 px-6 text-center bg-rose-50/70 dark:bg-rose-950/25 border border-rose-200/80 dark:border-rose-900/50 rounded-3xl space-y-3.5 animate-fade-in shadow-soft-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 flex items-center justify-center mx-auto text-2xl font-bold shadow-soft-xs">
+                    🔒
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-100 dark:bg-rose-900/40 px-3 py-1 rounded-full">
+                      Date Already Availed
+                    </span>
+                    <h4 className="font-black text-slate-900 dark:text-white text-base sm:text-lg mt-2">
+                      Schedule Confirmed & Closed
+                    </h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-sm mx-auto mt-1">
+                      A coaching session on <strong>{selectedDateFormatted}</strong> has already been booked and accepted by Coach Zoid. This morning date is no longer open for new reservations.
+                    </p>
+                  </div>
+                  <div className="pt-2">
+                    <button
+                      onClick={handleJumpNextAvailable}
+                      className="w-full py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all"
+                    >
+                      <span>Jump to Next Open Morning →</span>
+                    </button>
+                  </div>
                 </div>
               ) : selectedDaySlots.length > 0 ? (
                 <div className="space-y-4">
@@ -555,36 +630,54 @@ export default function CalendarSection({
 
                       {/* Booking Action / Coach Actions */}
                       {isAuthenticated ? (
-                        <div className="pt-2 flex items-center justify-between text-xs gap-2">
-                          <button
-                            onClick={(e) => handleToggleBlock(slot, e)}
-                            className="px-3.5 py-2 rounded-xl font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer"
-                          >
-                            {slot.is_blocked ? 'Unblock' : 'Block Slot'}
-                          </button>
-                          <div className="flex items-center gap-1.5">
+                        <div className="pt-2 space-y-2">
+                          {isSelectedDateBooked && (
+                            <div className="p-2 bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 rounded-xl text-[11px] font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1.5">
+                              <span>🔒</span>
+                              <span>A confirmed session is already scheduled on this date.</span>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between text-xs gap-2">
                             <button
-                              onClick={(e) => handleOpenEdit(slot, e)}
-                              className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold hover:bg-slate-200 text-slate-700 dark:text-slate-200 cursor-pointer"
+                              onClick={(e) => handleToggleBlock(slot, e)}
+                              className="px-3.5 py-2 rounded-xl font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 cursor-pointer"
                             >
-                              Edit
+                              {slot.is_blocked ? 'Unblock' : 'Block Slot'}
                             </button>
-                            <button
-                              onClick={(e) => handleDeleteSlot(slot.id, e)}
-                              className="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 font-bold hover:bg-rose-100 cursor-pointer"
-                            >
-                              Delete
-                            </button>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={(e) => handleOpenEdit(slot, e)}
+                                className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 font-bold hover:bg-slate-200 text-slate-700 dark:text-slate-200 cursor-pointer"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={(e) => handleDeleteSlot(slot.id, e)}
+                                className="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 font-bold hover:bg-rose-100 cursor-pointer"
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ) : (
                         <button
                           onClick={() => handleSlotBooking(slot, selectedDate)}
-                          disabled={slot.is_blocked}
-                          className="w-full mt-2 py-3.5 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                          disabled={slot.is_blocked || isSelectedDateBooked}
+                          className={`w-full mt-2 py-3.5 rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 transition-all ${
+                            isSelectedDateBooked
+                              ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed border border-slate-200 dark:border-slate-700'
+                              : 'bg-[#E27396] hover:bg-[#cf5479] text-white cursor-pointer disabled:opacity-50'
+                          }`}
                         >
-                          <span>Reserve This Morning Slot</span>
-                          <span>→</span>
+                          {isSelectedDateBooked ? (
+                            <span>🔒 Morning Slot Already Availed (Closed)</span>
+                          ) : (
+                            <>
+                              <span>Reserve This Morning Slot</span>
+                              <span>→</span>
+                            </>
+                          )}
                         </button>
                       )}
                     </div>
@@ -666,34 +759,56 @@ export default function CalendarSection({
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {daySlots.map((slot) => (
-                            <div
-                              key={slot.id}
-                              onClick={() => {
-                                const diff = (day - today.getDay() + 7) % 7;
-                                const targetDate = new Date(today);
-                                targetDate.setDate(today.getDate() + (diff === 0 ? 0 : diff));
-                                handleSlotBooking(slot, targetDate);
-                              }}
-                              className={`p-4 rounded-2xl text-left transition-all duration-200 border ${
-                                slot.is_blocked
-                                  ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 text-slate-400 cursor-not-allowed'
-                                  : 'bg-white dark:bg-slate-850 hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] border-pink-200/80 hover:border-[#E27396] text-slate-900 dark:text-white cursor-pointer shadow-soft-xs'
-                              }`}
-                            >
-                              <div className="font-extrabold text-base text-slate-900 dark:text-white">
-                                {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                          {daySlots.map((slot) => {
+                            const diff = (day - today.getDay() + 7) % 7;
+                            const targetDate = new Date(today);
+                            targetDate.setDate(today.getDate() + (diff === 0 ? 0 : diff));
+                            const targetKey = formatDateKey(targetDate);
+                            const isTargetBooked = bookedDateSet.has(targetKey);
+
+                            return (
+                              <div
+                                key={slot.id}
+                                onClick={() => {
+                                  if (!isTargetBooked) {
+                                    handleSlotBooking(slot, targetDate);
+                                  }
+                                }}
+                                className={`p-4 rounded-2xl text-left transition-all duration-200 border ${
+                                  slot.is_blocked
+                                    ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 text-slate-400 cursor-not-allowed'
+                                    : isTargetBooked
+                                    ? 'bg-rose-50/70 dark:bg-rose-950/25 border-rose-200/80 dark:border-rose-900/50 text-slate-500 cursor-not-allowed'
+                                    : 'bg-white dark:bg-slate-850 hover:bg-[#FFF0F5] dark:hover:bg-[#20101a] border-pink-200/80 hover:border-[#E27396] text-slate-900 dark:text-white cursor-pointer shadow-soft-xs'
+                                }`}
+                              >
+                                <div className="font-extrabold text-base text-slate-900 dark:text-white flex items-center justify-between">
+                                  <span>{formatTime(slot.start_time)} – {formatTime(slot.end_time)}</span>
+                                  {isTargetBooked && (
+                                    <span className="text-[10px] font-black uppercase text-rose-600 bg-rose-100 dark:bg-rose-900/40 px-2 py-0.5 rounded-md">
+                                      Availed
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-xs mt-1.5 flex items-center justify-between text-slate-500">
+                                  <span
+                                    className={
+                                      slot.is_blocked
+                                        ? 'text-slate-400'
+                                        : isTargetBooked
+                                        ? 'text-rose-600 font-bold'
+                                        : 'text-emerald-700 dark:text-emerald-400 font-bold'
+                                    }
+                                  >
+                                    {slot.is_blocked ? 'Blocked' : isTargetBooked ? 'Booked (Closed)' : 'Available'}
+                                  </span>
+                                  {!isAuthenticated && !slot.is_blocked && !isTargetBooked && (
+                                    <span className="text-[#E27396] font-bold hover:underline">Book →</span>
+                                  )}
+                                </div>
                               </div>
-                              <div className="text-xs mt-1.5 flex items-center justify-between text-slate-500">
-                                <span className={slot.is_blocked ? 'text-slate-400' : 'text-emerald-700 dark:text-emerald-400 font-bold'}>
-                                  {slot.is_blocked ? 'Blocked' : 'Available'}
-                                </span>
-                                {!isAuthenticated && !slot.is_blocked && (
-                                  <span className="text-[#E27396] font-bold hover:underline">Book →</span>
-                                )}
-                              </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       )}
                     </div>

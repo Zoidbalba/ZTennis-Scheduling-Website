@@ -16,6 +16,7 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
   const [form, setForm] = useState({
     session_type: selectedSlot?.session_type || 'Individual Session',
+    member_count: selectedSlot?.member_count || (selectedSlot?.session_type === 'Group Session' ? 2 : 1),
     player_name: '',
     contact_number: '',
     email: '',
@@ -28,7 +29,11 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
 
   useEffect(() => {
     if (selectedSlot?.session_type) {
-      setForm((prev) => ({ ...prev, session_type: selectedSlot.session_type }));
+      setForm((prev) => ({
+        ...prev,
+        session_type: selectedSlot.session_type,
+        member_count: selectedSlot.member_count || (selectedSlot.session_type === 'Group Session' ? 2 : 1),
+      }));
     }
   }, [selectedSlot]);
 
@@ -80,6 +85,7 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
       await api.createBooking({
         slot_id: selectedSlot.id,
         session_type: form.session_type,
+        member_count: form.session_type === 'Group Session' ? Number(form.member_count || 2) : 1,
         player_name: form.player_name,
         player_contact: form.contact_number,
         player_email: form.email,
@@ -142,7 +148,9 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
             </div>
             <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Booking Request Sent</h4>
             <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A] mb-3">
-              {form.session_type === 'Group Session' ? '👥 Group Session · ₱250 / player' : '👤 Individual Session · ₱300'}
+              {form.session_type === 'Group Session'
+                ? `👥 Group Session · ${form.member_count || 2} players · ₱${250 * (form.member_count || 2)} total`
+                : '👤 Individual Session · ₱300'}
             </div>
             <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-sm mx-auto mb-6 sm:mb-8 leading-relaxed">
               Coach will contact you via <strong>SMS or phone</strong> at{' '}
@@ -192,7 +200,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
 
                 <button
                   type="button"
-                  onClick={() => setForm((prev) => ({ ...prev, session_type: 'Group Session' }))}
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      session_type: 'Group Session',
+                      member_count: prev.member_count > 1 ? prev.member_count : 2,
+                    }))
+                  }
                   className={`p-3.5 rounded-2xl border-2 text-left cursor-pointer transition-all ${
                     form.session_type === 'Group Session'
                       ? 'border-[#1F7A5A] bg-emerald-50 dark:bg-[#1F7A5A]/20 text-slate-900 dark:text-white shadow-soft-xs ring-1 ring-[#1F7A5A]'
@@ -211,6 +225,79 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                   </p>
                 </button>
               </div>
+
+              {/* Group Members Count Selector when Group Session is chosen */}
+              {form.session_type === 'Group Session' && (
+                <div className="mt-3 p-4 bg-emerald-50/70 dark:bg-[#1F7A5A]/15 border border-emerald-200/80 dark:border-emerald-800/60 rounded-2xl animate-fade-in space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="block text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                        How many players in your group?
+                      </span>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        ₱250 per player · Up to 6 trainees
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 bg-white dark:bg-slate-900 p-1 rounded-xl border border-emerald-200 dark:border-emerald-800 shadow-soft-xs">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            member_count: Math.max(2, (Number(prev.member_count) || 2) - 1),
+                          }))
+                        }
+                        className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-black text-sm flex items-center justify-center cursor-pointer transition-colors"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center font-black text-sm text-[#1F7A5A] dark:text-emerald-400">
+                        {form.member_count || 2}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setForm((prev) => ({
+                            ...prev,
+                            member_count: Math.min(6, (Number(prev.member_count) || 2) + 1),
+                          }))
+                        }
+                        className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-black text-sm flex items-center justify-center cursor-pointer transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Quick Pill Selector */}
+                  <div className="flex items-center gap-2 pt-1">
+                    {[2, 3, 4, 5, 6].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, member_count: num }))}
+                        className={`flex-1 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                          (form.member_count || 2) === num
+                            ? 'bg-[#1F7A5A] text-white shadow-soft-xs'
+                            : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-emerald-300'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Live Total Rate */}
+                  <div className="flex items-center justify-between text-xs pt-1.5 border-t border-emerald-200/50 dark:border-emerald-800/40">
+                    <span className="font-semibold text-slate-600 dark:text-slate-400">
+                      Total Session Fee ({form.member_count || 2} players × ₱250):
+                    </span>
+                    <span className="font-black text-[#1F7A5A] dark:text-emerald-400 text-sm">
+                      ₱{250 * (form.member_count || 2)}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>

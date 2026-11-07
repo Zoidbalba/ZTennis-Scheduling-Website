@@ -33,6 +33,7 @@ export const api = {
   deleteRate: (id) => request(`/rates/${id}`, { method: 'DELETE' }),
 
   // Bookings
+  getBookedDates: () => request('/bookings/booked-dates'),
   createBooking: (data) => request('/bookings', { method: 'POST', body: JSON.stringify(data) }),
   getBookings: () => request('/bookings'),
   getTrainees: () => request('/bookings/trainees'),

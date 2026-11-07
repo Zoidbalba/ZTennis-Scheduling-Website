@@ -12,6 +12,7 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
   const [profile, setProfile] = useState(null);
   const [slots, setSlots] = useState([]);
+  const [bookedDates, setBookedDates] = useState([]);
   const [rates, setRates] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [preferredSessionType, setPreferredSessionType] = useState('Individual Session');
@@ -20,10 +21,14 @@ export default function Home() {
 
   const fetchSlots = useCallback(async () => {
     try {
-      const avail = isAuthenticated ? await api.getAllAvailability() : await api.getAvailability();
+      const [avail, booked] = await Promise.all([
+        isAuthenticated ? api.getAllAvailability() : api.getAvailability(),
+        api.getBookedDates().catch(() => []),
+      ]);
       setSlots(Array.isArray(avail) ? avail : avail.slots || []);
+      setBookedDates(Array.isArray(booked) ? booked : []);
     } catch (err) {
-      console.error('Failed to load slots:', err);
+      console.error('Failed to load slots/booked dates:', err);
     }
   }, [isAuthenticated]);
 
@@ -192,6 +197,7 @@ export default function Home() {
         {/* WEEKLY AVAILABILITY matching Figma Screenshot 3 */}
         <CalendarSection
           slots={slots}
+          bookedDates={bookedDates}
           onSlotSelect={handleSlotSelect}
           onSlotsChange={fetchSlots}
         />

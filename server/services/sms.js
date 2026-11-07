@@ -262,7 +262,10 @@ export async function sendBookingStatusSms(booking, newStatus, coachProfile = nu
   const dateFormatted = formatHumanDate(booking.booking_date);
   const timeFormatted = `${formatHumanTime(booking.start_time)} - ${formatHumanTime(booking.end_time)}`;
   const playerName = booking.player_name || 'Trainee';
-  const sessionType = booking.session_type || 'tennis coaching session';
+  const isGroup = (booking.session_type || '').toLowerCase().includes('group');
+  const sessionType = isGroup
+    ? `Group Session (${booking.member_count || 2} players)`
+    : (booking.session_type || 'Individual Session');
 
   let smsMessage = '';
 

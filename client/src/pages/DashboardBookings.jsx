@@ -71,6 +71,7 @@ export default function DashboardBookings() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [newBooking, setNewBooking] = useState({
     session_type: 'Individual Session',
+    member_count: 1,
     player_name: '',
     player_contact: '',
     player_email: '',
@@ -220,6 +221,7 @@ export default function DashboardBookings() {
       setAddModalOpen(false);
       setNewBooking({
         session_type: 'Individual Session',
+        member_count: 1,
         player_name: '',
         player_contact: '',
         player_email: '',
@@ -606,7 +608,9 @@ export default function DashboardBookings() {
                             ? 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
                             : 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
                         }`}>
-                          {(b.session_type || '').toLowerCase().includes('group') ? '👥 Group (₱250)' : '👤 Individual (₱300)'}
+                          {(b.session_type || '').toLowerCase().includes('group')
+                            ? `👥 Group (${b.member_count || 2} players · ₱${250 * (b.member_count || 2)})`
+                            : '👤 Individual (₱300)'}
                         </span>
                       </div>
 
@@ -770,7 +774,9 @@ export default function DashboardBookings() {
                             ? 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
                             : 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
                         }`}>
-                          {isIndividual ? '👤 Individual (₱300)' : '👥 Group Session (₱250)'}
+                          {isIndividual
+                            ? '👤 Individual (₱300)'
+                            : `👥 Group (${b.member_count || 2} players · ₱${250 * (b.member_count || 2)})`}
                         </span>
                       </div>
                     </div>
@@ -899,7 +905,7 @@ export default function DashboardBookings() {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
-                    onClick={() => setNewBooking({ ...newBooking, session_type: 'Individual Session' })}
+                    onClick={() => setNewBooking({ ...newBooking, session_type: 'Individual Session', member_count: 1 })}
                     className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                       newBooking.session_type === 'Individual Session'
                         ? 'border-[#E0749A] bg-[#FFF0F5] dark:bg-[#E0749A]/15 text-[#E0749A] font-bold ring-1 ring-[#E0749A]'
@@ -911,7 +917,13 @@ export default function DashboardBookings() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setNewBooking({ ...newBooking, session_type: 'Group Session' })}
+                    onClick={() =>
+                      setNewBooking({
+                        ...newBooking,
+                        session_type: 'Group Session',
+                        member_count: newBooking.member_count > 1 ? newBooking.member_count : 2,
+                      })
+                    }
                     className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                       newBooking.session_type === 'Group Session'
                         ? 'border-[#1F7A5A] bg-emerald-50 dark:bg-[#1F7A5A]/20 text-[#1F7A5A] dark:text-emerald-400 font-bold ring-1 ring-[#1F7A5A]'
@@ -922,6 +934,47 @@ export default function DashboardBookings() {
                     <div className="text-[10px] opacity-80">₱250 / player</div>
                   </button>
                 </div>
+
+                {/* Group Member Count Stepper in Admin Modal */}
+                {newBooking.session_type === 'Group Session' && (
+                  <div className="mt-2.5 p-3 bg-emerald-50/70 dark:bg-[#1F7A5A]/15 border border-emerald-200/80 dark:border-emerald-800/60 rounded-xl flex items-center justify-between text-xs animate-fade-in">
+                    <div>
+                      <span className="font-bold text-slate-800 dark:text-white">Players in Group:</span>
+                      <span className="block text-[10px] text-slate-500">
+                        ₱250 × {newBooking.member_count || 2} = ₱{250 * (newBooking.member_count || 2)} total
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-2 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setNewBooking((prev) => ({
+                            ...prev,
+                            member_count: Math.max(2, (Number(prev.member_count) || 2) - 1),
+                          }))
+                        }
+                        className="w-5 h-5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold"
+                      >
+                        −
+                      </button>
+                      <span className="w-5 text-center font-black text-[#1F7A5A] dark:text-emerald-400">
+                        {newBooking.member_count || 2}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setNewBooking((prev) => ({
+                            ...prev,
+                            member_count: Math.min(6, (Number(prev.member_count) || 2) + 1),
+                          }))
+                        }
+                        className="w-5 h-5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">

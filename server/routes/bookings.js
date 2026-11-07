@@ -29,6 +29,7 @@ router.post('/', async (req, res) => {
     const {
       slot_id,
       session_type,
+      member_count,
       player_name,
       player_contact,
       player_email,
@@ -46,16 +47,30 @@ router.post('/', async (req, res) => {
       });
     }
 
+    const count = member_count ? Math.max(1, parseInt(member_count, 10)) : 1;
+
     const db = await getDb();
+
+    // Check if date already has a confirmed booking (meaning someone already availed a schedule on that date)
+    const existingConfirmed = await db.get(
+      "SELECT id, player_name FROM bookings WHERE booking_date = ? AND status = 'confirmed' LIMIT 1",
+      [booking_date]
+    );
+    if (existingConfirmed) {
+      return res.status(400).json({
+        error: 'This date has already been booked and confirmed for another session. Please choose another open morning.',
+      });
+    }
 
     const runRes = await db.run(
       `INSERT INTO bookings
-         (slot_id, session_type, player_name, player_contact, player_email,
+         (slot_id, session_type, member_count, player_name, player_contact, player_email,
           skill_level, message, status, booking_date, start_time, end_time)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
       [
         slot_id || null,
         session_type || 'Individual Session',
+        count,
         player_name,
         player_contact,
         player_email || '',
@@ -74,6 +89,25 @@ router.post('/', async (req, res) => {
     res.status(201).json({ message: 'Booking request submitted', booking });
   } catch (err) {
     console.error('Create booking error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * GET /api/bookings/booked-dates
+ *
+ * Public endpoint that returns the dates that already have an accepted/confirmed booking,
+ * allowing the public calendar to close those specific dates.
+ */
+router.get('/booked-dates', async (req, res) => {
+  try {
+    const db = await getDb();
+    const rows = await db.query(
+      "SELECT DISTINCT booking_date, start_time, end_time, session_type FROM bookings WHERE status = 'confirmed'"
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error('Get booked dates error:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -291,7 +325,7 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { booking_date, start_time, end_time, coach_notes, status, session_type } = req.body;
+    const { booking_date, start_time, end_time, coach_notes, status, session_type, member_count } = req.body;
 
     const db = await getDb();
 
@@ -307,10 +341,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const newNotes = coach_notes !== undefined ? coach_notes : current.coach_notes;
     const newStatus = status !== undefined ? status : current.status;
     const newSessionType = session_type !== undefined ? session_type : (current.session_type || 'Individual Session');
+    const newMemberCount = member_count !== undefined ? Number(member_count) : (current.member_count || 1);
 
     await db.run(
-      'UPDATE bookings SET booking_date = ?, start_time = ?, end_time = ?, coach_notes = ?, status = ?, session_type = ? WHERE id = ?',
-      [newDate, newStart, newEnd, newNotes, newStatus, newSessionType, Number(id)]
+      'UPDATE bookings SET booking_date = ?, start_time = ?, end_time = ?, coach_notes = ?, status = ?, session_type = ?, member_count = ? WHERE id = ?',
+      [newDate, newStart, newEnd, newNotes, newStatus, newSessionType, newMemberCount, Number(id)]
     );
     saveDb(db);
 
