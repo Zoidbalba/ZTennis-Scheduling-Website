@@ -32,6 +32,18 @@ const router = Router();
  */
 router.post('/', async (req, res) => {
   try {
+    // 1. Verify Authentication: Booking is strictly for logged-in trainees/coach
+    let authedUser = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        authedUser = jwt.verify(token, JWT_SECRET);
+      } catch (e) {
+        // invalid token
+      }
+    }
+
     const {
       slot_id,
       session_type,
@@ -46,6 +58,27 @@ router.post('/', async (req, res) => {
       end_time,
     } = req.body;
 
+    const emailToCheck = (player_email || authedUser?.email || '').trim().toLowerCase();
+    const db = await getDb();
+
+    // Verify trainee is registered in database
+    let registeredTrainee = null;
+    if (emailToCheck) {
+      registeredTrainee = await db.get(
+        'SELECT id, email, name FROM trainees WHERE LOWER(email) = LOWER(?) LIMIT 1',
+        [emailToCheck]
+      );
+    }
+
+    const isCoach = authedUser && authedUser.role === 'coach';
+
+    if (!isCoach && !registeredTrainee && !authedUser) {
+      return res.status(401).json({
+        error: 'Booking is only allowed for logged-in users. Please sign in or sign up first.',
+        requiresAuth: true,
+      });
+    }
+
     // Validate required fields
     if (!player_name || !player_contact || !booking_date || !start_time || !end_time) {
       return res.status(400).json({
@@ -54,8 +87,6 @@ router.post('/', async (req, res) => {
     }
 
     const count = member_count ? Math.max(1, parseInt(member_count, 10)) : 1;
-
-    const db = await getDb();
 
     // Check if date already has an accepted/confirmed booking (meaning someone already availed a schedule on that date)
     const existingConfirmed = await db.get(

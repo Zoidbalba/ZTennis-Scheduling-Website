@@ -1,9 +1,11 @@
 /**
  * Auth Routes — /api/auth
  *
- * POST /api/auth/login   — Authenticates the coach account
- * POST /api/auth/google  — Authenticates trainee with Google / Gmail account
- * GET  /api/auth/me      — Returns the currently authenticated user (coach or trainee)
+ * POST /api/auth/login           — Unified or Coach Login
+ * POST /api/auth/trainee/login   — Trainee Login (rejects if not signed up yet)
+ * POST /api/auth/trainee/signup  — Trainee Registration (creates new trainee)
+ * POST /api/auth/google          — Trainee Google/Gmail Login & Signup
+ * GET  /api/auth/me              — Returns currently authenticated user
  */
 
 import { Router } from 'express';
@@ -15,11 +17,152 @@ import { JWT_SECRET } from '../middleware/auth.js';
 const router = Router();
 
 /**
- * POST /api/auth/login (Coach Login)
+ * POST /api/auth/trainee/signup (Trainee Registration)
+ */
+router.post('/trainee/signup', async (req, res) => {
+  try {
+    const { name, email, phone, password } = req.body;
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'A valid email address is required.' });
+    }
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Your name is required.' });
+    }
+    if (!password || password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanPhone = (phone || '').trim();
+
+    const db = await getDb();
+
+    // Check if trainee already exists
+    const existing = await db.get(
+      'SELECT id, email FROM trainees WHERE LOWER(email) = LOWER(?) LIMIT 1',
+      [cleanEmail]
+    );
+
+    if (existing) {
+      return res.status(409).json({
+        error: 'An account with this email already exists. Please switch to Sign In.',
+      });
+    }
+
+    const passwordHash = bcrypt.hashSync(password, 10);
+
+    const insertRes = await db.run(
+      `INSERT INTO trainees (email, name, phone, password_hash)
+       VALUES (?, ?, ?, ?)`,
+      [cleanEmail, cleanName, cleanPhone, passwordHash]
+    );
+    saveDb(db);
+
+    const traineeId = insertRes.lastInsertRowid || insertRes.id;
+    const newTrainee = await db.get('SELECT id, name, email, picture, phone FROM trainees WHERE id = ?', [traineeId]);
+
+    const token = jwt.sign(
+      {
+        id: newTrainee.id,
+        email: newTrainee.email,
+        name: newTrainee.name,
+        picture: newTrainee.picture || '',
+        role: 'trainee',
+      },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    res.status(201).json({
+      message: 'Account created successfully',
+      token,
+      role: 'trainee',
+      trainee: newTrainee,
+    });
+  } catch (err) {
+    console.error('Trainee signup error:', err);
+    res.status(500).json({ error: err.message || 'Signup failed' });
+  }
+});
+
+/**
+ * POST /api/auth/trainee/login (Trainee Login — Rejects if not signed up yet!)
+ */
+router.post('/trainee/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'A valid email address is required.' });
+    }
+    if (!password) {
+      return res.status(400).json({ error: 'Password is required.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const db = await getDb();
+
+    // Find trainee
+    const trainee = await db.get(
+      'SELECT * FROM trainees WHERE LOWER(email) = LOWER(?) LIMIT 1',
+      [cleanEmail]
+    );
+
+    // If trainee not signed up yet, REJECT
+    if (!trainee) {
+      return res.status(404).json({
+        error: 'No account found with this email. You have not signed up yet! Please sign up first.',
+        notRegistered: true,
+      });
+    }
+
+    // Verify password if hash exists
+    if (trainee.password_hash) {
+      const isMatch = bcrypt.compareSync(password, trainee.password_hash);
+      if (!isMatch) {
+        return res.status(401).json({ error: 'Incorrect password. Please try again.' });
+      }
+    }
+
+    const token = jwt.sign(
+      {
+        id: trainee.id,
+        email: trainee.email,
+        name: trainee.name,
+        picture: trainee.picture || '',
+        role: 'trainee',
+      },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      token,
+      role: 'trainee',
+      trainee: {
+        id: trainee.id,
+        name: trainee.name,
+        email: trainee.email,
+        picture: trainee.picture,
+        phone: trainee.phone,
+        role: 'trainee',
+      },
+    });
+  } catch (err) {
+    console.error('Trainee login error:', err);
+    res.status(500).json({ error: err.message || 'Login failed' });
+  }
+});
+
+/**
+ * POST /api/auth/login (Unified Coach / Trainee Login)
  */
 router.post('/login', async (req, res) => {
   try {
-    const { password } = req.body;
+    const { email, password } = req.body;
 
     if (!password) {
       return res.status(400).json({ error: 'Password is required.' });
@@ -27,37 +170,83 @@ router.post('/login', async (req, res) => {
 
     const db = await getDb();
 
-    // Fetch the single coach profile
+    // 1. Check if it's the coach
     const coach = await db.get('SELECT * FROM coach_profile WHERE id = 1');
+    const isCoachEmail = !email || (coach && coach.email && coach.email.toLowerCase() === email.toLowerCase());
 
-    if (!coach) {
-      return res.status(401).json({ error: 'Coach profile not found. Run the seed script first.' });
+    if (isCoachEmail && coach) {
+      const isMatch = bcrypt.compareSync(password, coach.password_hash);
+      if (isMatch) {
+        const token = jwt.sign(
+          { id: coach.id, name: coach.name, email: coach.email, role: 'coach' },
+          JWT_SECRET,
+          { expiresIn: '7d' }
+        );
+
+        return res.json({
+          message: 'Coach login successful',
+          token,
+          role: 'coach',
+          coach: {
+            id: coach.id,
+            name: coach.name,
+            email: coach.email,
+            role: 'coach',
+          },
+        });
+      }
     }
 
-    // Compare supplied password against the stored hash
-    const isMatch = bcrypt.compareSync(password, coach.password_hash);
+    // 2. If email provided and not coach, check trainee
+    if (email && email.includes('@')) {
+      const cleanEmail = email.trim().toLowerCase();
+      const trainee = await db.get(
+        'SELECT * FROM trainees WHERE LOWER(email) = LOWER(?) LIMIT 1',
+        [cleanEmail]
+      );
 
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials.' });
+      if (!trainee) {
+        return res.status(404).json({
+          error: 'No account found with this email. You have not signed up yet! Please sign up first.',
+          notRegistered: true,
+        });
+      }
+
+      if (trainee.password_hash) {
+        const isMatch = bcrypt.compareSync(password, trainee.password_hash);
+        if (!isMatch) {
+          return res.status(401).json({ error: 'Incorrect password. Please try again.' });
+        }
+      }
+
+      const token = jwt.sign(
+        {
+          id: trainee.id,
+          email: trainee.email,
+          name: trainee.name,
+          picture: trainee.picture || '',
+          role: 'trainee',
+        },
+        JWT_SECRET,
+        { expiresIn: '30d' }
+      );
+
+      return res.json({
+        message: 'Login successful',
+        token,
+        role: 'trainee',
+        trainee: {
+          id: trainee.id,
+          name: trainee.name,
+          email: trainee.email,
+          picture: trainee.picture,
+          phone: trainee.phone,
+          role: 'trainee',
+        },
+      });
     }
 
-    // Sign a JWT (expires in 7 days)
-    const token = jwt.sign(
-      { id: coach.id, name: coach.name, email: coach.email, role: 'coach' },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    res.json({
-      message: 'Login successful',
-      token,
-      coach: {
-        id: coach.id,
-        name: coach.name,
-        email: coach.email,
-        role: 'coach',
-      },
-    });
+    return res.status(401).json({ error: 'Invalid email or password.' });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: err.message });
@@ -65,14 +254,12 @@ router.post('/login', async (req, res) => {
 });
 
 /**
- * POST /api/auth/google (Trainee Google/Gmail Login)
- *
- * Body: { credential } from Google One Tap / Identity Services,
- *    OR { email, name, picture, google_id }
+ * POST /api/auth/google (Trainee Google/Gmail Login or Signup)
+ * Body: { credential, email, name, picture, google_id, mode: 'signin' | 'signup' }
  */
 router.post('/google', async (req, res) => {
   try {
-    let { credential, email, name, picture, google_id } = req.body;
+    let { credential, email, name, picture, google_id, mode = 'signin' } = req.body;
 
     // Decode Google ID Token if passed from Google Identity Services
     if (credential && typeof credential === 'string') {
@@ -108,6 +295,22 @@ router.post('/google', async (req, res) => {
       [cleanEmail]
     );
 
+    // MODE: SIGNIN — If NOT registered yet, REJECT!
+    if (mode === 'signin' && !trainee) {
+      return res.status(404).json({
+        error: 'No account found for this Google email. You have not signed up yet! Please switch to Sign Up to create your account first.',
+        notRegistered: true,
+      });
+    }
+
+    // MODE: SIGNUP — If ALREADY registered, inform them
+    if (mode === 'signup' && trainee) {
+      return res.status(409).json({
+        error: 'An account with this Google email already exists. Please switch to Sign In.',
+      });
+    }
+
+    // Create new trainee if in signup mode
     if (!trainee) {
       const insertRes = await db.run(
         `INSERT INTO trainees (email, name, picture, google_id)
@@ -115,7 +318,8 @@ router.post('/google', async (req, res) => {
         [cleanEmail, cleanName, cleanPicture, cleanGoogleId]
       );
       saveDb(db);
-      trainee = await db.get('SELECT * FROM trainees WHERE id = ?', [insertRes.lastInsertRowid]);
+      const newId = insertRes.lastInsertRowid || insertRes.id;
+      trainee = await db.get('SELECT * FROM trainees WHERE id = ?', [newId]);
     } else if (cleanPicture || cleanGoogleId) {
       await db.run(
         'UPDATE trainees SET picture = COALESCE(NULLIF(?, ""), picture), google_id = COALESCE(NULLIF(?, ""), google_id), name = COALESCE(NULLIF(?, ""), name) WHERE id = ?',
@@ -139,8 +343,9 @@ router.post('/google', async (req, res) => {
     );
 
     res.json({
-      message: 'Google login successful',
+      message: mode === 'signup' ? 'Google signup successful' : 'Google login successful',
       token,
+      role: 'trainee',
       trainee: {
         id: trainee.id,
         name: trainee.name,

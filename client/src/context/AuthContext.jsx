@@ -52,10 +52,35 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const data = await api.login({ email, password });
+    if (data.role === 'trainee') {
+      localStorage.setItem('trainee_token', data.token);
+      localStorage.setItem('trainee_user', JSON.stringify(data.trainee));
+      setTrainee(data.trainee);
+      setIsTraineeAuthenticated(true);
+      return data;
+    }
     localStorage.setItem('coach_token', data.token);
     const profile = await api.getProfile();
     setCoach(profile);
     setIsAuthenticated(true);
+    return data;
+  };
+
+  const loginTrainee = async ({ email, password }) => {
+    const data = await api.traineeLogin({ email, password });
+    localStorage.setItem('trainee_token', data.token);
+    localStorage.setItem('trainee_user', JSON.stringify(data.trainee));
+    setTrainee(data.trainee);
+    setIsTraineeAuthenticated(true);
+    return data;
+  };
+
+  const signupTrainee = async ({ name, email, phone, password }) => {
+    const data = await api.traineeSignup({ name, email, phone, password });
+    localStorage.setItem('trainee_token', data.token);
+    localStorage.setItem('trainee_user', JSON.stringify(data.trainee));
+    setTrainee(data.trainee);
+    setIsTraineeAuthenticated(true);
     return data;
   };
 
@@ -94,6 +119,8 @@ export function AuthProvider({ children }) {
         coach,
         trainee,
         login,
+        loginTrainee,
+        signupTrainee,
         loginWithGoogle,
         logout,
         logoutTrainee,

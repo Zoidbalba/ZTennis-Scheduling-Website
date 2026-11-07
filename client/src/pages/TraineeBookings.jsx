@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import Navbar from '../components/Navbar';
 import ZTennisLogo from '../components/ZTennisLogo';
-import GoogleSignInModal from '../components/GoogleSignInModal';
 import FollowUpModal from '../components/FollowUpModal';
 
 function formatTime(timeStr) {
@@ -131,14 +130,14 @@ export default function TraineeBookings() {
                 ) : (
                   <div>
                     <p className="text-xs font-semibold text-slate-200 mb-2">
-                      Connect your Gmail to auto-sync your schedules:
+                      Sign in to view your confirmed sessions:
                     </p>
-                    <button
-                      onClick={() => setAuthModalOpen(true)}
+                    <Link
+                      to="/login"
                       className="w-full py-2.5 px-4 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-black text-xs shadow-soft-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>Sign in with Google / Gmail</span>
-                    </button>
+                      <span>Sign In / Sign Up →</span>
+                    </Link>
                   </div>
                 )}
               </div>
@@ -154,7 +153,7 @@ export default function TraineeBookings() {
               <div>
                 <h3 className="text-lg font-black text-slate-900 dark:text-white">Find Your Booking Schedule</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                  Enter the email address you provided when reserving a slot to view your lesson status.
+                  Enter the email address you registered with to view your lesson status.
                 </p>
               </div>
 
@@ -176,12 +175,12 @@ export default function TraineeBookings() {
               </form>
 
               <div className="pt-2">
-                <button
-                  onClick={() => setAuthModalOpen(true)}
+                <Link
+                  to="/login"
                   className="text-xs text-[#E0749A] font-bold hover:underline cursor-pointer"
                 >
-                  Or sign in with Google for 1-click access
-                </button>
+                  Or sign in to your trainee account →
+                </Link>
               </div>
             </div>
           )}
@@ -412,14 +411,6 @@ export default function TraineeBookings() {
       </footer>
 
       {/* Google Sign-In Modal */}
-      <GoogleSignInModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-        onSuccess={() => {
-          if (trainee?.email) fetchBookings(trainee.email);
-        }}
-      />
-
       {/* Trainee Follow-Up Modal */}
       <FollowUpModal
         booking={followUpBooking}

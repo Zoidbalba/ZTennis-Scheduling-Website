@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ProfileSection from '../components/ProfileSection';
 import CalendarSection from '../components/CalendarSection';
@@ -9,7 +10,8 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { isAuthenticated, isTraineeAuthenticated } = useAuth();
   const [profile, setProfile] = useState(null);
   const [slots, setSlots] = useState([]);
   const [bookedDates, setBookedDates] = useState([]);
@@ -75,6 +77,25 @@ export default function Home() {
     fetchData();
   }, [fetchSlots]);
 
+  // Restore pending booking slot if user returned from Sign In / Sign Up
+  useEffect(() => {
+    if (isTraineeAuthenticated || isAuthenticated) {
+      const saved = sessionStorage.getItem('pending_booking_slot');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setSelectedSlot(parsed);
+          sessionStorage.removeItem('pending_booking_slot');
+          setTimeout(() => {
+            document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
+        } catch (e) {
+          sessionStorage.removeItem('pending_booking_slot');
+        }
+      }
+    }
+  }, [isTraineeAuthenticated, isAuthenticated]);
+
   const scrollToAvailability = () => {
     document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -83,14 +104,30 @@ export default function Home() {
     if (sessionType) {
       setPreferredSessionType(sessionType);
     }
+    if (!isTraineeAuthenticated && !isAuthenticated) {
+      sessionStorage.setItem('pending_booking_slot', JSON.stringify({
+        session_type: sessionType || 'Individual Session',
+      }));
+      navigate('/login?redirect=booking');
+      return;
+    }
     scrollToAvailability();
   };
 
   const handleSlotSelect = (slotData) => {
-    setSelectedSlot({
+    const fullSlot = {
       ...slotData,
       session_type: slotData.session_type || preferredSessionType || 'Individual Session',
-    });
+    };
+
+    // Strict Gate: Redirect to Sign In / Sign Up if not logged in!
+    if (!isTraineeAuthenticated && !isAuthenticated) {
+      sessionStorage.setItem('pending_booking_slot', JSON.stringify(fullSlot));
+      navigate('/login?redirect=booking');
+      return;
+    }
+
+    setSelectedSlot(fullSlot);
   };
 
   if (loading) {

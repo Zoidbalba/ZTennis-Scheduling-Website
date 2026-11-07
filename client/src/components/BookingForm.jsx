@@ -182,6 +182,37 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
               </button>
             </div>
           </div>
+        ) : !isTraineeAuthenticated && !isAuthenticated ? (
+          <div className="p-6 sm:p-8 text-center space-y-4 animate-fade-in">
+            <div className="w-12 h-12 rounded-2xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] font-black text-2xl flex items-center justify-center mx-auto">
+              🔒
+            </div>
+            <div>
+              <h4 className="text-xl font-black text-slate-900 dark:text-white">Sign In Required to Book</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+                To reserve this coaching session on <strong>{bookingDate}</strong>, please sign in or create an account.
+              </p>
+            </div>
+            <div className="pt-2 flex flex-col gap-2">
+              <Link
+                to="/login?redirect=booking"
+                onClick={() => {
+                  sessionStorage.setItem('pending_booking_slot', JSON.stringify(selectedSlot));
+                  onClose();
+                }}
+                className="w-full py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs shadow-soft-xs flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <span>Sign In / Sign Up to Continue</span>
+                <span>→</span>
+              </Link>
+              <button
+                onClick={onClose}
+                className="py-2 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
             {isTraineeAuthenticated && trainee && (

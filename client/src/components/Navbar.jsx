@@ -3,11 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import ZTennisLogo from './ZTennisLogo';
-import GoogleSignInModal from './GoogleSignInModal';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [googleModalOpen, setGoogleModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -109,37 +107,25 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/my-bookings"
-                  className="text-xs lg:text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors"
-                >
-                  My Bookings
-                </Link>
-                <button
-                  onClick={() => setGoogleModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 text-xs lg:text-sm font-bold text-[#E0749A] hover:text-[#cf5479] transition-colors cursor-pointer"
-                >
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
-                    <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-                    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                  </svg>
-                  <span>Google Sign-In</span>
-                </button>
+              <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  className="text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-[#E0749A] dark:hover:text-[#E0749A] px-3 py-2 rounded-xl transition-colors cursor-pointer"
                 >
-                  Coach
+                  Sign In
                 </Link>
               </div>
             )}
 
-            {/* Book a lesson pill button */}
+            {/* Book a lesson button */}
             <button
-              onClick={() => scrollToSection('availability')}
+              onClick={() => {
+                if (!isTraineeAuthenticated && !isAuthenticated) {
+                  navigate('/login?redirect=booking');
+                } else {
+                  scrollToSection('availability');
+                }
+              }}
               className="bg-[#E0749A] hover:bg-[#cf5479] text-white text-xs lg:text-sm font-bold px-5 py-2.5 rounded-xl shadow-soft-xs hover:shadow-soft-sm transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span>Book a lesson</span>
@@ -151,6 +137,23 @@ export default function Navbar() {
 
           {/* Mobile Right Controls */}
           <div className="flex items-center gap-2 md:hidden">
+            {!isAuthenticated && !isTraineeAuthenticated && (
+              <Link
+                to="/login"
+                className="text-xs font-black text-[#E0749A] bg-[#FFF0F5] dark:bg-[#20101a] border border-pink-200/80 dark:border-pink-900/50 px-3 py-1.5 rounded-xl shadow-soft-xs"
+              >
+                Sign In
+              </Link>
+            )}
+            {isTraineeAuthenticated && (
+              <Link
+                to="/my-bookings"
+                className="text-xs font-black text-[#1F7A5A] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-900/50 px-2.5 py-1.5 rounded-xl"
+                title="My Bookings"
+              >
+                🎾
+              </Link>
+            )}
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -202,13 +205,15 @@ export default function Navbar() {
             Availability
           </button>
 
-          <Link
-            to="/my-bookings"
-            onClick={() => setMobileOpen(false)}
-            className="block w-full text-left font-bold text-sm text-[#1F7A5A] dark:text-emerald-400 py-2 cursor-pointer"
-          >
-            🎾 My Bookings & Schedule
-          </Link>
+          {isTraineeAuthenticated && (
+            <Link
+              to="/my-bookings"
+              onClick={() => setMobileOpen(false)}
+              className="block w-full text-left font-bold text-sm text-[#1F7A5A] dark:text-emerald-400 py-2 cursor-pointer"
+            >
+              🎾 My Bookings & Schedule
+            </Link>
+          )}
 
           {isAuthenticated ? (
             <Link
@@ -220,7 +225,7 @@ export default function Navbar() {
           ) : isTraineeAuthenticated ? (
             <div className="py-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <span className="font-bold text-slate-600 dark:text-slate-300 truncate max-w-[200px]">
-                {trainee?.email}
+                {trainee?.name || trainee?.email}
               </span>
               <button
                 onClick={() => {
@@ -233,30 +238,26 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <div className="py-2 space-y-2 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={() => {
-                  setGoogleModalOpen(true);
-                  setMobileOpen(false);
-                }}
-                className="w-full text-left font-bold text-sm text-[#E0749A] py-1 cursor-pointer flex items-center gap-2"
-              >
-                <span>Google / Gmail Sign-In →</span>
-              </button>
+            <div className="py-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
               <Link
                 to="/login"
                 onClick={() => setMobileOpen(false)}
-                className="block font-medium text-xs text-slate-400 hover:text-slate-600 py-1"
+                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-sm py-3 px-4 rounded-xl flex items-center justify-between cursor-pointer"
               >
-                Coach login
+                <span>Sign In / Sign Up</span>
+                <span>→</span>
               </Link>
             </div>
           )}
 
           <button
             onClick={() => {
-              scrollToSection('availability');
               setMobileOpen(false);
+              if (!isTraineeAuthenticated && !isAuthenticated) {
+                navigate('/login?redirect=booking');
+              } else {
+                scrollToSection('availability');
+              }
             }}
             className="w-full bg-[#E0749A] hover:bg-[#cf5479] text-white font-bold text-sm py-3 rounded-xl shadow-soft-xs text-center flex items-center justify-center gap-1.5 cursor-pointer"
           >
@@ -265,13 +266,6 @@ export default function Navbar() {
           </button>
         </div>
       )}
-
-      {/* Google Sign-In Modal */}
-      <GoogleSignInModal
-        isOpen={googleModalOpen}
-        onClose={() => setGoogleModalOpen(false)}
-        onSuccess={() => navigate('/my-bookings')}
-      />
     </header>
   );
 }

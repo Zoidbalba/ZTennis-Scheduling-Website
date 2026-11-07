@@ -38,6 +38,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/coach" element={<CoachDetails />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<Navigate to="/login?mode=signin" replace />} />
+          <Route path="/signup" element={<Navigate to="/login?mode=signup" replace />} />
           <Route path="/my-bookings" element={<TraineeBookings />} />
           <Route path="/trainee" element={<Navigate to="/my-bookings" replace />} />
           <Route path="/dashboard" element={<Navigate to="/dashboard/bookings" replace />} />

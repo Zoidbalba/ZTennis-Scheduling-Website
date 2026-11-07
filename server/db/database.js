@@ -255,6 +255,7 @@ async function initPostgresSchema(pool) {
         picture TEXT DEFAULT '',
         google_id TEXT DEFAULT '',
         phone TEXT DEFAULT '',
+        password_hash TEXT DEFAULT '',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -296,6 +297,8 @@ async function initPostgresSchema(pool) {
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS email_sent_at TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS follow_up_message TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS follow_up_sent_at TEXT DEFAULT ''",
+      "ALTER TABLE trainees ADD COLUMN IF NOT EXISTS password_hash TEXT DEFAULT ''",
+      "ALTER TABLE trainees ADD COLUMN IF NOT EXISTS phone TEXT DEFAULT ''",
     ];
 
     for (const mig of migrations) {
@@ -359,6 +362,7 @@ async function initSqliteSchema(sqliteDb) {
       picture TEXT DEFAULT '',
       google_id TEXT DEFAULT '',
       phone TEXT DEFAULT '',
+      password_hash TEXT DEFAULT '',
       created_at TEXT DEFAULT (datetime('now'))
     );
 
@@ -400,6 +404,8 @@ async function initSqliteSchema(sqliteDb) {
     "ALTER TABLE bookings ADD COLUMN email_sent_at TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN follow_up_message TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN follow_up_sent_at TEXT DEFAULT ''",
+    "ALTER TABLE trainees ADD COLUMN password_hash TEXT DEFAULT ''",
+    "ALTER TABLE trainees ADD COLUMN phone TEXT DEFAULT ''",
   ];
 
   for (const mig of migrations) {

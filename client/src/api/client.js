@@ -6,8 +6,14 @@ async function request(endpoint, options = {}) {
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Request failed');
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(data.error || 'Request failed');
+    err.status = res.status;
+    err.notRegistered = data.notRegistered;
+    err.requiresAuth = data.requiresAuth;
+    throw err;
+  }
   return data;
 }
 
@@ -18,6 +24,8 @@ export const api = {
 
   // Auth
   login: (credentials) => request('/auth/login', { method: 'POST', body: JSON.stringify(credentials) }),
+  traineeLogin: (credentials) => request('/auth/trainee/login', { method: 'POST', body: JSON.stringify(credentials) }),
+  traineeSignup: (data) => request('/auth/trainee/signup', { method: 'POST', body: JSON.stringify(data) }),
   loginGoogle: (payload) => request('/auth/google', { method: 'POST', body: JSON.stringify(payload) }),
   getAuthMe: () => request('/auth/me'),
 
