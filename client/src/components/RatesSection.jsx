@@ -154,54 +154,11 @@ export default function RatesSection({ rates = [], onSelectRate }) {
 
           <button
             onClick={() => handleBookRate('Group Session')}
-            className="w-full bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-soft-xs cursor-pointer"
+            className="w-full bg-[#2D5A43] hover:bg-[#224533] text-white font-bold text-xs sm:text-sm py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-soft-xs cursor-pointer"
           >
             <span>Book as a group</span>
             <span>→</span>
           </button>
-        </div>
-      </div>
-
-      {/* Value Badges Strip to eliminate dead air */}
-      <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-slate-100 dark:border-slate-800">
-        <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-soft-xs">
-          <span className="w-9 h-9 rounded-xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] flex items-center justify-center font-bold text-base shrink-0">
-            🎾
-          </span>
-          <div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Balls Provided</h4>
-            <p className="text-[10px] text-slate-400">Fresh pressure balls</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-soft-xs">
-          <span className="w-9 h-9 rounded-xl bg-[#E8F3ED] dark:bg-[#11291f] text-[#1F7A5A] flex items-center justify-center font-bold text-base shrink-0">
-            ⏱
-          </span>
-          <div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">1.5 - 2 Hours</h4>
-            <p className="text-[10px] text-slate-400">Ample morning court time</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-soft-xs">
-          <span className="w-9 h-9 rounded-xl bg-[#FFF0F5] dark:bg-[#20101a] text-[#E0749A] flex items-center justify-center font-bold text-base shrink-0">
-            📊
-          </span>
-          <div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Stroke Feedback</h4>
-            <p className="text-[10px] text-slate-400">Personalized drills</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-soft-xs">
-          <span className="w-9 h-9 rounded-xl bg-[#E8F3ED] dark:bg-[#11291f] text-[#1F7A5A] flex items-center justify-center font-bold text-base shrink-0">
-            📍
-          </span>
-          <div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Malaybalay Court</h4>
-            <p className="text-[10px] text-slate-400">Prime morning slot</p>
-          </div>
         </div>
       </div>
     </section>

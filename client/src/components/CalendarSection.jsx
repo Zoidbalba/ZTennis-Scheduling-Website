@@ -581,7 +581,7 @@ export default function CalendarSection({
                         <button
                           onClick={() => handleSlotBooking(slot, selectedDate)}
                           disabled={slot.is_blocked}
-                          className="w-full mt-2 py-3.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
+                          className="w-full mt-2 py-3.5 bg-[#E27396] hover:bg-[#cf5479] text-white rounded-xl font-bold text-xs sm:text-sm shadow-soft-xs flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
                         >
                           <span>Reserve This Morning Slot</span>
                           <span>→</span>
@@ -589,26 +589,6 @@ export default function CalendarSection({
                       )}
                     </div>
                   ))}
-
-                  {/* Helpful Quick Court Checklist */}
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5">
-                    <p className="font-extrabold text-slate-800 dark:text-slate-200 text-xs flex items-center gap-1.5 mb-1">
-                      <span>🎾</span>
-                      <span>Morning Session Details</span>
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="text-[#1F7A5A] font-bold">✓</span>
-                      <span>Rackets available to borrow for free if you don't have one</span>
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="text-[#1F7A5A] font-bold">✓</span>
-                      <span>Ample public parking right next to the court</span>
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="text-[#1F7A5A] font-bold">✓</span>
-                      <span>Instant SMS confirmation sent to your mobile phone</span>
-                    </p>
-                  </div>
                 </div>
               ) : (
                 <div className="py-8 text-center bg-slate-50 dark:bg-slate-800/40 rounded-3xl p-6 space-y-3">
