@@ -312,11 +312,19 @@ router.post('/google', async (req, res) => {
       );
       saveDb(db);
       const newId = insertRes.lastInsertRowid || insertRes.id;
-      trainee = await db.get('SELECT * FROM trainees WHERE id = ?', [newId]);
-    } else if (cleanPicture || cleanGoogleId) {
+      if (newId) {
+        trainee = await db.get('SELECT * FROM trainees WHERE id = ?', [newId]);
+      }
+      if (!trainee) {
+        trainee = await db.get('SELECT * FROM trainees WHERE LOWER(email) = LOWER(?) LIMIT 1', [cleanEmail]);
+      }
+    } else {
+      const updatedPicture = cleanPicture || trainee.picture || '';
+      const updatedGoogleId = cleanGoogleId || trainee.google_id || '';
+      const updatedName = cleanName || trainee.name;
       await db.run(
-        'UPDATE trainees SET picture = COALESCE(NULLIF(?, ""), picture), google_id = COALESCE(NULLIF(?, ""), google_id), name = COALESCE(NULLIF(?, ""), name) WHERE id = ?',
-        [cleanPicture, cleanGoogleId, cleanName, trainee.id]
+        'UPDATE trainees SET picture = ?, google_id = ?, name = ? WHERE id = ?',
+        [updatedPicture, updatedGoogleId, updatedName, trainee.id]
       );
       saveDb(db);
       trainee = await db.get('SELECT * FROM trainees WHERE id = ?', [trainee.id]);
