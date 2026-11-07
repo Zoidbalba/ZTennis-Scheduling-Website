@@ -42,7 +42,7 @@ export default function Navbar() {
           : 'bg-white dark:bg-slate-950 py-4 sm:py-5'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16">
         <div className="flex items-center justify-between">
           {/* Official ZTennis Brand Logo matching Brand Guide */}
           <Link to="/" className="flex items-center">

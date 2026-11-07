@@ -233,11 +233,11 @@ export default function CalendarSection({
       id="availability"
       className="py-16 sm:py-24 bg-[#F4F8F5] dark:bg-[#0A1612] transition-colors scroll-mt-10"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16">
         {/* Header Section matching Figma Design Style */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8 sm:mb-12 gap-4">
           <div>
-            <span className="text-xs font-black tracking-widest text-[#E27396] uppercase mb-2 block">
+            <span className="text-xs font-black tracking-widest text-[#E0749A] uppercase mb-2 block">
               WEEKLY AVAILABILITY
             </span>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -255,7 +255,7 @@ export default function CalendarSection({
                 onClick={() => setViewMode('calendar')}
                 className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                   viewMode === 'calendar'
-                    ? 'bg-[#E27396] text-white shadow-soft-xs font-bold'
+                    ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -266,7 +266,7 @@ export default function CalendarSection({
                 onClick={() => setViewMode('week')}
                 className={`px-3.5 py-1.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
                   viewMode === 'week'
-                    ? 'bg-[#E27396] text-white shadow-soft-xs font-bold'
+                    ? 'bg-[#E0749A] text-white shadow-soft-xs font-bold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -278,7 +278,7 @@ export default function CalendarSection({
             {viewMode === 'calendar' && (
               <button
                 onClick={handleJumpToday}
-                className="text-xs font-bold text-[#E27396] hover:text-[#cf5479] px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-pink-200/80 dark:border-pink-950/60 shadow-soft-xs transition-colors cursor-pointer"
+                className="text-xs font-bold text-[#E0749A] hover:text-[#cf5479] px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-pink-200/80 dark:border-pink-950/60 shadow-soft-xs transition-colors cursor-pointer"
               >
                 Today
               </button>
@@ -291,7 +291,7 @@ export default function CalendarSection({
           <div className="mb-6 p-5 sm:p-6 bg-[#163829] text-white rounded-3xl shadow-soft-md animate-fade-in flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
-                <span className="bg-[#E27396] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider shadow-soft-xs">
+                <span className="bg-[#E0749A] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full tracking-wider shadow-soft-xs">
                   Coach Admin Mode
                 </span>
                 <span className="font-bold text-sm">Schedule Manager Active</span>
@@ -303,7 +303,7 @@ export default function CalendarSection({
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => handleOpenAdd(selectedDayOfWeek)}
-                className="bg-[#E27396] hover:bg-[#cf5479] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-colors cursor-pointer"
+                className="bg-[#E0749A] hover:bg-[#cf5479] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-soft-xs transition-colors cursor-pointer"
               >
                 + Add Slot for {DAY_SHORT[selectedDayOfWeek]}
               </button>
@@ -327,9 +327,9 @@ export default function CalendarSection({
 
         {/* VIEW 1: INTERACTIVE MONTH CALENDAR TYPE (DEFAULT) */}
         {viewMode === 'calendar' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start animate-fade-in">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 xl:gap-10 items-start animate-fade-in">
             {/* LEFT: THE INTERACTIVE MONTHLY CALENDAR GRID (7 Cols) */}
-            <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-5 sm:p-7">
+            <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 sm:p-8">
               {/* Calendar Month Navigation Header */}
               <div className="flex items-center justify-between pb-4 sm:pb-5 mb-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
@@ -473,16 +473,16 @@ export default function CalendarSection({
             </div>
 
             {/* RIGHT: SELECTED DATE'S OPEN SESSIONS & RESERVATION CARD */}
-            <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 sm:p-8 space-y-5">
+            <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800/80 p-6 sm:p-8 space-y-5">
               {/* Selected Date Header */}
               <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#E27396] bg-[#FFF0F5] dark:bg-[#20101a] px-3 py-1 rounded-full shadow-soft-xs">
+                  <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[#E0749A] bg-[#FFF0F5] dark:bg-[#20101a] px-3 py-1 rounded-full shadow-soft-xs">
                     {isSelectedToday ? "Today's Schedule" : 'Selected Date'}
                   </span>
 
                   {selectedAvailableSlots.length > 0 && !isSelectedPast && (
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#2D5A43] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-200/60 shadow-soft-xs">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1F7A5A] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-200/60 shadow-soft-xs">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                       <span>Morning Session Open</span>
                     </span>
@@ -630,7 +630,7 @@ export default function CalendarSection({
         {/* VIEW 2: 7-DAY WEEK VIEW OVERVIEW (FOR TRAINEES WHO PREFER RECURRING SCHEDULE) */}
         {viewMode === 'week' && (
           <div className="space-y-4 sm:space-y-6 animate-fade-in">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {MON_TO_SUN.map((day) => {
                 const daySlots = slotsByDay[day] || [];
                 const isTodayDay = today.getDay() === day;

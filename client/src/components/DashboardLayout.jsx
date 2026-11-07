@@ -219,11 +219,11 @@ export default function DashboardLayout({ children, title, subtitle, headerActio
 
       {/* Main Content Area */}
       <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
-        <div className="max-w-5xl mx-auto space-y-8">
+        <div className="max-w-[1500px] mx-auto space-y-8">
           {(title || headerAction) && (
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div>
-                <span className="text-[11px] font-black tracking-widest text-[#E27396] uppercase mb-1.5 block">
+                <span className="text-[11px] font-black tracking-widest text-[#E0749A] uppercase mb-1.5 block">
                   COACH DASHBOARD
                 </span>
                 {title && (
