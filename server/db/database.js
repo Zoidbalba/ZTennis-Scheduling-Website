@@ -251,6 +251,7 @@ async function initPostgresSchema(pool) {
       CREATE TABLE IF NOT EXISTS bookings (
         id SERIAL PRIMARY KEY,
         slot_id INTEGER REFERENCES availability_slots(id) ON DELETE SET NULL,
+        session_type TEXT DEFAULT 'Individual Session',
         player_name TEXT NOT NULL,
         player_contact TEXT NOT NULL,
         player_email TEXT DEFAULT '',
@@ -271,6 +272,7 @@ async function initPostgresSchema(pool) {
     const migrations = [
       "ALTER TABLE coach_profile ADD COLUMN IF NOT EXISTS facebook_link TEXT DEFAULT ''",
       "ALTER TABLE coach_profile ADD COLUMN IF NOT EXISTS instagram_link TEXT DEFAULT ''",
+      "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS session_type TEXT DEFAULT 'Individual Session'",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS coach_notes TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS sms_status TEXT DEFAULT ''",
       "ALTER TABLE bookings ADD COLUMN IF NOT EXISTS sms_sent_at TEXT DEFAULT ''",
@@ -333,6 +335,7 @@ async function initSqliteSchema(sqliteDb) {
     CREATE TABLE IF NOT EXISTS bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       slot_id INTEGER,
+      session_type TEXT DEFAULT 'Individual Session',
       player_name TEXT NOT NULL,
       player_contact TEXT NOT NULL,
       player_email TEXT DEFAULT '',
@@ -353,6 +356,7 @@ async function initSqliteSchema(sqliteDb) {
   const migrations = [
     "ALTER TABLE coach_profile ADD COLUMN facebook_link TEXT DEFAULT ''",
     "ALTER TABLE coach_profile ADD COLUMN instagram_link TEXT DEFAULT ''",
+    "ALTER TABLE bookings ADD COLUMN session_type TEXT DEFAULT 'Individual Session'",
     "ALTER TABLE bookings ADD COLUMN coach_notes TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN sms_status TEXT DEFAULT ''",
     "ALTER TABLE bookings ADD COLUMN sms_sent_at TEXT DEFAULT ''",

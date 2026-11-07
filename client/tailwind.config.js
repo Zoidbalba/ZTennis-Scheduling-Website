@@ -8,6 +8,12 @@ export default {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       colors: {
+        // Official ZTennis Brand Identity Palette (Figma Brand Guide)
+        brand: {
+          rose: '#E0749A',
+          ink: '#1A1118',
+          courtGreen: '#1F7A5A',
+        },
         // Specific exact 5-color palette:
         // #337357: Dark spring green | #6D9F71: Asparagus | #FFDBE5: Mimi Pink | #EA9AB2: Amaranth pink | #E27396: Rose Pompadour
         palette: {

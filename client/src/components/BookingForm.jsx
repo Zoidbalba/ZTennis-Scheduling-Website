@@ -15,6 +15,7 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
   const [form, setForm] = useState({
+    session_type: selectedSlot?.session_type || 'Individual Session',
     player_name: '',
     contact_number: '',
     email: '',
@@ -24,6 +25,12 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (selectedSlot?.session_type) {
+      setForm((prev) => ({ ...prev, session_type: selectedSlot.session_type }));
+    }
+  }, [selectedSlot]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -71,12 +78,13 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
       }
 
       await api.createBooking({
+        slot_id: selectedSlot.id,
+        session_type: form.session_type,
         player_name: form.player_name,
         player_contact: form.contact_number,
         player_email: form.email,
         skill_level: form.skill_level,
         message: form.message,
-        slot_id: selectedSlot.id,
         booking_date: bookingDateStr,
         start_time: selectedSlot.start_time,
         end_time: selectedSlot.end_time,
@@ -129,17 +137,20 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
         {/* Content */}
         {success ? (
           <div className="p-6 sm:p-10 text-center animate-fade-in">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E27396] text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-soft-sm">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E0749A] text-white font-black text-xl sm:text-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-soft-sm">
               Z
             </div>
             <h4 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-2">Booking Request Sent</h4>
+            <div className="inline-block bg-[#FFF0F5] dark:bg-[#20101a] border border-[#E0749A]/30 px-3.5 py-1.5 rounded-full text-xs font-bold text-[#E0749A] mb-3">
+              {form.session_type === 'Group Session' ? '👥 Group Session · ₱250 / player' : '👤 Individual Session · ₱300'}
+            </div>
             <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-sm mx-auto mb-6 sm:mb-8 leading-relaxed">
               Coach will contact you via <strong>SMS or phone</strong> at{' '}
               <span className="font-bold text-slate-900 dark:text-white">{form.contact_number}</span> to confirm your session and court arrangements.
             </p>
             <button
               onClick={onClose}
-              className="btn-hover-pink w-full sm:w-auto bg-[#E27396] hover:bg-[#cf5479] text-white px-8 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer transition-colors"
+              className="w-full sm:w-auto bg-[#E0749A] hover:bg-[#cf5479] text-white px-8 py-3 rounded-xl font-black text-sm shadow-soft-sm cursor-pointer transition-colors"
             >
               Done
             </button>
@@ -151,6 +162,56 @@ export default function BookingForm({ selectedSlot, onClose, onSuccess }) {
                 {error}
               </div>
             )}
+
+            {/* Session Type Selector: Individual vs Group */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">
+                Session Type *
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, session_type: 'Individual Session' }))}
+                  className={`p-3.5 rounded-2xl border-2 text-left cursor-pointer transition-all ${
+                    form.session_type === 'Individual Session'
+                      ? 'border-[#E0749A] bg-[#FFF0F5] dark:bg-[#E0749A]/15 text-slate-900 dark:text-white shadow-soft-xs ring-1 ring-[#E0749A]'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-850'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black flex items-center gap-1.5">
+                      <span>👤</span>
+                      <span>Individual</span>
+                    </span>
+                    <span className="text-xs font-black text-[#E0749A]">₱300</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                    1-on-1 private coaching (120 mins)
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, session_type: 'Group Session' }))}
+                  className={`p-3.5 rounded-2xl border-2 text-left cursor-pointer transition-all ${
+                    form.session_type === 'Group Session'
+                      ? 'border-[#1F7A5A] bg-emerald-50 dark:bg-[#1F7A5A]/20 text-slate-900 dark:text-white shadow-soft-xs ring-1 ring-[#1F7A5A]'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-850'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black flex items-center gap-1.5">
+                      <span>👥</span>
+                      <span>Group</span>
+                    </span>
+                    <span className="text-xs font-black text-[#1F7A5A] dark:text-emerald-400">₱250</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+                    Per player, share court & drills (120 mins)
+                  </p>
+                </button>
+              </div>
+            </div>
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">

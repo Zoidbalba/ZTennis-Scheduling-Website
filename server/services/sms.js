@@ -87,38 +87,47 @@ export async function sendSms({ to, message }) {
   if (semaphoreApiKey) {
     try {
       const senderName = process.env.SEMAPHORE_SENDER_NAME || undefined;
-      const payload = {
-        apikey: semaphoreApiKey,
-        number: localNumber,
-        message,
-        ...(senderName ? { sendername: senderName } : {}),
-      };
+      const params = new URLSearchParams();
+      params.append('apikey', semaphoreApiKey);
+      params.append('number', localNumber);
+      params.append('message', message);
+      if (senderName) {
+        params.append('sendername', senderName);
+      }
 
       const res = await fetch('https://api.semaphore.co/api/v4/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString(),
       });
 
       const rawText = await res.text();
       let data = null;
       try {
         data = JSON.parse(rawText);
-      } catch (e) {
+      } catch (parseErr) {
         data = null;
       }
 
       if (!res.ok || (data && data.error) || (data && Array.isArray(data) && data[0]?.status === 'Failed') || !data) {
+        const plainMsg = rawText ? rawText.replace(/<[^>]*>?/gm, '').trim() : '';
         let errorMsg =
           (data && (data.error || (Array.isArray(data) && data[0]?.status_message))) ||
-          rawText.trim() ||
+          plainMsg ||
           `HTTP ${res.status}`;
 
         // Friendly error messages for common Semaphore account states
-        if (errorMsg.toLowerCase().includes('account') && errorMsg.toLowerCase().includes('credit')) {
-          errorMsg = 'Semaphore SMS: Your account has insufficient credits. Please top up your balance at semaphore.co.';
-        } else if (errorMsg.toLowerCase().includes('sendername') || errorMsg.toLowerCase().includes('sender')) {
-          errorMsg = 'Semaphore SMS: Sender name is not approved. Remove SEMAPHORE_SENDER_NAME to use default SEMAPHORE.';
+        const lower = errorMsg.toLowerCase();
+        if (lower.includes('account')) {
+          if (lower.includes('credit') || lower.includes('balance') || lower.includes('insufficient') || lower.includes('0 credit')) {
+            errorMsg = 'Semaphore SMS: Your account has insufficient credits. Please top up your balance at semaphore.co.';
+          } else {
+            errorMsg = `Semaphore SMS Notice: ${errorMsg}`;
+          }
+        } else if (lower.includes('sendername') || lower.includes('sender')) {
+          errorMsg = 'Semaphore SMS: Sender name is not approved. Remove SEMAPHORE_SENDER_NAME in environment to use default SEMAPHORE.';
+        } else if (lower.includes('apikey') || lower.includes('unauthorized') || res.status === 401) {
+          errorMsg = 'Semaphore SMS: Invalid API Key. Please verify SEMAPHORE_API_KEY.';
         }
 
         console.error('Semaphore SMS Error:', errorMsg);
@@ -126,7 +135,7 @@ export async function sendSms({ to, message }) {
           sent: false,
           provider: 'semaphore',
           error: errorMsg,
-          raw: data || rawText,
+          raw: data || plainMsg,
         };
       }
 
@@ -140,10 +149,14 @@ export async function sendSms({ to, message }) {
       };
     } catch (err) {
       console.error('Semaphore API network exception:', err.message);
+      let cleanError = err.message || 'Network error communicating with Semaphore';
+      if (cleanError.includes('Unexpected token') || cleanError.includes('valid JSON')) {
+        cleanError = 'Semaphore SMS: Your account requires credits or verification at semaphore.co.';
+      }
       return {
         sent: false,
         provider: 'semaphore',
-        error: err.message,
+        error: cleanError,
       };
     }
   }
@@ -249,15 +262,16 @@ export async function sendBookingStatusSms(booking, newStatus, coachProfile = nu
   const dateFormatted = formatHumanDate(booking.booking_date);
   const timeFormatted = `${formatHumanTime(booking.start_time)} - ${formatHumanTime(booking.end_time)}`;
   const playerName = booking.player_name || 'Trainee';
+  const sessionType = booking.session_type || 'tennis coaching session';
 
   let smsMessage = '';
 
   if (newStatus === 'confirmed') {
-    smsMessage = `Hi ${playerName}! Your tennis coaching session with ${coachName} on ${dateFormatted} at ${timeFormatted} (Malaybalay Public Court) has been CONFIRMED. See you on the court! Please bring your racket and water.${coachPhone}`;
+    smsMessage = `Hi ${playerName}! Your ${sessionType} with ${coachName} on ${dateFormatted} at ${timeFormatted} (Malaybalay Public Court) has been CONFIRMED. See you on the court! Please bring your racket and water.${coachPhone}`;
   } else if (newStatus === 'declined') {
-    smsMessage = `Hi ${playerName}, thank you for your booking request on ${dateFormatted} at ${timeFormatted}. Unfortunately, ${coachName} cannot accommodate this schedule at this time. Please visit the website to choose another open morning slot.${coachPhone}`;
+    smsMessage = `Hi ${playerName}, thank you for your ${sessionType} booking request on ${dateFormatted} at ${timeFormatted}. Unfortunately, ${coachName} cannot accommodate this schedule at this time. Please visit the website to choose another open morning slot.${coachPhone}`;
   } else if (newStatus === 'completed') {
-    smsMessage = `Hi ${playerName}, great session today! Thank you for training with ${coachName}. Keep practicing your strokes and footwork. See you next time!`;
+    smsMessage = `Hi ${playerName}, great ${sessionType} today! Thank you for training with ${coachName}. Keep practicing your strokes and footwork. See you next time!`;
   } else {
     // Other statuses don't trigger automatic SMS
     return { sent: false, error: `No automated SMS configured for status "${newStatus}"` };

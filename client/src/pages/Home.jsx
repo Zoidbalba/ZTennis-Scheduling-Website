@@ -14,6 +14,7 @@ export default function Home() {
   const [slots, setSlots] = useState([]);
   const [rates, setRates] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [preferredSessionType, setPreferredSessionType] = useState('Individual Session');
   const [loading, setLoading] = useState(true);
   const [bookingToast, setBookingToast] = useState(null);
 
@@ -52,12 +53,18 @@ export default function Home() {
     document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSelectRate = () => {
+  const handleSelectRate = (sessionType) => {
+    if (sessionType) {
+      setPreferredSessionType(sessionType);
+    }
     scrollToAvailability();
   };
 
   const handleSlotSelect = (slotData) => {
-    setSelectedSlot(slotData);
+    setSelectedSlot({
+      ...slotData,
+      session_type: slotData.session_type || preferredSessionType || 'Individual Session',
+    });
   };
 
   if (loading) {

@@ -70,6 +70,7 @@ export default function DashboardBookings() {
 
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [newBooking, setNewBooking] = useState({
+    session_type: 'Individual Session',
     player_name: '',
     player_contact: '',
     player_email: '',
@@ -118,10 +119,16 @@ export default function DashboardBookings() {
             message: `SMS simulated. Trainee: ${res.booking.player_contact}.`,
           });
         } else if (res.sms.error) {
+          let errText = res.sms.error;
+          if (errText.includes('Unexpected token') || errText.includes('not valid JSON')) {
+            errText = 'Semaphore SMS: Your account requires credits or verification at semaphore.co.';
+          }
           setSmsToast({
             type: 'warning',
-            title: `Status updated, but SMS delivery failed`,
-            message: res.sms.error,
+            title: `Appointment updated, but SMS delivery failed`,
+            message: `${errText}. You can still tap SMS to message manually from your phone.`,
+            phone: res.booking?.player_contact,
+            smsText: res.sms?.sms_text,
           });
         }
       }
@@ -211,6 +218,17 @@ export default function DashboardBookings() {
     try {
       await api.createBooking(newBooking);
       setAddModalOpen(false);
+      setNewBooking({
+        session_type: 'Individual Session',
+        player_name: '',
+        player_contact: '',
+        player_email: '',
+        skill_level: 'Beginner',
+        booking_date: new Date().toISOString().split('T')[0],
+        start_time: '06:00',
+        end_time: '08:00',
+        message: '',
+      });
       await fetchBookings();
       setSmsToast({
         type: 'success',
@@ -583,8 +601,12 @@ export default function DashboardBookings() {
                         <span className="font-black text-slate-900 dark:text-white">
                           ⏰ {formatTime(b.start_time)} – {formatTime(b.end_time)}
                         </span>
-                        <span className="text-[11px] font-bold text-[#1F7A5A] dark:text-emerald-400">
-                          {b.skill_level || 'Beginner'}
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                          (b.session_type || '').toLowerCase().includes('group')
+                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
+                            : 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
+                        }`}>
+                          {(b.session_type || '').toLowerCase().includes('group') ? '👥 Group (₱250)' : '👤 Individual (₱300)'}
                         </span>
                       </div>
 
@@ -684,7 +706,9 @@ export default function DashboardBookings() {
           ) : (
             filteredBookings.map((b, idx) => {
               const avatarColor = AVATAR_COLORS[idx % AVATAR_COLORS.length];
-              const isIndividual = !b.message?.toLowerCase().includes('group');
+              const isIndividual = b.session_type
+                ? !b.session_type.toLowerCase().includes('group')
+                : !b.message?.toLowerCase().includes('group');
 
               const skillLower = (b.skill_level || '').toLowerCase();
               const skillTagColor = skillLower.includes('beginner')
@@ -741,8 +765,12 @@ export default function DashboardBookings() {
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                           SESSION
                         </span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">
-                          {isIndividual ? 'Individual' : 'Group Session'}
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                          isIndividual
+                            ? 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
+                            : 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
+                        }`}>
+                          {isIndividual ? '👤 Individual (₱300)' : '👥 Group Session (₱250)'}
                         </span>
                       </div>
                     </div>
@@ -812,23 +840,36 @@ export default function DashboardBookings() {
         </div>
       )}
 
-      {/* Confirmation / SMS Result Toast */}
+      {/* Confirmation / SMS Result Toast matching screenshot and branding */}
       {smsToast && (
         <div className={`fixed bottom-6 right-6 z-50 max-w-md p-4 rounded-2xl shadow-soft-xl flex items-start gap-3 animate-fade-in-up text-white ${
           smsToast.type === 'success'
             ? 'bg-emerald-600'
             : smsToast.type === 'warning'
-            ? 'bg-amber-600'
+            ? 'bg-[#1A1118] border border-amber-500/50'
             : 'bg-slate-800'
         }`}>
           <span className="text-xl shrink-0">
             {smsToast.type === 'success' ? '✓' : smsToast.type === 'warning' ? '⚠️' : 'ℹ️'}
           </span>
           <div className="flex-1 text-xs">
-            <p className="font-extrabold">{smsToast.title}</p>
-            <p className="mt-0.5 opacity-90 leading-relaxed">{smsToast.message}</p>
+            <p className={`font-black uppercase tracking-wider ${smsToast.type === 'warning' ? 'text-amber-400' : 'text-white'}`}>
+              {smsToast.title}
+            </p>
+            <p className="mt-1 opacity-90 leading-relaxed text-slate-200">{smsToast.message}</p>
+            {smsToast.phone && (
+              <div className="mt-2.5 flex items-center gap-2">
+                <a
+                  href={`sms:${smsToast.phone}${smsToast.smsText ? `?body=${encodeURIComponent(smsToast.smsText)}` : ''}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#E0749A] hover:bg-[#cf5479] text-white rounded-xl font-bold text-[11px] shadow-sm transition-colors cursor-pointer"
+                >
+                  <span>📱</span>
+                  <span>Tap to Send SMS Manually</span>
+                </a>
+              </div>
+            )}
           </div>
-          <button onClick={() => setSmsToast(null)} className="opacity-70 hover:opacity-100 cursor-pointer">✕</button>
+          <button onClick={() => setSmsToast(null)} className="opacity-70 hover:opacity-100 cursor-pointer text-sm font-bold">✕</button>
         </div>
       )}
 
@@ -850,6 +891,38 @@ export default function DashboardBookings() {
             </div>
 
             <form onSubmit={handleCreateBooking} className="p-6 sm:p-7 space-y-4">
+              {/* Session Type: Individual vs Group */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
+                  Session Type
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNewBooking({ ...newBooking, session_type: 'Individual Session' })}
+                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                      newBooking.session_type === 'Individual Session'
+                        ? 'border-[#E0749A] bg-[#FFF0F5] dark:bg-[#E0749A]/15 text-[#E0749A] font-bold ring-1 ring-[#E0749A]'
+                        : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                    }`}
+                  >
+                    <div className="text-xs font-black">👤 Individual</div>
+                    <div className="text-[10px] opacity-80">₱300 / 120 min</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewBooking({ ...newBooking, session_type: 'Group Session' })}
+                    className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                      newBooking.session_type === 'Group Session'
+                        ? 'border-[#1F7A5A] bg-emerald-50 dark:bg-[#1F7A5A]/20 text-[#1F7A5A] dark:text-emerald-400 font-bold ring-1 ring-[#1F7A5A]'
+                        : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                    }`}
+                  >
+                    <div className="text-xs font-black">👥 Group Session</div>
+                    <div className="text-[10px] opacity-80">₱250 / player</div>
+                  </button>
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">
                   Trainee Name

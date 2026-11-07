@@ -28,6 +28,7 @@ router.post('/', async (req, res) => {
   try {
     const {
       slot_id,
+      session_type,
       player_name,
       player_contact,
       player_email,
@@ -49,11 +50,12 @@ router.post('/', async (req, res) => {
 
     const runRes = await db.run(
       `INSERT INTO bookings
-         (slot_id, player_name, player_contact, player_email,
+         (slot_id, session_type, player_name, player_contact, player_email,
           skill_level, message, status, booking_date, start_time, end_time)
-       VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`,
       [
         slot_id || null,
+        session_type || 'Individual Session',
         player_name,
         player_contact,
         player_email || '',
@@ -289,7 +291,7 @@ router.post('/:id/send-sms', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const { booking_date, start_time, end_time, coach_notes, status } = req.body;
+    const { booking_date, start_time, end_time, coach_notes, status, session_type } = req.body;
 
     const db = await getDb();
 
@@ -304,10 +306,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const newEnd = end_time !== undefined ? end_time : current.end_time;
     const newNotes = coach_notes !== undefined ? coach_notes : current.coach_notes;
     const newStatus = status !== undefined ? status : current.status;
+    const newSessionType = session_type !== undefined ? session_type : (current.session_type || 'Individual Session');
 
     await db.run(
-      'UPDATE bookings SET booking_date = ?, start_time = ?, end_time = ?, coach_notes = ?, status = ? WHERE id = ?',
-      [newDate, newStart, newEnd, newNotes, newStatus, Number(id)]
+      'UPDATE bookings SET booking_date = ?, start_time = ?, end_time = ?, coach_notes = ?, status = ?, session_type = ? WHERE id = ?',
+      [newDate, newStart, newEnd, newNotes, newStatus, newSessionType, Number(id)]
     );
     saveDb(db);
 
