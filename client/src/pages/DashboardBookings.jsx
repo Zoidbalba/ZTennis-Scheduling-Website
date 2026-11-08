@@ -86,6 +86,7 @@ export default function DashboardBookings() {
   const [emailCustomText, setEmailCustomText] = useState('');
   const [emailStatus, setEmailStatus] = useState(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailModalError, setEmailModalError] = useState(null);
 
   const fetchBookings = async () => {
     try {
@@ -239,6 +240,7 @@ export default function DashboardBookings() {
     if (!emailModalBooking || isSendingEmail) return;
     try {
       setIsSendingEmail(true);
+      setEmailModalError(null);
       const res = await api.sendBookingEmail(emailModalBooking.id, { message: emailCustomText });
       setEmailModalBooking(null);
       if (res.email?.simulated) {
@@ -257,7 +259,7 @@ export default function DashboardBookings() {
       setTimeout(() => setEmailToast(null), 6000);
       await fetchBookings();
     } catch (err) {
-      alert(err.message || 'Failed to send email');
+      setEmailModalError(err.message || 'Could not send email. Verify your SMTP credentials or use Open in Gmail ↗.');
     } finally {
       setIsSendingEmail(false);
     }
@@ -723,6 +725,7 @@ export default function DashboardBookings() {
 
                         <button
                           onClick={() => {
+                            setEmailModalError(null);
                             setEmailModalBooking(b);
                             setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
                           }}
@@ -957,6 +960,7 @@ export default function DashboardBookings() {
                       {/* Send Email Note Button */}
                       <button
                         onClick={() => {
+                          setEmailModalError(null);
                           setEmailModalBooking(b);
                           setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
                         }}
@@ -1289,6 +1293,21 @@ export default function DashboardBookings() {
                   </div>
                   <p className="mt-1 text-[11px] leading-relaxed text-amber-900/80 dark:text-amber-200/80">
                     To send directly to trainee inboxes from the server, add <code className="bg-amber-100 dark:bg-amber-900/50 px-1 rounded font-mono text-[10px]">GMAIL_USER</code> and <code className="bg-amber-100 dark:bg-amber-900/50 px-1 rounded font-mono text-[10px]">GMAIL_APP_PASSWORD</code> in your Render Environment settings. Or click <strong>Open in Gmail ↗</strong> above to send instantly!
+                  </p>
+                </div>
+              )}
+
+              {/* Error Notice if send failed */}
+              {emailModalError && (
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl text-xs text-rose-700 dark:text-rose-300">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <span>⚠️ Delivery Notice</span>
+                  </div>
+                  <p className="mt-1 text-[11px] leading-relaxed">
+                    {emailModalError}
+                  </p>
+                  <p className="mt-1 text-[10.5px] text-rose-600/90 dark:text-rose-400">
+                    Tip: You can click <strong>Open in Gmail ↗</strong> above to send this message directly with 1 click right now.
                   </p>
                 </div>
               )}

@@ -67,14 +67,19 @@ function getTransporter() {
 
   if (gmailUser && gmailPass) {
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: gmailUser,
         pass: gmailPass,
       },
-      connectionTimeout: 8000,
-      greetingTimeout: 8000,
-      socketTimeout: 10000,
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 12000,
     });
   }
 
@@ -92,9 +97,12 @@ function getTransporter() {
         user: smtpUser,
         pass: smtpPass,
       },
-      connectionTimeout: 8000,
-      greetingTimeout: 8000,
-      socketTimeout: 10000,
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 12000,
     });
   }
 
@@ -213,7 +221,51 @@ async function sendEmail({ to, subject, html, text }) {
       recipient: to,
     };
   } catch (err) {
-    console.error('[EMAIL ERROR] Failed to send via transporter:', err.message);
+    console.error('[EMAIL ERROR] Primary send failed:', err.message);
+
+    // Fallback: If port 465 was blocked or failed, attempt port 587 (STARTTLS)
+    const gmailUser = process.env.GMAIL_USER ? process.env.GMAIL_USER.replace(/^["']|["']$/g, '').trim() : null;
+    const gmailPass = process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.replace(/^["']|["']$/g, '').replace(/\s+/g, '').trim() : null;
+
+    if (gmailUser && gmailPass) {
+      try {
+        console.log('[EMAIL] Attempting fallback to smtp.gmail.com:587 (STARTTLS)...');
+        const fallbackTransporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: gmailUser,
+            pass: gmailPass,
+          },
+          tls: {
+            rejectUnauthorized: false,
+          },
+          connectionTimeout: 10000,
+          greetingTimeout: 10000,
+          socketTimeout: 12000,
+        });
+
+        const fallbackInfo = await fallbackTransporter.sendMail({
+          from: `"${senderName}" <${senderEmail}>`,
+          to,
+          subject,
+          text: text || subject,
+          html,
+        });
+
+        console.log(`[EMAIL SENT via fallback 587] To: ${to} (MessageId: ${fallbackInfo.messageId})`);
+        return {
+          sent: true,
+          simulated: false,
+          messageId: fallbackInfo.messageId,
+          recipient: to,
+        };
+      } catch (fallbackErr) {
+        console.error('[EMAIL ERROR] Fallback 587 also failed:', fallbackErr.message);
+      }
+    }
+
     return {
       sent: false,
       error: err.message,

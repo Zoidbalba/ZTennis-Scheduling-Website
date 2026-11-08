@@ -8,7 +8,15 @@ async function request(endpoint, options = {}) {
   const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const err = new Error(data.error || 'Request failed');
+    let errorMsg = data.error;
+    if (!errorMsg) {
+      if (res.status === 502 || res.status === 503 || res.status === 504) {
+        errorMsg = 'Server is currently restarting or deploying updates. Please retry in 10-20 seconds.';
+      } else {
+        errorMsg = `Server response error (${res.status})`;
+      }
+    }
+    const err = new Error(errorMsg);
     err.status = res.status;
     err.notRegistered = data.notRegistered;
     err.requiresAuth = data.requiresAuth;
