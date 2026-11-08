@@ -149,6 +149,7 @@ export default function DashboardBookings() {
   const metrics = useMemo(() => {
     const pending = bookings.filter((b) => b.status === 'pending').length;
     const confirmed = bookings.filter((b) => b.status === 'confirmed').length;
+    const completed = bookings.filter((b) => b.status === 'completed').length;
 
     const uniqueTrainees = new Set(
       bookings.map((b) => `${(b.player_name || '').toLowerCase()}_${b.player_contact || ''}`)
@@ -156,8 +157,10 @@ export default function DashboardBookings() {
 
     return {
       pending,
-      sessionsThisWeek: confirmed || 8,
-      activeTrainees: uniqueTrainees || 24,
+      confirmed,
+      completed,
+      sessionsThisWeek: confirmed,
+      activeTrainees: uniqueTrainees,
     };
   }, [bookings]);
 
@@ -296,51 +299,71 @@ export default function DashboardBookings() {
         </button>
       }
     >
-      {/* 3 Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-5">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      {/* 4 Metric Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {/* 1. Pending */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-soft-xs border border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white block">
+          <div className="min-w-0">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white block leading-tight">
               {metrics.pending}
             </span>
-            <span className="text-xs font-semibold text-slate-400 block mt-0.5">
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block truncate mt-0.5">
               Pending requests
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        {/* 2. Confirmed */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-soft-xs border border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-[#1F7A5A] dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white block">
-              {metrics.sessionsThisWeek}
+          <div className="min-w-0">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white block leading-tight">
+              {metrics.confirmed}
             </span>
-            <span className="text-xs font-semibold text-slate-400 block mt-0.5">
-              Sessions this week
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block truncate mt-0.5">
+              Confirmed sessions
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-100 dark:border-slate-800 flex items-center gap-4 sm:gap-5">
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        {/* 3. Completed */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-soft-xs border border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div className="min-w-0">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white block leading-tight">
+              {metrics.completed}
+            </span>
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block truncate mt-0.5">
+              Completed lessons
+            </span>
+          </div>
+        </div>
+
+        {/* 4. Active Trainees */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-soft-xs border border-slate-100 dark:border-slate-800 flex items-center gap-3 sm:gap-4">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <div>
-            <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white block">
+          <div className="min-w-0">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white block leading-tight">
               {metrics.activeTrainees}
             </span>
-            <span className="text-xs font-semibold text-slate-400 block mt-0.5">
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-400 block truncate mt-0.5">
               Active trainees
             </span>
           </div>
@@ -701,21 +724,27 @@ export default function DashboardBookings() {
                         {b.status === 'confirmed' && (
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'completed')}
-                            className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-bold text-xs py-2 px-3 rounded-xl transition-colors cursor-pointer"
+                            disabled={actionLoading === b.id}
+                            className="flex-1 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 text-[#1F7A5A] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/50 font-bold text-xs py-2 px-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+                            title="Mark session completed"
                           >
-                            Mark Completed
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{actionLoading === b.id ? 'Updating...' : 'Mark Completed'}</span>
                           </button>
                         )}
 
                         <button
                           onClick={() => {
-                            setSmsModalBooking(b);
-                            setSmsCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis session on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
+                            setEmailModalBooking(b);
+                            setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
                           }}
-                          className="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-                          title="Message trainee"
+                          className="px-3 py-2 bg-pink-50 hover:bg-pink-100 dark:bg-pink-950/40 dark:hover:bg-pink-900/60 text-[#E0749A] rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                          title="Send email note to trainee"
                         >
-                          💬 SMS
+                          <span>✉️</span>
+                          <span>Email</span>
                         </button>
                       </div>
                     </div>
@@ -780,39 +809,37 @@ export default function DashboardBookings() {
               return (
                 <div
                   key={b.id}
-                  className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow"
+                  className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-soft-xs border border-slate-100 dark:border-slate-800 hover:shadow-soft-md transition-all duration-200"
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    {/* Left: Avatar & Trainee Info */}
-                    <div className="flex items-start gap-4 min-w-[220px]">
-                      <div className={`w-11 h-11 rounded-full ${avatarColor} font-black text-xs flex items-center justify-center shrink-0`}>
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+                    {/* 1. Left: Avatar & Trainee Info */}
+                    <div className="flex items-center gap-3.5 xl:w-[280px] shrink-0">
+                      <div className={`w-12 h-12 rounded-2xl ${avatarColor} font-black text-sm flex items-center justify-center shrink-0 shadow-soft-xs`}>
                         {getInitials(b.player_name)}
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-black text-base text-slate-900 dark:text-white">
+                          <h3 className="font-black text-base text-slate-900 dark:text-white truncate" title={b.player_name}>
                             {b.player_name}
                           </h3>
                           {b.skill_level && (
-                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${skillTagColor}`}>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 ${skillTagColor}`}>
                               {b.skill_level.split(' ')[0]}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap mt-1">
+                        <div className="flex items-center gap-3 flex-wrap mt-1 text-xs">
                           <a
                             href={`tel:${b.player_contact}`}
-                            className="text-xs text-slate-400 hover:text-slate-600 flex items-center gap-1.5 font-semibold"
+                            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 flex items-center gap-1 font-semibold transition-colors"
                           >
-                            <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
+                            <span>📞</span>
                             <span>{b.player_contact}</span>
                           </a>
                           {b.player_email && (
                             <a
                               href={`mailto:${b.player_email}`}
-                              className="text-xs text-[#E0749A] hover:underline font-semibold flex items-center gap-1"
+                              className="text-[#E0749A] hover:underline font-semibold flex items-center gap-1 transition-colors"
                               title={b.player_email}
                             >
                               <span>✉️</span>
@@ -823,105 +850,147 @@ export default function DashboardBookings() {
                       </div>
                     </div>
 
-                    {/* Middle Column: Date & Session */}
-                    <div className="space-y-1.5 min-w-[190px]">
+                    {/* 2. Middle-Left Column: Date & Session */}
+                    <div className="space-y-1.5 xl:w-[230px] shrink-0 xl:pl-4 xl:border-l xl:border-slate-100 dark:xl:border-slate-800">
                       <div className="flex items-center gap-2 text-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#E0749A]">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-[#E0749A] shrink-0">
                           DATE & TIME
                         </span>
-                        <span className="font-bold text-slate-900 dark:text-white">
+                        <span className="font-bold text-slate-900 dark:text-white truncate">
                           {formatDate(b.booking_date)} · {formatTime(b.start_time)}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 shrink-0">
                           SESSION
                         </span>
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold truncate ${
                           isIndividual
                             ? 'bg-[#FFF0F5] dark:bg-[#E0749A]/20 text-[#E0749A]'
                             : 'bg-emerald-50 dark:bg-emerald-950/60 text-[#1F7A5A] dark:text-emerald-400'
                         }`}>
                           {isIndividual
                             ? '👤 Individual (₱300)'
-                            : `👥 Group (${b.member_count || 2} players · ₱${250 * (b.member_count || 2)})`}
+                            : `👥 Group (${b.member_count || 2}p · ₱${250 * (b.member_count || 2)})`}
                         </span>
                       </div>
                     </div>
 
-                    {/* Quote / Message Box & Trainee Follow-Up */}
-                    <div className="flex-1 max-w-md space-y-2">
+                    {/* 3. Middle-Right Column: Notes & Trainee Follow-Up */}
+                    <div className="flex-1 min-w-[200px] xl:max-w-xs xl:pl-4 xl:border-l xl:border-slate-100 dark:xl:border-slate-800 space-y-1.5">
                       {b.message ? (
-                        <p className="text-xs italic text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border-l-2 border-[#E0749A]">
-                          "{b.message}"
-                        </p>
+                        <div className="bg-[#FFF0F5]/80 dark:bg-slate-800/70 border border-pink-100 dark:border-pink-900/40 rounded-xl p-2.5 text-xs">
+                          <span className="text-[9.5px] font-bold uppercase tracking-wider text-[#E0749A] block mb-0.5">
+                            Trainee Note
+                          </span>
+                          <p className="italic text-slate-700 dark:text-slate-300 line-clamp-2">
+                            "{b.message}"
+                          </p>
+                        </div>
                       ) : (
-                        <p className="text-xs italic text-slate-300 dark:text-slate-600">No message provided</p>
+                        <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500 py-1">
+                          <span>💬</span>
+                          <span className="italic text-[11px]">No note provided</span>
+                        </div>
                       )}
 
                       {b.follow_up_message && (
-                        <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl space-y-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-1">
-                              <span>🔔 Trainee Follow-Up Reminder</span>
+                        <div className="p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 rounded-xl space-y-0.5">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-[9.5px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                              <span>🔔 Follow-Up</span>
                             </span>
                             {b.follow_up_sent_at && (
-                              <span className="text-[9.5px] font-semibold text-amber-600/80 dark:text-amber-400/80">
+                              <span className="text-[9px] font-semibold text-amber-600/80 dark:text-amber-400/80">
                                 {new Date(b.follow_up_sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             )}
                           </div>
-                          <p className="text-xs text-amber-950 dark:text-amber-100 font-medium italic">
+                          <p className="text-xs text-amber-950 dark:text-amber-100 font-medium italic line-clamp-2">
                             "{b.follow_up_message}"
                           </p>
                         </div>
                       )}
                     </div>
 
-                    {/* Right Actions */}
-                    <div className="flex flex-col sm:flex-row lg:flex-col gap-2 shrink-0 min-w-[150px]">
-                      {b.status === 'pending' ? (
-                        <>
+                    {/* 4. Right: Status Badge & Actions */}
+                    <div className="flex items-center justify-start xl:justify-end gap-2 shrink-0 flex-wrap pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100 dark:border-slate-800">
+                      {/* Status Badge */}
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl uppercase tracking-wider ${
+                        b.status === 'confirmed'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/50'
+                          : b.status === 'completed'
+                          ? 'bg-blue-50 text-blue-700 border border-blue-200/80 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50'
+                          : b.status === 'pending'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200/80 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800/50'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200/80 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/50'
+                      }`}>
+                        {b.status === 'confirmed' && <span className="w-2 h-2 rounded-full bg-emerald-500"></span>}
+                        {b.status === 'completed' && <span className="w-2 h-2 rounded-full bg-blue-500"></span>}
+                        {b.status === 'pending' && <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>}
+                        <span>{b.status}</span>
+                      </span>
+
+                      {/* Action Buttons */}
+                      {b.status === 'pending' && (
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'confirmed')}
                             disabled={actionLoading === b.id}
-                            className="w-full bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-soft-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                            className="bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs py-2 px-3 rounded-xl shadow-soft-xs transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                           >
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>{actionLoading === b.id ? 'Updating...' : 'Accept & Send Email'}</span>
+                            <span>{actionLoading === b.id ? 'Updating...' : 'Accept'}</span>
                           </button>
                           <button
                             onClick={() => handleStatusUpdate(b.id, 'declined')}
                             disabled={actionLoading === b.id}
-                            className="w-full bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 px-4 rounded-xl transition-colors cursor-pointer"
+                            className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs py-2 px-2.5 rounded-xl transition-colors cursor-pointer"
                           >
                             Decline
                           </button>
-                        </>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider ${
-                            b.status === 'confirmed'
-                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
-                              : b.status === 'completed'
-                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
-                              : 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300'
-                          }`}>
-                            {b.status}
-                          </span>
-                          <button
-                            onClick={() => {
-                              setEmailModalBooking(b);
-                              setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
-                            }}
-                            className="p-2 rounded-xl text-slate-400 hover:text-[#E0749A] hover:bg-pink-50 dark:hover:bg-pink-950/40 text-xs font-bold transition-colors cursor-pointer"
-                            title="Send email note to trainee"
-                          >
-                            ✉️ Send Email
-                          </button>
                         </div>
+                      )}
+
+                      {b.status === 'confirmed' && (
+                        <button
+                          onClick={() => handleStatusUpdate(b.id, 'completed')}
+                          disabled={actionLoading === b.id}
+                          className="bg-[#1F7A5A] hover:bg-[#165a42] text-white font-bold text-xs py-2 px-3.5 rounded-xl shadow-soft-xs transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                          title="Mark coaching session as finished/completed"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>{actionLoading === b.id ? 'Updating...' : 'Mark Complete'}</span>
+                        </button>
+                      )}
+
+                      {/* Send Email Note Button */}
+                      <button
+                        onClick={() => {
+                          setEmailModalBooking(b);
+                          setEmailCustomText(`Hi ${b.player_name}! This is Coach Zoid regarding our tennis lesson on ${formatDate(b.booking_date)} at ${formatTime(b.start_time)}.`);
+                        }}
+                        className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-pink-50 dark:bg-slate-800 dark:hover:bg-pink-950/40 text-slate-700 dark:text-slate-300 hover:text-[#E0749A] border border-slate-200/60 dark:border-slate-700/60 hover:border-pink-300 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                        title="Send email note to trainee"
+                      >
+                        <span>✉️</span>
+                        <span>Send Email</span>
+                      </button>
+
+                      {/* Reopen button for completed / declined */}
+                      {(b.status === 'completed' || b.status === 'declined') && (
+                        <button
+                          onClick={() => handleStatusUpdate(b.id, 'confirmed')}
+                          disabled={actionLoading === b.id}
+                          className="py-2 px-2.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors cursor-pointer"
+                          title="Reopen or move back to confirmed"
+                        >
+                          Reopen
+                        </button>
                       )}
                     </div>
                   </div>
