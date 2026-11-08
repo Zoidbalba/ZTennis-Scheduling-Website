@@ -84,6 +84,8 @@ export default function DashboardBookings() {
 
   const [emailModalBooking, setEmailModalBooking] = useState(null);
   const [emailCustomText, setEmailCustomText] = useState('');
+  const [emailStatus, setEmailStatus] = useState(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const fetchBookings = async () => {
     try {
@@ -99,6 +101,7 @@ export default function DashboardBookings() {
 
   useEffect(() => {
     fetchBookings();
+    api.getEmailStatus().then(setEmailStatus).catch(() => {});
   }, []);
 
   const handleStatusUpdate = async (id, status) => {
@@ -244,8 +247,9 @@ export default function DashboardBookings() {
   };
 
   const handleSendCustomEmail = async () => {
-    if (!emailModalBooking) return;
+    if (!emailModalBooking || isSendingEmail) return;
     try {
+      setIsSendingEmail(true);
       const res = await api.sendBookingEmail(emailModalBooking.id, { message: emailCustomText });
       setEmailModalBooking(null);
       if (res.email?.simulated) {
@@ -265,6 +269,8 @@ export default function DashboardBookings() {
       await fetchBookings();
     } catch (err) {
       alert(err.message || 'Failed to send email');
+    } finally {
+      setIsSendingEmail(false);
     }
   };
 
@@ -1213,20 +1219,48 @@ export default function DashboardBookings() {
                 )}
               </div>
 
+              {/* Server Live vs Simulation Status Notice */}
+              {emailStatus?.configured ? (
+                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/50 rounded-xl flex items-center gap-2 text-xs text-emerald-800 dark:text-emerald-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span className="text-[11px] font-semibold">
+                    Server Connected: Sending as <strong>{emailStatus.sender}</strong>
+                  </span>
+                </div>
+              ) : (
+                <div className="p-3 bg-amber-50/80 dark:bg-amber-950/25 border border-amber-200/70 dark:border-amber-800/40 rounded-xl text-xs text-amber-800 dark:text-amber-200">
+                  <div className="flex items-center gap-1.5 font-bold text-[11px] uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    <span>⚠️ Server in Simulation Mode</span>
+                  </div>
+                  <p className="mt-1 text-[11px] leading-relaxed text-amber-900/80 dark:text-amber-200/80">
+                    To send directly to trainee inboxes from the server, add <code className="bg-amber-100 dark:bg-amber-900/50 px-1 rounded font-mono text-[10px]">GMAIL_USER</code> and <code className="bg-amber-100 dark:bg-amber-900/50 px-1 rounded font-mono text-[10px]">GMAIL_APP_PASSWORD</code> in your Render Environment settings. Or click <strong>Open in Gmail ↗</strong> above to send instantly!
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
+                  disabled={isSendingEmail}
                   onClick={() => setEmailModalBooking(null)}
-                  className="py-3 px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
+                  className="py-3 px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
+                  disabled={isSendingEmail}
                   onClick={handleSendCustomEmail}
-                  className="flex-1 py-3 px-4 rounded-xl text-xs font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] shadow-soft-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3 px-4 rounded-xl text-xs font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] disabled:opacity-60 disabled:cursor-not-allowed shadow-soft-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>Send via Website Server →</span>
+                  {isSendingEmail ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      <span>Sending email...</span>
+                    </>
+                  ) : (
+                    <span>Send via Website Server →</span>
+                  )}
                 </button>
               </div>
             </div>
