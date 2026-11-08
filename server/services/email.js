@@ -57,21 +57,20 @@ export function formatHumanTime(timeStr) {
  * Creates a Nodemailer transport instance.
  */
 function getTransporter() {
-  const gmailUser = process.env.GMAIL_USER ? process.env.GMAIL_USER.trim() : null;
-  // Automatically strip any spaces that Google displays in 16-character App Passwords (e.g. 'abcd efgh ijkl mnop' -> 'abcdefghijklmnop')
-  const gmailPass = process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.replace(/\s+/g, '').trim() : null;
+  const gmailUser = process.env.GMAIL_USER
+    ? process.env.GMAIL_USER.replace(/^["']|["']$/g, '').trim()
+    : null;
+  // Automatically strip any spaces and quotes from 16-character App Passwords (e.g. 'abcd efgh ijkl mnop' -> 'abcdefghijklmnop')
+  const gmailPass = process.env.GMAIL_APP_PASSWORD
+    ? process.env.GMAIL_APP_PASSWORD.replace(/^["']|["']$/g, '').replace(/\s+/g, '').trim()
+    : null;
 
   if (gmailUser && gmailPass) {
     return nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      service: 'gmail',
       auth: {
         user: gmailUser,
         pass: gmailPass,
-      },
-      tls: {
-        rejectUnauthorized: false,
       },
     });
   }

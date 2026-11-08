@@ -192,6 +192,24 @@ router.get('/booked-dates', async (req, res) => {
 });
 
 /**
+ * GET /api/bookings/email-status
+ *
+ * Checks if live SMTP is configured on the server.
+ */
+router.get('/email-status', authMiddleware, async (req, res) => {
+  const user = process.env.GMAIL_USER ? process.env.GMAIL_USER.replace(/^["']|["']$/g, '').trim() : null;
+  const pass = process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.replace(/^["']|["']$/g, '').replace(/\s+/g, '').trim() : null;
+  const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+  const configured = Boolean((user && pass) || hasSmtp);
+
+  res.json({
+    configured,
+    provider: (user && pass) ? 'gmail' : hasSmtp ? 'smtp' : 'simulation',
+    sender: user || (hasSmtp ? process.env.SMTP_USER : null),
+  });
+});
+
+/**
  * GET /api/bookings
  *
  * Returns all bookings ordered by booking_date DESC, start_time DESC.
