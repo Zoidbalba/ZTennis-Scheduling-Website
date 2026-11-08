@@ -72,6 +72,9 @@ function getTransporter() {
         user: gmailUser,
         pass: gmailPass,
       },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 10000,
     });
   }
 
@@ -89,6 +92,9 @@ function getTransporter() {
         user: smtpUser,
         pass: smtpPass,
       },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 10000,
     });
   }
 

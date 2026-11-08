@@ -109,37 +109,23 @@ export default function DashboardBookings() {
       setActionLoading(id);
       const res = await api.updateBookingStatus(id, status);
 
-      if (res.email) {
-        if (res.email.sent && !res.email.simulated) {
-          setEmailToast({
-            type: 'success',
-            title: `Email Sent to ${res.booking.player_name}!`,
-            message: `Official schedule confirmation delivered to ${res.booking.player_email || res.booking.player_contact}.`,
-          });
-        } else if (res.email.simulated) {
-          setEmailToast({
-            type: 'info',
-            title: `Status: ${status === 'confirmed' ? 'Accepted' : 'Declined'}`,
-            message: `Schedule updated! Email confirmation prepared for ${res.booking.player_email || res.booking.player_name}.`,
-          });
-        } else if (res.email.error) {
-          setEmailToast({
-            type: 'warning',
-            title: `Schedule updated, but email delivery issue`,
-            message: res.email.error,
-          });
-        }
-      } else {
-        setEmailToast({
-          type: 'success',
-          title: `Status Updated to ${status}`,
-          message: `Booking has been marked as ${status}.`,
-        });
-      }
+      setEmailToast({
+        type: 'success',
+        title: `Session ${status.charAt(0).toUpperCase() + status.slice(1)}!`,
+        message: `Booking has been marked as ${status}.`,
+      });
 
       await fetchBookings();
     } catch (err) {
-      alert(err.message || 'Failed to update booking status');
+      if (err.status === 502 || (err.message && err.message.includes('502'))) {
+        setEmailToast({
+          type: 'warning',
+          title: 'Server Reconnecting',
+          message: 'The server was finishing deploying latest updates. Please click again now!',
+        });
+      } else {
+        alert(err.message || 'Failed to update booking status');
+      }
     } finally {
       setActionLoading(null);
       setTimeout(() => setEmailToast(null), 6000);

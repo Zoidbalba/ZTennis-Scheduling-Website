@@ -316,48 +316,46 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       coachProfile = await db.get('SELECT name, phone, email FROM coach_profile LIMIT 1');
     } catch (e) {}
 
-    // 1. Send automated email confirmation to trainee's Gmail/email
-    let emailResult = null;
-    let emailStatusVal = booking.email_status || '';
-    let emailSentAtVal = booking.email_sent_at || '';
-
-    if (send_notification && booking.player_email && (status === 'confirmed' || status === 'declined' || status === 'completed')) {
-      try {
-        emailResult = await sendBookingConfirmationEmail({
-          booking,
-          coachProfile,
-          status,
-        });
-
-        if (emailResult.sent) {
-          emailStatusVal = emailResult.simulated ? 'sent (simulated)' : 'sent';
-          emailSentAtVal = new Date().toISOString();
-        } else {
-          emailStatusVal = `failed: ${emailResult.error || 'unknown'}`;
-        }
-      } catch (emailErr) {
-        console.error('Error dispatching automated email confirmation:', emailErr);
-        emailResult = { sent: false, error: emailErr.message };
-        emailStatusVal = `failed: ${emailErr.message}`;
-      }
-    }
-
-    // Update status and email tracking in database
+    // Update status in database FIRST
     await db.run(
-      `UPDATE bookings
-       SET status = ?, email_status = ?, email_sent_at = ?
-       WHERE id = ?`,
-      [status, emailStatusVal, emailSentAtVal, Number(id)]
+      'UPDATE bookings SET status = ? WHERE id = ?',
+      [status, Number(id)]
     );
     saveDb(db);
 
     const updatedBooking = await db.get('SELECT * FROM bookings WHERE id = ?', [Number(id)]);
 
+    // Respond immediately to the coach dashboard (<50ms) so UI is instant and never hangs
     res.json({
       message: `Booking status updated to ${status}`,
       booking: updatedBooking,
-      email: emailResult,
     });
+
+    // Send automated email confirmation to trainee asynchronously in the background
+    if (send_notification && booking.player_email && (status === 'confirmed' || status === 'declined' || status === 'completed')) {
+      (async () => {
+        try {
+          const emailResult = await sendBookingConfirmationEmail({
+            booking: updatedBooking,
+            coachProfile,
+            status,
+          });
+
+          const emailStatusVal = emailResult.sent
+            ? (emailResult.simulated ? 'sent (simulated)' : 'sent')
+            : `failed: ${emailResult.error || 'unknown'}`;
+          const emailSentAtVal = emailResult.sent ? new Date().toISOString() : '';
+
+          await db.run(
+            'UPDATE bookings SET email_status = ?, email_sent_at = ? WHERE id = ?',
+            [emailStatusVal, emailSentAtVal, Number(id)]
+          );
+          saveDb(db);
+        } catch (emailErr) {
+          console.warn('Background status email error:', emailErr.message);
+        }
+      })();
+    }
   } catch (err) {
     console.error('Update booking status error:', err);
     res.status(500).json({ error: err.message });
