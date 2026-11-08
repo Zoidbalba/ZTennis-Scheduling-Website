@@ -248,12 +248,20 @@ export default function DashboardBookings() {
     try {
       const res = await api.sendBookingEmail(emailModalBooking.id, { message: emailCustomText });
       setEmailModalBooking(null);
-      setEmailToast({
-        type: 'success',
-        title: 'Email Sent to Trainee',
-        message: res.message || 'Message sent to trainee email.',
-      });
-      setTimeout(() => setEmailToast(null), 4000);
+      if (res.email?.simulated) {
+        setEmailToast({
+          type: 'warning',
+          title: 'Email Simulated (Setup Needed)',
+          message: 'Website is currently in simulation mode. To deliver real live emails to Gmail, add GMAIL_USER and GMAIL_APP_PASSWORD in Render Environment variables.',
+        });
+      } else {
+        setEmailToast({
+          type: 'success',
+          title: 'Email Delivered',
+          message: res.message || 'Email successfully dispatched to trainee.',
+        });
+      }
+      setTimeout(() => setEmailToast(null), 6000);
       await fetchBookings();
     } catch (err) {
       alert(err.message || 'Failed to send email');
@@ -1187,20 +1195,38 @@ export default function DashboardBookings() {
                 />
               </div>
 
-              <div className="flex gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+              {/* Direct Gmail Shortcut */}
+              <div className="p-3 bg-pink-50/70 dark:bg-[#20101a] border border-pink-200/60 dark:border-pink-900/40 rounded-xl flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-bold text-slate-900 dark:text-white block">Send directly from your Gmail:</span>
+                  <span className="text-[11px] text-slate-500">Opens Gmail with this message prefilled</span>
+                </div>
+                {emailModalBooking.player_email && (
+                  <a
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(emailModalBooking.player_email)}&su=${encodeURIComponent(`🎾 ZTennis Lesson Update — Coach Zoid`)}&body=${encodeURIComponent(emailCustomText)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-1.5 px-3 bg-white dark:bg-slate-800 hover:bg-slate-100 text-[#E0749A] border border-pink-300 dark:border-pink-800 rounded-lg font-bold text-xs shadow-soft-xs transition-colors shrink-0"
+                  >
+                    Open in Gmail ↗
+                  </a>
+                )}
+              </div>
+
+              <div className="flex gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setEmailModalBooking(null)}
-                  className="flex-1 py-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
+                  className="py-3 px-4 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSendCustomEmail}
-                  className="flex-1 py-3 rounded-xl text-xs font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] shadow-soft-xs transition-colors cursor-pointer"
+                  className="flex-1 py-3 px-4 rounded-xl text-xs font-bold text-white bg-[#E0749A] hover:bg-[#cf5479] shadow-soft-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  Send Email Now →
+                  <span>Send via Website Server →</span>
                 </button>
               </div>
             </div>

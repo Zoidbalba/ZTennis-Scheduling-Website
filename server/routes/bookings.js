@@ -400,8 +400,17 @@ router.post('/:id/send-email', authMiddleware, async (req, res) => {
     );
     saveDb(db);
 
+    if (emailResult.sent === false) {
+      return res.status(400).json({
+        error: emailResult.error || 'Failed to send email. Check your SMTP credentials.',
+        email: emailResult,
+      });
+    }
+
     res.json({
-      message: emailResult.sent ? 'Email sent successfully' : 'Failed to send email',
+      message: emailResult.simulated
+        ? 'Email simulated: Add GMAIL_USER & GMAIL_APP_PASSWORD in Render to send live emails'
+        : 'Email delivered successfully via Gmail SMTP',
       email: emailResult,
     });
   } catch (err) {
