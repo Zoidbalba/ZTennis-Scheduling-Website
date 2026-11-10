@@ -23,11 +23,6 @@ npm run dev
 
 ### Default Login Credentials
 
-| Field    | Value                |
-|----------|----------------------|
-| Email    | `coach@tennisph.com` |
-| Password | `admin123`           |
-
 ## Tech Stack
 
 | Layer      | Technology              |
